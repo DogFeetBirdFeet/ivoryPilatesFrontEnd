@@ -1,7 +1,17 @@
-* text=auto
-*.ts text
-*.tsx text
-*.js text
-*.jsx text
-*.css text
-*.html text
+# 모든 텍스트 파일은 LF로 저장
+* text=auto eol=lf
+
+# 이미지/폰트/영상 등 바이너리는 변환하지 않음
+*.png  binary
+*.jpg  binary
+*.jpeg binary
+*.gif  binary
+*.ico  binary
+*.svg  binary
+*.pdf  binary
+*.mp4  binary
+*.mov  binary
+*.ttf  binary
+*.otf  binary
+*.woff binary
+*.woff2 binary
