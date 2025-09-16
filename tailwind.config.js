@@ -2,7 +2,29 @@
 export default {
   content: ['./src/**/*.{js,jsx,ts,tsx}'],
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        ppt: '#2B2144', //purpleTitle
+        ppm: '#2B265C', //purpleMenu
+        ppp: '#6756C0', //purplePoint
+        ppbg: '#F5F5FF', //purpleBG
+        yellow: '#FFBB00',
+        beige: '#FFE9AE',
+        black: '#222222',
+        gray: '#555555',
+        lightGray: '#7B7B7B',
+        white: '#FFFFFF',
+      },
+      fontSize: {
+        base: ['12px', { lineHeight: '18px' }],
+        xl: ['16px', { lineHeight: '24px' }],
+        '2xl': ['21px', { lineHeight: '28px' }],
+        '3xl': ['32px', { lineHeight: '40px' }],
+      },
+      borderRadius: {
+        default: '10px',
+      },
+    },
   },
   plugins: [],
 };

@@ -1,7 +1,7 @@
 export default function Dashboard() {
   return (
-    <>
-      <h1>dashboard</h1>
-    </>
+    <div className="h-[1800px]">
+      <h1 className="text-purplePoint text-xl">dashboard</h1>
+    </div>
   );
 }
