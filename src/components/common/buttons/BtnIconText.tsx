@@ -36,10 +36,10 @@ export default function BtnIconText({
   return (
     <div
       onClick={onClick}
-      className={`flex gap-[10px] items-center p-[5px] border-[1px] rounded-default cursor-pointer text-base font-medium ${buttonStyle()}`}
+      className={`flex gap-[5px] p-[5px] border-[1px] rounded-default cursor-pointer text-base font-medium ${buttonStyle()}`}
     >
       <img src={icon} className="w-[16px] h-[16px]" draggable="false" />
-      <p className="text-base">{text}</p>
+      <span className="text-base">{text}</span>
     </div>
   );
 }

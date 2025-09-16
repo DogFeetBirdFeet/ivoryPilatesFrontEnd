@@ -1,4 +1,14 @@
 /** @type {import('tailwindcss').Config} */
+
+// @ts-nocheck
+function generateSpacingScale(max = 200, step = 5) {
+  const scale = {};
+  for (let i = step; i <= max; i += step) {
+    scale[`${i}px`] = `${i}px`;
+  }
+  return scale;
+}
+
 export default {
   content: ['./src/**/*.{js,jsx,ts,tsx}'],
   theme: {
@@ -24,6 +34,11 @@ export default {
       borderRadius: {
         default: '10px',
       },
+      margin: generateSpacingScale(),
+      padding: generateSpacingScale(),
+      width: generateSpacingScale(),
+      height: generateSpacingScale(),
+      gap: generateSpacingScale(),
     },
   },
   plugins: [],
