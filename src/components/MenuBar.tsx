@@ -4,6 +4,7 @@ import { menuRoute } from '@/constants/route';
 import { useState } from 'react';
 import { motion, AnimatePresence, type HTMLMotionUlProps } from 'framer-motion';
 
+// Framer Motion ClassName 타입에러 방지용 컴포넌트
 const MotionUl = motion('ul') as React.FC<HTMLMotionUlProps>;
 
 export default function MenuBar({ path }: { path: string }) {

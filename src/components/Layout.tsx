@@ -2,11 +2,24 @@ import { Outlet, useLocation } from 'react-router-dom';
 import MenuBar from './MenuBar';
 import MiniBar from './MiniBar';
 import { useState } from 'react';
+import {
+  AnimatePresence,
+  LayoutGroup,
+  motion,
+  type HTMLMotionAsideProps,
+  type HTMLMotionDivProps,
+} from 'framer-motion';
 
 import BtnIconText from './common/buttons/BtnIconText';
 import iconRight from '@/assets/icon/chevron_right.png';
+import iconFoldRight from '@/assets/chevrons_right.png';
+import iconFoldLeft from '@/assets/chevrons_left.png';
 import iconLogout from '@/assets/icon/icon_logout.png';
 import loginProfile from '@/assets/pilates_img.png';
+
+// Framer Motion ClassName 타입에러 방지용 컴포넌트
+export const MotionAside = motion('aside') as React.FC<HTMLMotionAsideProps>;
+export const MotionDiv = motion('div') as React.FC<HTMLMotionDivProps>;
 
 export default function Layout() {
   const [menuFold, setMenuFold] = useState(false);
@@ -23,14 +36,54 @@ export default function Layout() {
   return (
     <div className={`w-full grid grid-cols-1`}>
       {/* 메뉴바 */}
-      <aside className={`fixed top-0 left-0 z-20 h-svh ${menuFold ? 'w-[80px]' : 'w-[250px]'}`}>
-        {menuFold ? <MiniBar /> : <MenuBar path={pathname} />}
-      </aside>
+      <LayoutGroup>
+        <MotionAside
+          layout
+          className={`fixed top-0 left-0 z-20 h-svh bg-ppm`}
+          animate={{ width: menuFold ? 80 : 250 }}
+          transition={{ duration: 0.3, ease: 'easeInOut' }}
+        >
+          {/* 내부 메뉴 */}
+          <AnimatePresence mode="wait">
+            {menuFold ? (
+              <motion.div
+                key="mini"
+                layout
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.2 }}
+              >
+                <MiniBar path={pathname} />
+              </motion.div>
+            ) : (
+              <motion.div
+                key="menu"
+                layout
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.2 }}
+              >
+                <MenuBar path={pathname} />
+              </motion.div>
+            )}
+          </AnimatePresence>
 
-      <div
-        className={`grid grid-rows-[auto_1fr] min-w-[1020px] px-[30px] 
-          ${menuFold ? 'ml-[80px]' : 'ml-[250px]'} 
-          ${isSchedulePage ? 'bg-white' : 'bg-ppbg '}`}
+          {/* 토글 버튼 */}
+          <div
+            className="w-[30px] h-[30px] absolute top-[120px] right-[-15px] z-20 rounded-full bg-white/70 border border-ppp cursor-pointer flex items-center justify-center"
+            onClick={() => setMenuFold((past) => !past)}
+          >
+            <img key={menuFold ? 'foldRight' : 'foldLeft'} src={menuFold ? iconFoldRight : iconFoldLeft} />
+          </div>
+        </MotionAside>
+      </LayoutGroup>
+
+      <MotionDiv
+        className={`grid grid-rows-[auto_1fr] min-w-[1020px] px-[30px] ${isSchedulePage ? 'bg-white' : 'bg-ppbg '}`}
+        animate={{ marginLeft: menuFold ? 80 : 250 }}
+        transition={{ duration: 0.3, ease: 'easeInOut' }}
       >
         {/* 헤더 */}
         <div
@@ -70,7 +123,7 @@ export default function Layout() {
         <section className="overflow-x-auto overflow-y-auto">
           <Outlet context={{ setHeaderTitle, setHeaderIcon }} />
         </section>
-      </div>
+      </MotionDiv>
     </div>
   );
 }
