@@ -10,7 +10,7 @@ function generateSpacingScale(max = 200, step = 5) {
 }
 
 export default {
-  content: ['./src/**/*.{js,jsx,ts,tsx}'],
+  content: ['./src/**/*.{js,jsx,ts,tsx}', './src/styles/global.css'],
   theme: {
     extend: {
       colors: {
@@ -24,6 +24,8 @@ export default {
         gray: '#555555',
         lightGray: '#7B7B7B',
         white: '#FFFFFF',
+        blue: '#3C0CE9',
+        red: '#B8001F',
       },
       fontSize: {
         base: ['12px', { lineHeight: '18px' }],
@@ -34,6 +36,10 @@ export default {
       borderRadius: {
         default: '10px',
       },
+      dropShadow: {
+        sm: '0 3px 3px rgba(0,0,0,0.25)',
+      },
+
       margin: generateSpacingScale(),
       padding: generateSpacingScale(),
       width: generateSpacingScale(),

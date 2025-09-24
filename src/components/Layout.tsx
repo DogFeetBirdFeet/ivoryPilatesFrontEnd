@@ -34,7 +34,7 @@ export default function Layout() {
   const [headerIcon, setHeaderIcon] = useState('');
 
   return (
-    <div className={`w-full grid grid-cols-1`}>
+    <div className={`w-full h-screen grid grid-cols-1`}>
       {/* 메뉴바 */}
       <LayoutGroup>
         <MotionAside
@@ -79,7 +79,9 @@ export default function Layout() {
       </LayoutGroup>
 
       <MotionDiv
-        className={`grid grid-rows-[auto_1fr] min-w-[1020px] px-[30px] ${isSchedulePage ? 'bg-white' : 'bg-ppbg '}`}
+        className={`h-full grid grid-rows-[auto_1fr] min-w-[1280px] px-30px pb-20px ${
+          isSchedulePage ? 'bg-white' : 'bg-ppbg '
+        }`}
         animate={{ marginLeft: menuFold ? 80 : 250 }}
         transition={{ duration: 0.3, ease: 'easeInOut' }}
       >
@@ -118,7 +120,7 @@ export default function Layout() {
           </div>
         </div>
 
-        <section className="overflow-x-auto overflow-y-auto">
+        <section className="h-full min-h-0 w-full m-auto overflow-x-auto overflow-y-auto">
           <Outlet context={{ setHeaderTitle, setHeaderIcon }} />
         </section>
       </MotionDiv>
