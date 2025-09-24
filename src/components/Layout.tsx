@@ -38,17 +38,16 @@ export default function Layout() {
       {/* 메뉴바 */}
       <LayoutGroup>
         <MotionAside
-          layout
           className={`fixed top-0 left-0 z-20 h-svh bg-ppm`}
           animate={{ width: menuFold ? 80 : 250 }}
           transition={{ duration: 0.3, ease: 'easeInOut' }}
+          style={{ willChange: 'width' }}
         >
           {/* 내부 메뉴 */}
           <AnimatePresence mode="wait">
             {menuFold ? (
               <motion.div
                 key="mini"
-                layout
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
@@ -59,7 +58,6 @@ export default function Layout() {
             ) : (
               <motion.div
                 key="menu"
-                layout
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
