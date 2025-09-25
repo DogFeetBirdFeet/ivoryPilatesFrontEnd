@@ -14,7 +14,7 @@ interface SectionTitleProps {
  */
 export default function SectionTitle({ icon, title, className = '' }: SectionTitleProps) {
   return (
-    <div className={`flex items-center gap-10px px-30px py-20px ${className}`}>
+    <div className={`flex items-center gap-10px mb-20px ${className}`}>
       <img src={icon} className="w-[32px] h-[32px]" alt="" />
       <h2 className="text-2xl font-bold text-ppt">{title}</h2>
     </div>
