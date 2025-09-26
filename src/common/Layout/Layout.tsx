@@ -10,18 +10,24 @@ import {
   type HTMLMotionDivProps,
 } from 'framer-motion';
 
-import BtnIconText from './common/buttons/BtnIconText';
+import BtnIconText from '../components/buttons/BtnIconText';
 import iconRight from '@/assets/icon/chevron_right.png';
 import iconFoldRight from '@/assets/chevrons_right.png';
 import iconFoldLeft from '@/assets/chevrons_left.png';
 import iconLogout from '@/assets/icon/icon_logout.png';
 import loginProfile from '@/assets/pilates_img.png';
+import type { LayoutContextType } from '@/hooks/useLayoutContext';
+import OverlayProvider from './OverlayProvider';
+import useOverlay from '@/hooks/useOverlay';
 
 // Framer Motion ClassName 타입에러 방지용 컴포넌트
 export const MotionAside = motion('aside') as React.FC<HTMLMotionAsideProps>;
 export const MotionDiv = motion('div') as React.FC<HTMLMotionDivProps>;
 
 export default function Layout() {
+  //Test용
+  const overlay = useOverlay();
+
   const [menuFold, setMenuFold] = useState(false);
   const { pathname } = useLocation();
   const isSchedulePage = pathname.split('/')[1] === 'schedule';
@@ -32,6 +38,11 @@ export default function Layout() {
    */
   const [headerTitle, setHeaderTitle] = useState('');
   const [headerIcon, setHeaderIcon] = useState('');
+
+  const outletContext: LayoutContextType = {
+    setHeaderTitle,
+    setHeaderIcon,
+  };
 
   return (
     <div className={`w-full h-screen grid grid-cols-1`}>
@@ -114,16 +125,27 @@ export default function Layout() {
               icon={iconLogout}
               text="로그아웃"
               onClick={() => {
-                setMenuFold((past) => !past);
+                overlay.showPopup(
+                  <div className="bg-blue w-[200px] h-[200px]">
+                    <div className="text-bold">팝업</div>
+                    <button
+                      onClick={() => overlay.showPopup(<div className="bg-yellow w-[400px] h-[400px]">추가 팝업</div>)}
+                    >
+                      추가
+                    </button>
+                  </div>
+                );
               }}
             />
           </div>
         </div>
 
         <section className="h-full min-h-0 w-full m-auto overflow-x-auto overflow-y-auto">
-          <Outlet context={{ setHeaderTitle, setHeaderIcon }} />
+          <Outlet context={outletContext} />
         </section>
       </MotionDiv>
+
+      <OverlayProvider />
     </div>
   );
 }

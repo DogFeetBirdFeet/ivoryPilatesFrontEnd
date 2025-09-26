@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { useOutletContext } from 'react-router-dom';
+import { useLayoutContext } from '@/hooks/useLayoutContext';
 import dashboardIcon from '@/assets/icon/yellow/icon_dashboard.png';
 import dayoffIcon from '@/assets/dashboard/dayoff.png';
 import calenderIcon from '@/assets/dashboard/calender.png';
@@ -9,14 +9,9 @@ import SectionWeeklyReservation from '@/features/Dashboard/sections/SectionWeekl
 import SectionDailySchedule from '@/features/Dashboard/sections/SectionDailySchedule';
 import SectionDayOff from '@/features/Dashboard/sections/SectionDayOff';
 
-type HeaderContext = {
-  setHeaderTitle: (title: string) => void;
-  setHeaderIcon: (icon: string | null) => void;
-};
-
 export default function Dashboard() {
   // 헤더정보 세팅
-  const { setHeaderTitle, setHeaderIcon } = useOutletContext<HeaderContext>();
+  const { setHeaderTitle, setHeaderIcon } = useLayoutContext();
 
   useEffect(() => {
     setHeaderTitle('홈 대시보드');

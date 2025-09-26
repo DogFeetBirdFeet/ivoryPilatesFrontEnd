@@ -5,7 +5,7 @@ import './index.css';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
-import Layout from './components/Layout';
+import Layout from './common/Layout/Layout';
 import Member from './pages/Member/Member';
 import MemberGroup from './pages/Member/MemberGroup';
 

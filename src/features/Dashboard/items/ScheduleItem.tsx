@@ -1,5 +1,5 @@
-import BtnIcon from '@/components/common/buttons/BtnIcon';
-import StatusBadge from '@/components/common/schedule/StatusBadge';
+import BtnIcon from '@/common/components/buttons/BtnIcon';
+import StatusBadge from '@/common/components/schedule/StatusBadge';
 import imgClsLog from '@/assets/icon/white/icon_cls_log_sm.png';
 import imgPlus from '@/assets/dashboard/plus.png';
 import type { IScheduleItem } from '../types';
