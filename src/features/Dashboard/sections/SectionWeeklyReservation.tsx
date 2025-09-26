@@ -2,16 +2,12 @@ import { useState, useMemo } from 'react';
 import weekCalendar from '@/assets/dashboard/week-calendar.png';
 import check from '@/assets/dashboard/check.png';
 import flag from '@/assets/dashboard/flag.png';
-import { DAY_NAMES, WEEKDAYS_KR } from '@/constants/days';
+import { DAY_NAMES } from '@/constants/days';
+import TodayDate from '../items/TodayDate';
+import type { WeekDay } from '../types';
+import WeeklyDate from '../items/WeeklyDate';
 
-interface WeekDay {
-  date: number;
-  day: string;
-  fullDate: Date;
-  isCurDate: boolean;
-}
-
-export default function WeeklyReservationSection() {
+export default function SectionWeeklyReservation() {
   const today = new Date();
   const [curDate, setCurDate] = useState<number>(today.getDate());
 
@@ -39,16 +35,6 @@ export default function WeeklyReservationSection() {
   // 선택된 인덱스 계산
   const selectedIndex: number = weekDays.findIndex((day: WeekDay) => day.isCurDate);
 
-  // 날짜 포맷팅
-  const formattedDate: string = useMemo(() => {
-    const year: number = today.getFullYear();
-    const month: string = String(today.getMonth() + 1).padStart(2, '0');
-    const day: string = String(today.getDate()).padStart(2, '0');
-    const weekday: string = WEEKDAYS_KR[today.getDay()];
-
-    return `${year}.${month}.${day} ${weekday}요일`;
-  }, [today]);
-
   // 화살표 위치 계산
   const arrowLeft: string = useMemo(() => {
     if (selectedIndex === -1) return '0px';
@@ -67,34 +53,15 @@ export default function WeeklyReservationSection() {
     }
   }, [selectedIndex]);
 
-  const handleDateClick = (date: number): void => {
-    setCurDate(date);
-  };
-
   return (
     <div className="flex-1 flex flex-col">
       {/* 오늘 날짜 */}
-      <div className="text-gray text-[18px] font-bold mb-20px">
-        <span className="text-ppt">오늘은 </span>
-        {formattedDate}
-      </div>
+      <TodayDate />
 
       {/* 주간 캘린더 */}
       <div className="h-110px flex justify-between py-10px mb-10px w-[440px]">
-        {weekDays.map((day: WeekDay, index: number) => (
-          <button
-            key={`${day.fullDate.toISOString()}-${index}`}
-            className={`
-              w-50px h-full rounded-[25px] flex flex-col items-center justify-center 
-              text-white font-medium cursor-pointer transition-colors duration-200 ease-in-out active:scale-95
-              ${day.isCurDate ? 'bg-ppp' : 'bg-ppm '}
-            `}
-            onClick={() => handleDateClick(day.date)}
-            type="button"
-          >
-            <span className="text-2xl font-bold mb-5px">{day.date}</span>
-            <span className="text-base">{day.day}</span>
-          </button>
+        {weekDays.map((day: WeekDay) => (
+          <WeeklyDate day={day} onClick={() => setCurDate(day.date)} />
         ))}
       </div>
 
