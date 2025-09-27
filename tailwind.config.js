@@ -18,6 +18,7 @@ export default {
         ppm: '#2B265C', //purpleMenu
         ppp: '#6756C0', //purplePoint
         ppbg: '#F5F5FF', //purpleBG
+        ppLight: '#DDDCEB', //purpleLight
         yellow: '#FFBB00',
         beige: '#FFE9AE',
         black: '#222222',

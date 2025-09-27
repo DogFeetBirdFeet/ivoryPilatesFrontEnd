@@ -3,6 +3,7 @@ import headerIcon from '@/assets/icon/yellow/icon_mem.png';
 import { useEffect, useState } from 'react';
 import { Outlet } from 'react-router-dom';
 import InputText from '@/common/components/inputArea/InputText';
+import BtnSearch from '@/common/components/buttons/BtnSearch';
 
 export default function Member() {
   const [curTab, setCurTab] = useState(1);
@@ -45,31 +46,39 @@ export default function Member() {
       </div>
 
       {/* 서치바 */}
-      <section>
-        <div className="flex w-[220px] gap-20px">
-          <label htmlFor="name" className="flex-shrink-0 font-medium text-xl text-black ">
-            이름
-          </label>
-          <InputText id="name" className="flex-1" />
+      <section className="flex p-20px gap-30px font-medium text-xl text-black bg-ppLight rounded-default mt-10px">
+        <div className="flex-1 flex justify-between">
+          <div className="flex w-[220px] gap-20px">
+            <label htmlFor="name" className="flex-shrink-0 ">
+              이름
+            </label>
+            <InputText id="name" className="flex-1" />
+          </div>
+
+          <div className="flex w-[220px] gap-20px">
+            <label htmlFor="phoneNumber" className="flex-shrink-0 ">
+              연락처
+            </label>
+            <InputText id="phoneNumber" className="flex-1" />
+          </div>
+
+          <div className="flex w-[280px]">
+            <label htmlFor="cnt" className="mr-20px flex-shrink-0">
+              잔여 회차
+            </label>
+            <InputText id="cnt" className="flex-1" />
+            <span className="flex-shrink-0 ml-10px">회 미만</span>
+          </div>
+
+          <div className="flex gap-20px w-[420px]">
+            <label htmlFor="date" className="flex-shrink-0 ">
+              최근 수강 일자
+            </label>
+            <InputText id="date" className="flex-1" />
+          </div>
         </div>
-        <div className="flex gap-20px">
-          <label htmlFor="phoneNumber" className="font-medium text-xl text-black ">
-            연락처
-          </label>
-          <InputText id="phoneNumber" />
-        </div>
-        <div className="flex gap-20px">
-          <label htmlFor="cnt" className="font-medium text-xl text-black ">
-            잔여 회차
-          </label>
-          <InputText id="cnt" />
-        </div>
-        <div className="flex gap-20px">
-          <label htmlFor="date" className="font-medium text-xl text-black ">
-            최근 수강 일자
-          </label>
-          <InputText id="date" />
-        </div>
+
+        <BtnSearch />
       </section>
     </div>
   );
