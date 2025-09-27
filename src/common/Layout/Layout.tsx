@@ -19,7 +19,8 @@ import loginProfile from '@/assets/pilates_img.png';
 import type { LayoutContextType } from '@/hooks/useLayoutContext';
 import OverlayProvider from './OverlayProvider';
 import useOverlay from '@/hooks/useOverlay';
-import PopupCancel from '../popup/PopupCancel';
+// import PopupCancel from '../popup/PopupCancel';
+import PopupClsCancel from "@/common/popup/PopupClsCancel.tsx";
 
 // Framer Motion ClassName 타입에러 방지용 컴포넌트
 export const MotionAside = motion('aside') as React.FC<HTMLMotionAsideProps>;
@@ -124,9 +125,9 @@ export default function Layout() {
             <BtnIconText
               type="C"
               icon={iconLogout}
-              text="로그아웃"
+              text="환불하기"
               onClick={() => {
-                overlay.showPopup(<PopupCancel />);
+                overlay.showPopup(<PopupClsCancel />);
               }}
             />
           </div>
