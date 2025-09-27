@@ -7,8 +7,8 @@ interface IArea {
 /**
  *
  * @param id
- * @param required
  * @param placeholder
+ * @param className
  * @constructor
  */
 export default function InputText({ id, className, placeholder }: IArea) {

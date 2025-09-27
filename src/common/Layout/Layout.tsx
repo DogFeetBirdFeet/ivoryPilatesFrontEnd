@@ -20,7 +20,7 @@ import type { LayoutContextType } from '@/hooks/useLayoutContext';
 import OverlayProvider from './OverlayProvider';
 import useOverlay from '@/hooks/useOverlay';
 // import PopupCancel from '../popup/PopupCancel';
-import PopupClsCancel from "@/common/popup/PopupClsCancel.tsx";
+import PopupRefundCls from "@/common/popup/PopupRefundCls.tsx";
 
 // Framer Motion ClassName 타입에러 방지용 컴포넌트
 export const MotionAside = motion('aside') as React.FC<HTMLMotionAsideProps>;
@@ -86,7 +86,7 @@ export default function Layout() {
             className="w-[30px] h-[30px] absolute top-[120px] right-[-15px] z-20 rounded-full bg-white/70 border border-ppp cursor-pointer flex items-center justify-center"
             onClick={() => setMenuFold((past) => !past)}
           >
-            <img key={menuFold ? 'foldRight' : 'foldLeft'} src={menuFold ? iconFoldRight : iconFoldLeft} />
+            <img key={menuFold ? 'foldRight' : 'foldLeft'} src={menuFold ? iconFoldRight : iconFoldLeft} alt={''} />
           </div>
         </MotionAside>
       </LayoutGroup>
@@ -106,15 +106,15 @@ export default function Layout() {
         >
           {/* 화면명 */}
           <div className="flex items-center">
-            <img src={headerIcon} className="w-[30px] h-[30px]" draggable="false" />
-            <img src={iconRight} className="w-[30px] h-[30px]" />
+            <img src={headerIcon} className="w-[30px] h-[30px]" draggable="false" alt={''}/>
+            <img src={iconRight} className="w-[30px] h-[30px]" alt={''}/>
             <span className="min-w-[250px] flex-1 text-2xl font-bold text-gray">{headerTitle}</span>
           </div>
 
           {/* 로그인데이터 */}
           <div className="grid grid-cols-[auto_auto_auto] gap-[10px] items-center">
             <div className="w-[40px] h-[40px] rounded-full bg-ppp grid place-items-center border-[1px] border-yellow">
-              <img src={loginProfile} className="w-[25px] h-[25px]" draggable="false" />
+              <img src={loginProfile} className="w-[25px] h-[25px]" draggable="false" alt={''}/>
             </div>
 
             <div className="w-[100px] flex flex-col">
@@ -127,7 +127,7 @@ export default function Layout() {
               icon={iconLogout}
               text="환불하기"
               onClick={() => {
-                overlay.showPopup(<PopupClsCancel />);
+                overlay.showPopup(<PopupRefundCls />);
               }}
             />
           </div>
