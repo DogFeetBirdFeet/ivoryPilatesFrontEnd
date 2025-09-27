@@ -163,18 +163,18 @@ export default function InputDate({ id, className }: IArea) {
 
             {open && (
                 <div className="absolute z-50 mt-5px w-[250px] rounded-default border border-purple bg-white shadow-lg">
-                    <div className="flex items-center justify-between px-10px py-8px">
-                        <button type="button" className="px-6px py-2px rounded" onClick={gotoPrevMonth}>
+                    <div className="flex items-center justify-between px-10px py-8px mt-10px text-xl">
+                        <button type="button" className="px-6px py-6px rounded" onClick={gotoPrevMonth}>
                             {"<"}
                         </button>
                         <div className="font-bold">{`${viewYear}년 ${viewMonth + 1}월`}</div>
-                        <button type="button" className="px-6px py-2px rounded" onClick={gotoNextMonth}>
+                        <button type="button" className="px-6px py-6px rounded" onClick={gotoNextMonth}>
                             {">"}
                         </button>
                     </div>
 
                     {/* 요일 헤더: 월~일 */}
-                    <div className="grid grid-cols-7 gap-y-6 px-10px">
+                    <div className="grid grid-cols-7 gap-y-6 px-10px mt-20px">
                         {["월", "화", "수", "목", "금", "토", "일"].map((w, idx) => (
                             <div
                                 key={w}
@@ -186,7 +186,7 @@ export default function InputDate({ id, className }: IArea) {
                     </div>
 
                     {/* 날짜 셀 */}
-                    <div className="grid grid-cols-7 gap-y-6 px-10px pb-10px">
+                    <div className="grid grid-cols-7 px-10px pb-10px">
                         {weeks.map((row, i) => (
                             <div key={i} className="contents">
                                 {row.map((cell, j) => {
