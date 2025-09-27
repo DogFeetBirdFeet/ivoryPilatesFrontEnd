@@ -37,7 +37,7 @@ export const menuRoute: RouteItem[] = [
     child: [
       { route: '', name: '회원 조회', iconDefault: iconMemberSm },
       { route: '/group', name: '그룹회원 조회', iconDefault: iconMemberSm },
-      { route: '/regist', name: '회원 등록', iconDefault: iconMemberSm },
+      { route: '/register', name: '회원 등록', iconDefault: iconMemberSm },
     ],
   },
   {

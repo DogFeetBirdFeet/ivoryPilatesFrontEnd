@@ -8,6 +8,7 @@ import Dashboard from './pages/Dashboard';
 import Layout from './common/Layout/Layout';
 import Member from './pages/Member/Member';
 import MemberGroup from './pages/Member/MemberGroup';
+import Register from './pages/Member/Register';
 
 const router = createBrowserRouter([
   {
@@ -25,12 +26,14 @@ const router = createBrowserRouter([
       {
         path: 'member',
         element: <Member />,
-        children: [
-          {
-            path: 'group',
-            element: <MemberGroup />,
-          },
-        ],
+      },
+      {
+        path: 'member/group',
+        element: <MemberGroup />,
+      },
+      {
+        path: 'member/register',
+        element: <Register />,
       },
       {
         path: 'schedule',
