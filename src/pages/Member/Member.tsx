@@ -2,7 +2,7 @@ import { useLayoutContext } from '@/hooks/useLayoutContext';
 import headerIcon from '@/assets/icon/yellow/icon_mem.png';
 import { useEffect, useState } from 'react';
 import { Outlet } from 'react-router-dom';
-import InputAreaBasicText from '@/common/components/inputArea/InputText';
+import InputText from '@/common/components/inputArea/InputText';
 
 export default function Member() {
   const [curTab, setCurTab] = useState(1);
@@ -43,10 +43,34 @@ export default function Member() {
           <Outlet />
         </div>
       </div>
-      <div>
-        <label htmlFor="1">회원</label>
-        <InputAreaBasicText id={'1'} />
-      </div>
+
+      {/* 서치바 */}
+      <section>
+        <div className="flex w-[220px] gap-20px">
+          <label htmlFor="name" className="flex-shrink-0 font-medium text-xl text-black ">
+            이름
+          </label>
+          <InputText id="name" className="flex-1" />
+        </div>
+        <div className="flex gap-20px">
+          <label htmlFor="phoneNumber" className="font-medium text-xl text-black ">
+            연락처
+          </label>
+          <InputText id="phoneNumber" />
+        </div>
+        <div className="flex gap-20px">
+          <label htmlFor="cnt" className="font-medium text-xl text-black ">
+            잔여 회차
+          </label>
+          <InputText id="cnt" />
+        </div>
+        <div className="flex gap-20px">
+          <label htmlFor="date" className="font-medium text-xl text-black ">
+            최근 수강 일자
+          </label>
+          <InputText id="date" />
+        </div>
+      </section>
     </div>
   );
 }
