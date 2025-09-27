@@ -2,6 +2,7 @@ import { useLayoutContext } from '@/hooks/useLayoutContext';
 import headerIcon from '@/assets/icon/yellow/icon_mem.png';
 import { useEffect, useState } from 'react';
 import { Outlet } from 'react-router-dom';
+import InputAreaBasicText from '@/common/components/inputArea/InputText';
 
 export default function Member() {
   const [curTab, setCurTab] = useState(1);
@@ -41,6 +42,10 @@ export default function Member() {
         <div>
           <Outlet />
         </div>
+      </div>
+      <div>
+        <label htmlFor="1">회원</label>
+        <InputAreaBasicText id={'1'} />
       </div>
     </div>
   );
