@@ -55,18 +55,16 @@ export default function InputMoney({ id, className }: IArea) {
     };
 
     return (
-        <>
-            <input
-                id={id}
-                className={`${INPUT_BASE_CLASS}${className ? ` ${className}` : ""}`}
-                type="text"
-                inputMode="numeric"
-                placeholder="0원"
-                value={display}
-                onFocus={handleFocus}
-                onBlur={handleBlur}
-                onChange={handleChange}
-            />
-        </>
+        <input
+            id={id}
+            className={`${INPUT_BASE_CLASS}${className ? ` ${className}` : ""}`}
+            type="text"
+            inputMode="numeric"
+            placeholder="0원"
+            value={display}
+            onFocus={handleFocus}
+            onBlur={handleBlur}
+            onChange={handleChange}
+        />
     );
 }

@@ -2,7 +2,7 @@ import useOverlay from '@/hooks/useOverlay';
 import { useNavigate } from 'react-router-dom';
 import iconLogout from '@/assets/icon/yellow/icon_cls.png';
 import iconSave from '@/assets/icon/white/icon_save.png';
-import iconCancel from '@/assets/icon/icon_cancel.png';
+import iconCancel from '@/assets/icon/purple/icon_cancel.png';
 import InputMoney from "@/common/components/inputArea/InputMoney.tsx";
 import InputDate from "@/common/components/inputArea/InputDate.tsx";
 import PopupConfirm from "@/common/popup/PopupConfirm.tsx";

@@ -5,6 +5,37 @@ import InputText from "@/common/components/inputArea/InputText.tsx";
 import BtnSearch from "@/common/components/buttons/BtnSearch.tsx";
 import InputDate from "@/common/components/inputArea/InputDate.tsx";
 import ClsPassAll from "@/features/ClsPass/sections/ClsPassAll.tsx"
+import iconPlus from '@/assets/icon/white/icon_cls_plus.png';
+import BtnIconText from "@/common/components/buttons/BtnIconText.tsx";
+import SelectBox from "@/common/components/inputArea/SelectBox.tsx";
+import iconFilter from '@/assets/icon/white/icon_filter.png';
+
+type CoddIdAndName = {
+    codeId: number;
+    dtlNm: string;
+};
+
+// 결제 수강권 Mock 데이터
+const mockDataPAYMET: CoddIdAndName[] = [
+    {
+        codeId: 7,
+        dtlNm: 'CARD'
+    },
+    {
+        codeId: 8,
+        dtlNm: 'CASH'
+    }
+]
+const mockDataYN: CoddIdAndName[] = [
+    {
+        codeId: 12,
+        dtlNm: 'Y'
+    },
+    {
+        codeId: 13,
+        dtlNm: 'N'
+    }
+]
 
 export default function ClassPass() {
 
@@ -24,6 +55,15 @@ export default function ClassPass() {
 
         <div className="h-full flex flex-col">
 
+            {/* 버튼 */}
+            <section className="flex justify-end p-20px gap-30px font-medium rounded-default mt-10px text-right ">
+                <BtnIconText
+                    type="A"
+                    icon={iconPlus}
+                    text="신규결제 등록하기"
+                    onClick={() => {}}
+                />
+            </section>
             {/* 서치 바 */}
             <section className="flex p-20px gap-30px font-medium text-xl text-black bg-ppLight rounded-default mt-10px flex-shrink-0">
                 <div className="flex-1 flex gap-30px">
@@ -59,10 +99,40 @@ export default function ClassPass() {
                         <InputText id={payNm} className="required ml-auto" />
                     </div>
                 </div>
-
                 <BtnSearch />
             </section>
-
+            {/* 필터 */}
+            <section className="flex justify-end p-20px gap-30px font-medium text-xl text-black rounded-default mt-10px flex-shrink-0">
+                <SelectBox
+                    id="use-yn"
+                    label="상품 사용 여부"
+                    options={mockDataYN}
+                    option="A"
+                    icon={iconFilter}
+                    onChange={(codeId) => {
+                        console.log('선택된 코드:', codeId);
+                    }}
+                />
+                <SelectBox
+                    id="refund-yn"
+                    label="환불 여부"
+                    options={mockDataYN}
+                    option="A"
+                    onChange={(codeId) => {
+                        console.log('선택된 코드:', codeId);
+                    }}
+                />
+                <SelectBox
+                    id="pay-method"
+                    label="결제 수단"
+                    options={mockDataPAYMET}
+                    option="A"
+                    onChange={(codeId) => {
+                        console.log('선택된 코드:', codeId);
+                    }}
+                />
+            </section>
+            {/* 테이블 그리드 */}
             <ClsPassAll />
         </div>
     )
