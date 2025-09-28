@@ -9,6 +9,7 @@ import Layout from './common/Layout/Layout';
 import Member from './pages/Member/Member';
 import MemberGroup from './pages/Member/MemberGroup';
 import Register from './pages/Member/Register';
+import ClsPass from './pages/ClassPass';
 
 const router = createBrowserRouter([
   {
@@ -53,6 +54,10 @@ const router = createBrowserRouter([
           },
         ],
       },
+      {
+        path: 'class-pass',
+        element: <ClsPass />
+      }
     ],
   },
 ]);
