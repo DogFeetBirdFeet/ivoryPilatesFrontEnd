@@ -1,15 +1,39 @@
 import useOverlay from '@/hooks/useOverlay';
-import { useNavigate } from 'react-router-dom';
+import {useNavigate} from 'react-router-dom';
 import iconLogout from '@/assets/icon/yellow/icon_cls.png';
 import iconSave from '@/assets/icon/white/icon_save.png';
 import iconCancel from '@/assets/icon/purple/icon_cancel.png';
-import InputMoney from "@/common/components/inputArea/InputMoney.tsx";
 import InputDate from "@/common/components/inputArea/InputDate.tsx";
 import PopupConfirm from "@/common/popup/PopupConfirm.tsx";
+import {useForm} from "react-hook-form";
+import {dateFormatToString} from "@/utils/date.ts";
+import {useEffect} from "react";
+import InputMoney from "@/common/components/inputArea/InputMoney.tsx";
+
+interface ISearchForm {
+    refundDate: string;
+    refundAmount: string;
+}
 
 export default function PopupRefundCls() {
+
+    const {watch, setValue} = useForm<ISearchForm>({
+        defaultValues: {
+            refundDate: dateFormatToString(new Date()),
+            refundAmount: ''
+        },
+    });
+
+    const formValues = watch();
     const overlay = useOverlay();
     const navigate = useNavigate();
+
+    useEffect(() => {
+        console.log('📝 Form State:', {
+            refundDate: formValues.refundDate,
+            refundAmount: formValues.refundAmount
+        });
+    }, [formValues]);
 
     function handleConfirm() {
         overlay.closePopup();
@@ -19,9 +43,6 @@ export default function PopupRefundCls() {
     function handleBack() {
         overlay.closePopup();
     }
-
-    const refundDateId = 'refund-date';
-    const refundAmountId = 'refund-amount';
 
     return (
         <PopupConfirm
@@ -36,16 +57,26 @@ export default function PopupRefundCls() {
         >
             <div>
                 <div className="flex gap-20px h-30px items-center mb-10px">
-                    <label htmlFor={refundDateId}>
+                    <label htmlFor="refundDate">
                         환불 일자 <span className="text-red">*</span>
                     </label>
-                    <InputDate id={refundDateId} className="required ml-auto" />
+                    <InputDate
+                        id="refundDate"
+                        value={watch('refundDate')}
+                        onChange={(value) => setValue('refundDate', value)}
+                        className="required ml-auto"
+                    />
                 </div>
                 <div className="flex gap-20px h-30px items-center">
-                    <label htmlFor={refundAmountId}>
+                    <label htmlFor="refundAmount">
                         환불 금액 <span className="text-red">*</span>
                     </label>
-                    <InputMoney id={refundAmountId} className="required ml-auto" />
+                    <InputMoney
+                        id="refundAmount"
+                        value={watch('refundAmount')}
+                        className="required ml-auto"
+                        onChange={(value) => setValue('refundAmount', value)}
+                    />
                 </div>
             </div>
         </PopupConfirm>

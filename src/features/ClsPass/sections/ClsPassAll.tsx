@@ -1,5 +1,5 @@
-import { useState } from "react";
 import * as React from "react";
+import {useState} from "react";
 
 type Row = {
     clsPassId: string;
@@ -292,36 +292,36 @@ function formatNumber(n: number) {
     return n.toLocaleString();
 }
 
-export default function ClsPassAll() {  
+export default function ClsPassAll() {
     const [selectedRowIndex, setSelectedRowIndex] = useState<number | null>(null);
 
     const columns: { key: keyof Row; title: string; className?: string }[] = [
-        { key: 'clsPassId', title: '결제수강권ID', className: 'min-w-[140px]' },
-        { key: 'cusNm', title: '회원명', className: 'min-w-[90px]' },
-        { key: 'clsPkgNm', title: '상품명', className: 'min-w-[160px]' },
-        { key: 'clsTyp', title: '상품타입', className: 'min-w-[80px]' },
-        { key: 'price', title: '기본금액', className: 'min-w-[110px] text-right' },
-        { key: 'paidAmt', title: '결제 금액', className: 'min-w-[110px] text-right' },
-        { key: 'discountAmt', title: '기본할인금액', className: 'min-w-[120px] text-right' },
-        { key: 'discountAmt2', title: '추가할인금액', className: 'min-w-[120px] text-right' },
-        { key: 'totalCnt', title: '총 회차', className: 'min-w-[80px] text-right' },
-        { key: 'remainCnt', title: '잔여 회차', className: 'min-w-[90px] text-right' },
-        { key: 'expRate', title: '유효 기간', className: 'min-w-[120px]' },
-        { key: 'payMethod', title: '결제 수단', className: 'min-w-[100px]' },
-        { key: 'payDate', title: '결제일자', className: 'min-w-[120px]' },
-        { key: 'refundYn', title: '환불여부', className: 'min-w-[90px] text-center' },
+        {key: 'clsPassId', title: '결제수강권ID', className: 'min-w-[140px]'},
+        {key: 'cusNm', title: '회원명', className: 'min-w-[90px]'},
+        {key: 'clsPkgNm', title: '상품명', className: 'min-w-[160px]'},
+        {key: 'clsTyp', title: '상품타입', className: 'min-w-[80px]'},
+        {key: 'price', title: '기본금액', className: 'min-w-[110px] text-right'},
+        {key: 'paidAmt', title: '결제 금액', className: 'min-w-[110px] text-right'},
+        {key: 'discountAmt', title: '기본할인금액', className: 'min-w-[120px] text-right'},
+        {key: 'discountAmt2', title: '추가할인금액', className: 'min-w-[120px] text-right'},
+        {key: 'totalCnt', title: '총 회차', className: 'min-w-[80px] text-right'},
+        {key: 'remainCnt', title: '잔여 회차', className: 'min-w-[90px] text-right'},
+        {key: 'expRate', title: '유효 기간', className: 'min-w-[120px]'},
+        {key: 'payMethod', title: '결제 수단', className: 'min-w-[100px]'},
+        {key: 'payDate', title: '결제일자', className: 'min-w-[120px]'},
+        {key: 'refundYn', title: '환불여부', className: 'min-w-[90px] text-center'},
     ];
 
 
     return (
         <section className="flex-1 flex flex-col min-h-0">
             {/* 테이블 헤더 */}
-            <div className="px-10px mr-20px bg-ppm py-10px rounded-default flex-shrink-0">
+            <div className="px-10px mr-20px bg-ppGridHeader py-10px rounded-default flex-shrink-0">
                 <div
                     className="grid items-center gap-10px"
                     style={{
                         gridTemplateColumns:
-                        "10fr 10fr 25fr 10fr 12fr 12fr 12fr 12fr 10fr 10fr 15fr 10fr 15fr 9fr"
+                            "10fr 10fr 25fr 10fr 12fr 12fr 12fr 12fr 10fr 10fr 15fr 10fr 15fr 9fr"
                     }}
                 >
                     {columns.map(col => (
@@ -350,7 +350,7 @@ export default function ClsPassAll() {
                                 className="grid items-center gap-10px"
                                 style={{
                                     gridTemplateColumns:
-                                    "10fr 10fr 25fr 10fr 12fr 12fr 12fr 12fr 10fr 10fr 15fr 10fr 15fr 9fr"
+                                        "10fr 10fr 25fr 10fr 12fr 12fr 12fr 12fr 10fr 10fr 15fr 10fr 15fr 9fr"
                                 }}
                             >
                                 {columns.map(col => {
@@ -364,8 +364,8 @@ export default function ClsPassAll() {
                                         <div
                                             key={col.key as string}
                                             className={`px-3 py-2 ${
-                                                col.className?.includes('text-right') ? 'text-right' : 
-                                                col.className?.includes('text-center') ? 'text-center' : 'text-left'
+                                                col.className?.includes('text-right') ? 'text-right' :
+                                                    col.className?.includes('text-center') ? 'text-center' : 'text-left'
                                             }`}
                                         >
                                             {isNum ? formatNumber(v as number) : (v as React.ReactNode)}
@@ -382,12 +382,18 @@ export default function ClsPassAll() {
             <div className="px-10px mr-20px py-10px rounded-default flex-shrink-0">
                 <div className="grid grid-cols-6 items-center">
                     <div className="col-span-6 bg-lightGray text-white grid grid-cols-6">
-                        <div className="px-3 py-2 border-r border-gray">총 결제건수 <span className="float-right">{formatNumber(footerSummary.totalPayCnt)}</span></div>
-                        <div className="px-3 py-2 border-r border-gray">총 결제금액 <span className="float-right">{formatNumber(footerSummary.totalPayAmt)}</span></div>
-                        <div className="px-3 py-2 border-r border-gray">총 할인금액 <span className="float-right">{formatNumber(footerSummary.totalDisAmt)}</span></div>
-                        <div className="px-3 py-2 border-r border-gray">총 환불건수 <span className="float-right">{formatNumber(footerSummary.totalRefCnt)}</span></div>
-                        <div className="px-3 py-2 border-r border-gray">카드 결제건수 <span className="float-right">{formatNumber(footerSummary.totalCardCnt)}</span></div>
-                        <div className="px-3 py-2 border-r border-gray">계좌 결제건수 <span className="float-right">{formatNumber(footerSummary.totalCashCnt)}</span></div>
+                        <div className="px-3 py-2 border-r border-gray">총 결제건수 <span
+                            className="float-right">{formatNumber(footerSummary.totalPayCnt)}</span></div>
+                        <div className="px-3 py-2 border-r border-gray">총 결제금액 <span
+                            className="float-right">{formatNumber(footerSummary.totalPayAmt)}</span></div>
+                        <div className="px-3 py-2 border-r border-gray">총 할인금액 <span
+                            className="float-right">{formatNumber(footerSummary.totalDisAmt)}</span></div>
+                        <div className="px-3 py-2 border-r border-gray">총 환불건수 <span
+                            className="float-right">{formatNumber(footerSummary.totalRefCnt)}</span></div>
+                        <div className="px-3 py-2 border-r border-gray">카드 결제건수 <span
+                            className="float-right">{formatNumber(footerSummary.totalCardCnt)}</span></div>
+                        <div className="px-3 py-2 border-r border-gray">계좌 결제건수 <span
+                            className="float-right">{formatNumber(footerSummary.totalCashCnt)}</span></div>
                     </div>
                 </div>
             </div>
