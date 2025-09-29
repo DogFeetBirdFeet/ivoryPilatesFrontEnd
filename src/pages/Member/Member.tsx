@@ -8,6 +8,7 @@ import InputDate from '@/common/components/inputArea/InputDate';
 import SearchCondition from '@/common/components/searchBar/searchCondition';
 import InputNumber from '@/common/components/inputArea/InputNumber';
 import { useForm } from 'react-hook-form';
+import { dateFormatToString } from '@/utils/date';
 
 interface ISearchForm {
   searchName: string;
@@ -26,8 +27,8 @@ export default function Member() {
       searchName: '',
       searchNumber: '',
       searchCnt: '',
-      searchDateFrom: '',
-      searchDateTo: '',
+      searchDateFrom: dateFormatToString(new Date()),
+      searchDateTo: dateFormatToString(new Date()),
     },
   });
 

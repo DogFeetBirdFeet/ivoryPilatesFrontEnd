@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import iconLeft from '@/assets/icon/chevron_left.png';
 import iconRight from '@/assets/icon/chevron_right.png';
 import { INPUT_BASE_CLASS } from './styleConstants';
+import { dateFormatToString, isSameDate, parseStringToDate } from '@/utils/date';
 
 interface IInputDate {
   id: string;
@@ -16,44 +17,6 @@ type CalendarCell = {
   inCurrentMonth: boolean;
 };
 
-// ===== Utility Functions =====
-const pad2 = (n: number) => String(n).padStart(2, '0');
-
-const formatToString = (date: Date | null, withSeparator: boolean = true): string => {
-  if (!date) return '';
-  const year = date.getFullYear();
-  const month = pad2(date.getMonth() + 1);
-  const day = pad2(date.getDate());
-  return withSeparator ? `${year}-${month}-${day}` : `${year}${month}${day}`;
-};
-
-const parseStringToDate = (str: string): Date | null => {
-  if (!str) return null;
-
-  // 숫자만 추출
-  const digits = str.replace(/\D/g, '');
-  if (digits.length !== 8) return null;
-
-  const year = Number(digits.slice(0, 4));
-  const month = Number(digits.slice(4, 6));
-  const day = Number(digits.slice(6, 8));
-
-  if (month < 1 || month > 12 || day < 1 || day > 31) return null;
-
-  const date = new Date(year, month - 1, day);
-
-  // 유효성 검증
-  if (date.getFullYear() !== year || date.getMonth() !== month - 1 || date.getDate() !== day) {
-    return null;
-  }
-
-  return date;
-};
-
-const isSameDate = (a: Date | null, b: Date | null) =>
-  !!a && !!b && a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate();
-
-// ===== Main Component =====
 export default function InputDate({ id, value, onChange, className, sortRight = false }: IInputDate) {
   const [selectedDate, setSelectedDate] = useState<Date | null>(() => parseStringToDate(value));
   const [isOpen, setIsOpen] = useState(false);
@@ -139,7 +102,7 @@ export default function InputDate({ id, value, onChange, className, sortRight = 
     }
     // 포커스 시 숫자만 보이도록
     if (inputRef.current && selectedDate) {
-      inputRef.current.value = formatToString(selectedDate, false);
+      inputRef.current.value = dateFormatToString(selectedDate, false);
     }
   };
 
@@ -157,7 +120,7 @@ export default function InputDate({ id, value, onChange, className, sortRight = 
     if (inputRef.current) {
       const parsed = parseStringToDate(inputRef.current.value);
       setSelectedDate(parsed);
-      const formatted = formatToString(parsed);
+      const formatted = dateFormatToString(parsed);
       onChange(formatted);
     }
   };
@@ -186,7 +149,7 @@ export default function InputDate({ id, value, onChange, className, sortRight = 
   const handleCellClick = (cell: CalendarCell) => {
     // 현재 달 날짜만 선택
     const date = cell.date;
-    const formatted = formatToString(date);
+    const formatted = dateFormatToString(date);
 
     // 상태 업데이트
     setSelectedDate(date);
@@ -213,7 +176,7 @@ export default function InputDate({ id, value, onChange, className, sortRight = 
         type="text"
         inputMode="numeric"
         className={`${INPUT_BASE_CLASS} w-full text-center`}
-        defaultValue={formatToString(selectedDate)}
+        defaultValue={dateFormatToString(selectedDate)}
         maxLength={10}
         onFocus={handleFocus}
         onChange={handleChange}
