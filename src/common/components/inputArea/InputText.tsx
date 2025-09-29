@@ -1,3 +1,5 @@
+import { INPUT_BASE_CLASS } from './styleConstants';
+
 interface IArea {
   id: string;
   placeholder?: string;
@@ -14,11 +16,7 @@ interface IArea {
 export default function InputText({ id, className, placeholder }: IArea) {
   return (
     <>
-      <input
-        className={`w-[250px] leading-[30px] h-30px p-10px rounded-default bg-white border-[1px] border-gray text-base focus:outline-none focus:border-yellow ${className}`}
-        id={id}
-        aria-placeholder={placeholder}
-      />
+      <input className={`${INPUT_BASE_CLASS} ${className}`} id={id} aria-placeholder={placeholder} />
     </>
   );
 }
