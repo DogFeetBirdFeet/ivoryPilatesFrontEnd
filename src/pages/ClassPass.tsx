@@ -160,14 +160,14 @@ export default function ClassPass() {
     return (
         <div className="w-full h-full flex flex-col">
             {/* 버튼 */}
-            <section className="flex justify-end py-5px">
+            <section className="flex justify-end py-5px mx-20px">
                 <BtnIconText type="A" icon={iconPlus} text="신규결제 등록하기" onClick={() => {
                 }}/>
             </section>
             {/* 서치 바 */}
             <form onSubmit={handleSubmit(onSubmit)}>
                 <section
-                    className="flex p-20px gap-30px font-medium text-xl text-black bg-ppLight rounded-default mt-10px flex-shrink-0">
+                    className="flex p-20px gap-30px font-medium text-xl text-black bg-ppLight rounded-default mt-10px flex-shrink-0 mx-20px">
                     <div className="flex-1 flex justify-between">
                         <div className="flex items-center gap-10px">
                             <SearchCondition id="payDateFrom" labelText="결제 일자">
@@ -233,7 +233,7 @@ export default function ClassPass() {
             </form>
             {/* 필터 */}
             <section
-                className="flex justify-end py-10px gap-10px font-medium text-xl text-black rounded-default mt-10px flex-shrink-0">
+                className="flex justify-end py-10px gap-10px font-medium text-xl text-black rounded-default mt-10px flex-shrink-0 mx-20px">
                 <SelectBox
                     id="use_yn"
                     label="상품 사용 여부"

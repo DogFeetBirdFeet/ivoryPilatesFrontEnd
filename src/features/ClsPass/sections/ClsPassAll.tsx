@@ -63,10 +63,17 @@ const columns: {
     },
 ];
 
-function formatNumber(v: unknown) {
+const numericKeys: Array<keyof IClsPassData> = [
+    'price', 'paidAmt', 'discountAmt', 'discountAmt2', 'totalCnt', 'remainCnt',
+];
+
+function toNumber(v: unknown) {
     const num = typeof v === 'number' ? v : Number(v ?? 0);
     return Number.isFinite(num) ? num : 0;
 }
+
+const formatNumber = (n: unknown) =>
+    new Intl.NumberFormat('ko-KR', {maximumFractionDigits: 0}).format(toNumber(n));
 
 const commonStyle = 'flex justify-center items-center';
 
@@ -77,9 +84,9 @@ export default function ClsPassAll({data, isLoading}: ClsPassProps) {
         return data.reduce(
             (acc, cur) => {
                 acc.totalPayCnt += 1;
-                acc.totalPayAmt += formatNumber(cur.paidAmt);
+                acc.totalPayAmt += toNumber(cur.paidAmt);
                 // 기본 + 추가 할인 합산이 맞다면 이렇게
-                acc.totalDisAmt += formatNumber(cur.discountAmt) + formatNumber(cur.discountAmt2);
+                acc.totalDisAmt += toNumber(cur.discountAmt) + toNumber(cur.discountAmt2);
                 acc.totalRefCnt += cur.refundYn ? 1 : 0;
                 acc.totalCardCnt += cur.payMethod === 'CARD' ? 1 : 0;
                 acc.totalCashCnt += cur.payMethod === 'CASH' ? 1 : 0;
@@ -102,12 +109,12 @@ export default function ClsPassAll({data, isLoading}: ClsPassProps) {
     }
     if (data.length === 0) {
         return (
-            <div className="h-[350px] flex justify-center items-center font-medium text-gray">조회된 데이터가 없습니다</div>
+            <div className="h-full w-full flex justify-center items-center font-medium text-gray">조회된 데이터가 없습니다</div>
         );
     }
 
     return (
-        <div className="h-full max-h-[calc(100vh-340px)] flex flex-col overflow-hidden min-h-0">
+        <div className="h-full w-full max-h-[calc(100vh-340px)] flex flex-col overflow-hidden min-h-0">
             {/* 테이블 헤더 */}
             <div
                 className="flex-shrink-0 h-40px flex justify-between bg-ppGridHeader text-white font-medium text-sm rounded-t-[5px] mx-20px">
@@ -119,7 +126,7 @@ export default function ClsPassAll({data, isLoading}: ClsPassProps) {
             </div>
 
             {/* 테이블 바디 */}
-            <div className="flex-1 overflow-y-auto min-h-0 custom-scrollbar ml-20px">
+            <div className="flex-1 overflow-y-auto min-h-0 custom-scrollbar mx-20px">
                 {data.map((item) => (
                     <div
                         key={item.clsPassId}
@@ -128,17 +135,23 @@ export default function ClsPassAll({data, isLoading}: ClsPassProps) {
                         }`}
                         onDoubleClick={() => setSelectedRowIndex(item.clsPassId)}
                     >
-                        {columns.map((col) => (
-                            <div key={col.key} className={`${commonStyle} ${col.className} cursor-pointer`}>
-                                {col.render ? col.render(item[col.key]) : item[col.key]}
-                            </div>
-                        ))}
+                        {columns.map((col) => {
+                            const raw = item[col.key];
+                            const content = col.render
+                                ? col.render(raw)
+                                : (numericKeys.includes(col.key) ? formatNumber(raw) : (raw as any));
+                            return (
+                                <div key={col.key} className={`${commonStyle} ${col.className} cursor-pointer`}>
+                                    {content}
+                                </div>
+                            );
+                        })}
                     </div>
                 ))}
             </div>
 
             {/* 하단 합계 바 */}
-            <div className="px-10px mr-20px py-10px rounded-default flex-shrink-0">
+            <div className="px-10px mr-20px py-10px rounded-default flex-shrink-0 mx-20px">
                 <div className="grid grid-cols-6 items-center">
                     <div className="col-span-6 bg-lightGray text-white grid grid-cols-6">
                         <div className="px-3 py-2 border-r border-gray">총 결제건수 <span
