@@ -20,7 +20,7 @@ import type { LayoutContextType } from '@/hooks/useLayoutContext';
 import OverlayProvider from './OverlayProvider';
 import useOverlay from '@/hooks/useOverlay';
 // import PopupCancel from '../popup/PopupCancel';
-import PopupRefundCls from "@/common/popup/PopupRefundCls.tsx";
+import PopupRefundCls from '@/common/popup/PopupRefundCls.tsx';
 
 // Framer Motion ClassName 타입에러 방지용 컴포넌트
 export const MotionAside = motion('aside') as React.FC<HTMLMotionAsideProps>;
@@ -106,15 +106,15 @@ export default function Layout() {
         >
           {/* 화면명 */}
           <div className="flex items-center">
-            <img src={headerIcon} className="w-[30px] h-[30px]" draggable="false" alt={''}/>
-            <img src={iconRight} className="w-[30px] h-[30px]" alt={''}/>
+            <img src={headerIcon} className="w-[30px] h-[30px]" draggable="false" alt={''} />
+            <img src={iconRight} className="w-[30px] h-[30px]" alt={''} />
             <span className="min-w-[250px] flex-1 text-2xl font-bold text-gray">{headerTitle}</span>
           </div>
 
           {/* 로그인데이터 */}
           <div className="grid grid-cols-[auto_auto_auto] gap-[10px] items-center">
             <div className="w-[40px] h-[40px] rounded-full bg-ppp grid place-items-center border-[1px] border-yellow">
-              <img src={loginProfile} className="w-[25px] h-[25px]" draggable="false" alt={''}/>
+              <img src={loginProfile} className="w-[25px] h-[25px]" draggable="false" alt={''} />
             </div>
 
             <div className="w-[100px] flex flex-col">
@@ -125,7 +125,7 @@ export default function Layout() {
             <BtnIconText
               type="C"
               icon={iconLogout}
-              text="환불하기"
+              text="로그아웃"
               onClick={() => {
                 overlay.showPopup(<PopupRefundCls />);
               }}
@@ -133,7 +133,11 @@ export default function Layout() {
           </div>
         </div>
 
-        <section className="h-full min-h-0 w-full m-auto overflow-x-auto overflow-y-auto">
+        <section
+          className={`h-full min-h-0 w-full min-w-max m-auto overflow-x-auto overflow-y-auto ${
+            isSchedulePage ? 'bg-white' : 'bg-ppbg '
+          }`}
+        >
           <Outlet context={outletContext} />
         </section>
       </MotionDiv>

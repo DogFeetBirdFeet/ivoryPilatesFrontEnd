@@ -19,17 +19,23 @@ export default function OverlayProvider() {
       }
     };
 
-    // overlay가 있는 경우 이벤트 생성
+    // overlay가 있을 때만 처리
     if (overlays.length > 0) {
+      // 기존 값 저장 (한 번만)
+      const originalOverflow = window.getComputedStyle(document.body).overflow;
+
       document.addEventListener('keydown', handleKeyDown);
-      document.body.style.overflow = 'hidden'; // overlay 뒤 배경 스크롤 방지
+      document.body.style.overflow = 'hidden';
+
+      return () => {
+        document.removeEventListener('keydown', handleKeyDown);
+        // 원래 값으로 복원 (또는 빈 문자열)
+        document.body.style.overflow = originalOverflow === 'hidden' ? 'hidden' : originalOverflow;
+      };
     }
 
     return () => {
-      document.removeEventListener('keydown', handleKeyDown); // 이벤트 제거
-      if (overlays.length === 0) {
-        document.body.style.overflow = 'unset';
-      }
+      document.removeEventListener('keydown', handleKeyDown);
     };
   }, [overlays, close]);
 
