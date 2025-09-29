@@ -1,5 +1,5 @@
 import {useLayoutContext} from '@/hooks/useLayoutContext.ts';
-import {useEffect} from 'react';
+import {useEffect, useState} from 'react';
 import headerIcon from '@/assets/icon/yellow/icon_mem.png';
 import InputText from '@/common/components/inputArea/InputText.tsx';
 import BtnSearch from '@/common/components/buttons/BtnSearch.tsx';
@@ -11,12 +11,25 @@ import SelectBox from '@/common/components/inputArea/SelectBox.tsx';
 import iconFilter from '@/assets/icon/white/icon_filter.png';
 import {useForm} from "react-hook-form";
 import {dateFormatToString} from "@/utils/date.ts";
-import SearchCondition from '@/common/components/searchBar/searchCondition.tsx';
+import SearchCondition from '@/common/components/searchBar/SearchCondition';
 
-type CodeIdAndName = {
-    codeId: number;
-    dtlNm: string;
-};
+interface IClsPassData {
+    clsPassId: string;
+    cusNm: string;
+    clsPkgNm: string;
+    clsTyp: string;
+    price: number;
+    paidAmt: number;
+    discountAmt: number;
+    discountAmt2: number;
+    totalCnt: number;
+    remainCnt: number;
+    expRate: string;
+    payMethod: string;  // 'CARD' | 'CASH'
+    payDate: string;
+    refundYn: boolean; // 'Y' | 'N'
+    useYn: boolean; // 'Y' | 'N'
+}
 
 interface ISearchForm {
     payDateFrom: string;
@@ -27,8 +40,8 @@ interface ISearchForm {
     searchName: string;
 }
 
-// 결제 수강권 Mock 데이터
-const mockDataPAYMET: CodeIdAndName[] = [
+// 결제 수강권 공통 코드 Mock 데이터
+const mockDataPAYMET = [
     {
         codeId: 7,
         dtlNm: 'CARD',
@@ -38,7 +51,7 @@ const mockDataPAYMET: CodeIdAndName[] = [
         dtlNm: 'CASH',
     },
 ];
-const mockDataYN: CodeIdAndName[] = [
+const mockDataYN = [
     {
         codeId: 12,
         dtlNm: 'Y',
@@ -49,8 +62,35 @@ const mockDataYN: CodeIdAndName[] = [
     },
 ];
 
+const roundTo = (n: number, unit = 1) => Math.round(n / unit) * unit;
+
+// Mock 데이터 생성
+const generateMockData = (count: number): IClsPassData[] => {
+    return Array.from({length: count}, (_, i) => ({
+        clsPassId: `PAYCLS${i + 1}`,
+        cusNm: '김혜준',
+        clsPkgNm: '1:1 10회 기본',
+        clsTyp: '1:1',
+        price: roundTo(Math.random() * 1_000_000, 100),
+        paidAmt: roundTo(Math.random() * 700_000, 100),
+        discountAmt: roundTo(Math.random() * 200_000, 100),
+        discountAmt2: roundTo(Math.random() * 100_000, 100),
+        totalCnt: roundTo(Math.random() * 100, 10),
+        remainCnt: roundTo(Math.random() * 5, 1),
+        expRate: '2025-10-30',
+        payMethod: Math.random() > 0.5 ? 'CASH' : 'CARD',
+        payDate: '2025-08-01',
+        refundYn: Math.random() > 0.5,
+        useYn: Math.random() > 0.5
+    }));
+};
 
 export default function ClassPass() {
+
+    const [selectedUseYn, setSelectedUseYn] = useState<number>(0);
+    const [selectedRefundYn, setSelectedRefundYn] = useState<number>(0);
+    const [selectedPayMethod, setSelectedPayMethod] = useState<number>(0);
+    const [mockData, setMockData] = useState<IClsPassData[]>(generateMockData(50));
 
     // react-hook-form 검색조건
     const {watch, setValue, handleSubmit} = useForm<ISearchForm>({
@@ -62,6 +102,30 @@ export default function ClassPass() {
             searchPayName: '',
             searchName: '',
         },
+    });
+
+    // 클라이언트 필터링 (강사, 블랙리스트)
+    const filteredData = mockData.filter((item) => {
+
+        // 사용여부 필터
+        if (selectedUseYn !== 0) {
+            const useYn = mockDataYN.find((yn) => yn.codeId === selectedUseYn)?.dtlNm === 'Y';
+            if (item.useYn !== useYn) return false;
+        }
+
+        // 블랙리스트 필터
+        if (selectedRefundYn !== 0) {
+            const isRefundYN = mockDataYN.find((yn) => yn.codeId === selectedRefundYn)?.dtlNm === 'Y';
+            if (item.refundYn !== isRefundYN) return false;
+        }
+
+        // 결제 방법 필터
+        if (selectedPayMethod !== 0) {
+            const payMethod = mockDataPAYMET.find((payMethod) => payMethod.codeId === selectedPayMethod)?.dtlNm;
+            if (item.payMethod !== payMethod) return false;
+        }
+
+        return true;
     });
 
     const formValues = watch();
@@ -89,6 +153,8 @@ export default function ClassPass() {
     const onSubmit = (data: ISearchForm) => {
         console.log('검색 데이터:', data);
         // TODO: 실제 검색 API 호출
+        // 퍼블리싱용 - 새로운 mock 데이터 생성
+        setMockData(generateMockData(50));
     };
 
     return (
@@ -168,12 +234,34 @@ export default function ClassPass() {
             {/* 필터 */}
             <section
                 className="flex justify-end py-10px gap-10px font-medium text-xl text-black rounded-default mt-10px flex-shrink-0">
-                <SelectBox id="use-yn" label="상품 사용 여부" options={mockDataYN} icon={iconFilter} className="w-180px"/>
-                <SelectBox id="refund-yn" label="환불 여부" options={mockDataYN} className="w-180px"/>
-                <SelectBox id="pay-method" label="결제 수단" options={mockDataPAYMET} className="w-180px"/>
+                <SelectBox
+                    id="use_yn"
+                    label="상품 사용 여부"
+                    options={mockDataPAYMET}
+                    icon={iconFilter}
+                    className="w-180px"
+                    value={selectedUseYn}
+                    onChange={(value) => setSelectedUseYn(value)}
+                />
+                <SelectBox
+                    id="refund_yn"
+                    label="환불 여부"
+                    options={mockDataYN}
+                    className="w-180px"
+                    value={selectedRefundYn}
+                    onChange={(value) => setSelectedRefundYn(value)}
+                />
+                <SelectBox
+                    id="pay_method"
+                    label="결제 수단"
+                    options={mockDataPAYMET}
+                    className="w-180px"
+                    value={selectedPayMethod}
+                    onChange={(value) => setSelectedPayMethod(value)}
+                />
             </section>
             {/* 테이블 그리드 */}
-            <ClsPassAll/>
+            <ClsPassAll data={filteredData} isLoading={false}/>
         </div>
     );
 }

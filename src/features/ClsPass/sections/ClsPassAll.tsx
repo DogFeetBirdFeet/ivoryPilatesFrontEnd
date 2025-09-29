@@ -1,7 +1,7 @@
 import * as React from "react";
-import {useState} from "react";
+import {useMemo, useState} from "react";
 
-type Row = {
+interface IClsPassData {
     clsPassId: string;
     cusNm: string;
     clsPkgNm: string;
@@ -15,367 +15,126 @@ type Row = {
     expRate: string;
     payMethod: string;  // 'CARD' | 'CASH'
     payDate: string;
-    refundYn: string; // 'Y' | 'N'
-};
-
-// 결제 수강권 Mock 데이터
-const mockData: Row[] = [
-    {
-        clsPassId: 'PAYCLS_1',
-        cusNm: '김혜준',
-        clsPkgNm: '1:1 10회 기본',
-        clsTyp: '1:1',
-        price: 700000,
-        paidAmt: 700000,
-        discountAmt: 0,
-        discountAmt2: 0,
-        totalCnt: 10,
-        remainCnt: 5,
-        expRate: '2025-10-30',
-        payMethod: 'CASH',
-        payDate: '2025-08-01',
-        refundYn: 'N',
-    },
-    {
-        clsPassId: 'PAYCLS_2',
-        cusNm: '원예진',
-        clsPkgNm: '1:1 10회 기본',
-        clsTyp: '1:1',
-        price: 700000,
-        paidAmt: 680000,
-        discountAmt: 20000,
-        discountAmt2: 0,
-        totalCnt: 10,
-        remainCnt: 5,
-        expRate: '2025-10-30',
-        payMethod: 'CARD',
-        payDate: '2025-08-01',
-        refundYn: 'N'
-    },
-    {
-        clsPassId: 'PAYCLS_1',
-        cusNm: '김혜준',
-        clsPkgNm: '1:1 10회 기본',
-        clsTyp: '1:1',
-        price: 700000,
-        paidAmt: 700000,
-        discountAmt: 0,
-        discountAmt2: 0,
-        totalCnt: 10,
-        remainCnt: 5,
-        expRate: '2025-10-30',
-        payMethod: 'CASH',
-        payDate: '2025-08-01',
-        refundYn: 'N',
-    },
-    {
-        clsPassId: 'PAYCLS_2',
-        cusNm: '원예진',
-        clsPkgNm: '1:1 10회 기본',
-        clsTyp: '1:1',
-        price: 700000,
-        paidAmt: 680000,
-        discountAmt: 20000,
-        discountAmt2: 0,
-        totalCnt: 10,
-        remainCnt: 5,
-        expRate: '2025-10-30',
-        payMethod: 'CARD',
-        payDate: '2025-08-01',
-        refundYn: 'N'
-    },
-    {
-        clsPassId: 'PAYCLS_1',
-        cusNm: '김혜준',
-        clsPkgNm: '1:1 10회 기본',
-        clsTyp: '1:1',
-        price: 700000,
-        paidAmt: 700000,
-        discountAmt: 0,
-        discountAmt2: 0,
-        totalCnt: 10,
-        remainCnt: 5,
-        expRate: '2025-10-30',
-        payMethod: 'CASH',
-        payDate: '2025-08-01',
-        refundYn: 'N',
-    },
-    {
-        clsPassId: 'PAYCLS_2',
-        cusNm: '원예진',
-        clsPkgNm: '1:1 10회 기본',
-        clsTyp: '1:1',
-        price: 700000,
-        paidAmt: 680000,
-        discountAmt: 20000,
-        discountAmt2: 0,
-        totalCnt: 10,
-        remainCnt: 5,
-        expRate: '2025-10-30',
-        payMethod: 'CARD',
-        payDate: '2025-08-01',
-        refundYn: 'N'
-    },
-    {
-        clsPassId: 'PAYCLS_1',
-        cusNm: '김혜준',
-        clsPkgNm: '1:1 10회 기본',
-        clsTyp: '1:1',
-        price: 700000,
-        paidAmt: 700000,
-        discountAmt: 0,
-        discountAmt2: 0,
-        totalCnt: 10,
-        remainCnt: 5,
-        expRate: '2025-10-30',
-        payMethod: 'CASH',
-        payDate: '2025-08-01',
-        refundYn: 'N',
-    },
-    {
-        clsPassId: 'PAYCLS_2',
-        cusNm: '원예진',
-        clsPkgNm: '1:1 10회 기본',
-        clsTyp: '1:1',
-        price: 700000,
-        paidAmt: 680000,
-        discountAmt: 20000,
-        discountAmt2: 0,
-        totalCnt: 10,
-        remainCnt: 5,
-        expRate: '2025-10-30',
-        payMethod: 'CARD',
-        payDate: '2025-08-01',
-        refundYn: 'N'
-    },
-    {
-        clsPassId: 'PAYCLS_1',
-        cusNm: '김혜준',
-        clsPkgNm: '1:1 10회 기본',
-        clsTyp: '1:1',
-        price: 700000,
-        paidAmt: 700000,
-        discountAmt: 0,
-        discountAmt2: 0,
-        totalCnt: 10,
-        remainCnt: 5,
-        expRate: '2025-10-30',
-        payMethod: 'CASH',
-        payDate: '2025-08-01',
-        refundYn: 'N',
-    },
-    {
-        clsPassId: 'PAYCLS_2',
-        cusNm: '원예진',
-        clsPkgNm: '1:1 10회 기본',
-        clsTyp: '1:1',
-        price: 700000,
-        paidAmt: 680000,
-        discountAmt: 20000,
-        discountAmt2: 0,
-        totalCnt: 10,
-        remainCnt: 5,
-        expRate: '2025-10-30',
-        payMethod: 'CARD',
-        payDate: '2025-08-01',
-        refundYn: 'N'
-    },
-    {
-        clsPassId: 'PAYCLS_1',
-        cusNm: '김혜준',
-        clsPkgNm: '1:1 10회 기본',
-        clsTyp: '1:1',
-        price: 700000,
-        paidAmt: 700000,
-        discountAmt: 0,
-        discountAmt2: 0,
-        totalCnt: 10,
-        remainCnt: 5,
-        expRate: '2025-10-30',
-        payMethod: 'CASH',
-        payDate: '2025-08-01',
-        refundYn: 'N',
-    },
-    {
-        clsPassId: 'PAYCLS_2',
-        cusNm: '원예진',
-        clsPkgNm: '1:1 10회 기본',
-        clsTyp: '1:1',
-        price: 700000,
-        paidAmt: 680000,
-        discountAmt: 20000,
-        discountAmt2: 0,
-        totalCnt: 10,
-        remainCnt: 5,
-        expRate: '2025-10-30',
-        payMethod: 'CARD',
-        payDate: '2025-08-01',
-        refundYn: 'N'
-    },
-    {
-        clsPassId: 'PAYCLS_1',
-        cusNm: '김혜준',
-        clsPkgNm: '1:1 10회 기본',
-        clsTyp: '1:1',
-        price: 700000,
-        paidAmt: 700000,
-        discountAmt: 0,
-        discountAmt2: 0,
-        totalCnt: 10,
-        remainCnt: 5,
-        expRate: '2025-10-30',
-        payMethod: 'CASH',
-        payDate: '2025-08-01',
-        refundYn: 'N',
-    },
-    {
-        clsPassId: 'PAYCLS_2',
-        cusNm: '원예진',
-        clsPkgNm: '1:1 10회 기본',
-        clsTyp: '1:1',
-        price: 700000,
-        paidAmt: 680000,
-        discountAmt: 20000,
-        discountAmt2: 0,
-        totalCnt: 10,
-        remainCnt: 5,
-        expRate: '2025-10-30',
-        payMethod: 'CARD',
-        payDate: '2025-08-01',
-        refundYn: 'N',
-    },
-    {
-        clsPassId: 'PAYCLS_1',
-        cusNm: '김혜준',
-        clsPkgNm: '1:1 10회 기본',
-        clsTyp: '1:1',
-        price: 700000,
-        paidAmt: 700000,
-        discountAmt: 0,
-        discountAmt2: 0,
-        totalCnt: 10,
-        remainCnt: 5,
-        expRate: '2025-10-30',
-        payMethod: 'CASH',
-        payDate: '2025-08-01',
-        refundYn: 'N',
-    },
-    {
-        clsPassId: 'PAYCLS_2',
-        cusNm: '원예진',
-        clsPkgNm: '1:1 10회 기본',
-        clsTyp: '1:1',
-        price: 700000,
-        paidAmt: 680000,
-        discountAmt: 20000,
-        discountAmt2: 0,
-        totalCnt: 10,
-        remainCnt: 5,
-        expRate: '2025-10-30',
-        payMethod: 'CARD',
-        payDate: '2025-08-01',
-        refundYn: 'N'
-    },
-    // ...원하는 만큼 추가
-];
-
-const footerSummary = {
-    totalPayCnt: 999,
-    totalPayAmt: 9999999,
-    totalDisAmt: 9999999,
-    totalRefCnt: 999,
-    totalCardCnt: 999,
-    totalCashCnt: 999,
-};
-
-function formatNumber(n: number) {
-    return n.toLocaleString();
+    refundYn: boolean; // 'Y' | 'N'
+    useYn: boolean;
 }
 
-export default function ClsPassAll() {
-    const [selectedRowIndex, setSelectedRowIndex] = useState<number | null>(null);
+interface ClsPassProps {
+    data: IClsPassData[];
+    isLoading: boolean;
+}
 
-    const columns: { key: keyof Row; title: string; className?: string }[] = [
-        {key: 'clsPassId', title: '결제수강권ID', className: 'min-w-[140px]'},
-        {key: 'cusNm', title: '회원명', className: 'min-w-[90px]'},
-        {key: 'clsPkgNm', title: '상품명', className: 'min-w-[160px]'},
-        {key: 'clsTyp', title: '상품타입', className: 'min-w-[80px]'},
-        {key: 'price', title: '기본금액', className: 'min-w-[110px] text-right'},
-        {key: 'paidAmt', title: '결제 금액', className: 'min-w-[110px] text-right'},
-        {key: 'discountAmt', title: '기본할인금액', className: 'min-w-[120px] text-right'},
-        {key: 'discountAmt2', title: '추가할인금액', className: 'min-w-[120px] text-right'},
-        {key: 'totalCnt', title: '총 회차', className: 'min-w-[80px] text-right'},
-        {key: 'remainCnt', title: '잔여 회차', className: 'min-w-[90px] text-right'},
-        {key: 'expRate', title: '유효 기간', className: 'min-w-[120px]'},
-        {key: 'payMethod', title: '결제 수단', className: 'min-w-[100px]'},
-        {key: 'payDate', title: '결제일자', className: 'min-w-[120px]'},
-        {key: 'refundYn', title: '환불여부', className: 'min-w-[90px] text-center'},
-    ];
+const columns: {
+    key: keyof IClsPassData;
+    title: string;
+    className?: string;
+    render?: (value: any) => React.ReactNode;
+}[] = [
+    {key: 'clsPassId', title: '결제수강권ID', className: 'min-w-[140px]'},
+    {key: 'cusNm', title: '회원명', className: 'min-w-[90px]'},
+    {key: 'clsPkgNm', title: '상품명', className: 'min-w-[160px]'},
+    {key: 'clsTyp', title: '상품타입', className: 'min-w-[80px]'},
+    {key: 'price', title: '기본금액', className: 'min-w-[110px] text-right'},
+    {key: 'paidAmt', title: '결제 금액', className: 'min-w-[110px] text-right'},
+    {key: 'discountAmt', title: '기본할인금액', className: 'min-w-[120px] text-right'},
+    {key: 'discountAmt2', title: '추가할인금액', className: 'min-w-[120px] text-right'},
+    {key: 'totalCnt', title: '총 회차', className: 'min-w-[80px] text-right'},
+    {key: 'remainCnt', title: '잔여 회차', className: 'min-w-[90px] text-right'},
+    {key: 'expRate', title: '유효 기간', className: 'min-w-[120px]'},
+    {
+        key: 'payMethod',
+        title: '결제 수단',
+        className: 'min-w-[100px]',
+        render: (value) => value === 'CASH' ? '현금' : '카드',
 
+    },
+    {key: 'payDate', title: '결제일자', className: 'min-w-[120px]'},
+    {
+        key: 'refundYn',
+        title: '환불여부',
+        className: 'min-w-[90px] text-center',
+        render: (value) => <input type="checkbox" checked={value} disabled className="w-16px h-16px"/>,
+    },
+    {
+        key: 'useYn',
+        title: '사용여부',
+        className: 'min-w-[90px] text-center',
+        render: (value) => <input type="checkbox" checked={value} disabled className="w-16px h-16px"/>,
+    },
+];
+
+function formatNumber(v: unknown) {
+    const num = typeof v === 'number' ? v : Number(v ?? 0);
+    return Number.isFinite(num) ? num : 0;
+}
+
+const commonStyle = 'flex justify-center items-center';
+
+export default function ClsPassAll({data, isLoading}: ClsPassProps) {
+    const [selectedRowIndex, setSelectedRowIndex] = useState<string | null>(null);
+
+    const summary = useMemo(() => {
+        return data.reduce(
+            (acc, cur) => {
+                acc.totalPayCnt += 1;
+                acc.totalPayAmt += formatNumber(cur.paidAmt);
+                // 기본 + 추가 할인 합산이 맞다면 이렇게
+                acc.totalDisAmt += formatNumber(cur.discountAmt) + formatNumber(cur.discountAmt2);
+                acc.totalRefCnt += cur.refundYn ? 1 : 0;
+                acc.totalCardCnt += cur.payMethod === 'CARD' ? 1 : 0;
+                acc.totalCashCnt += cur.payMethod === 'CASH' ? 1 : 0;
+                return acc;
+            },
+            {
+                totalPayCnt: 0,
+                totalPayAmt: 0,
+                totalDisAmt: 0,
+                totalRefCnt: 0,
+                totalCardCnt: 0,
+                totalCashCnt: 0,
+            }
+        );
+    }, [data]);
+
+    //   TODO
+    if (isLoading) {
+        return <div>로딩중</div>;
+    }
+    if (data.length === 0) {
+        return (
+            <div className="h-[350px] flex justify-center items-center font-medium text-gray">조회된 데이터가 없습니다</div>
+        );
+    }
 
     return (
-        <section className="flex-1 flex flex-col min-h-0">
+        <div className="h-full max-h-[calc(100vh-340px)] flex flex-col overflow-hidden min-h-0">
             {/* 테이블 헤더 */}
-            <div className="px-10px mr-20px bg-ppGridHeader py-10px rounded-default flex-shrink-0">
-                <div
-                    className="grid items-center gap-10px"
-                    style={{
-                        gridTemplateColumns:
-                            "10fr 10fr 25fr 10fr 12fr 12fr 12fr 12fr 10fr 10fr 15fr 10fr 15fr 9fr"
-                    }}
-                >
-                    {columns.map(col => (
-                        <div
-                            key={col.key as string}
-                            className={`text-white text-center ${col.className || ''}`}
-                        >
-                            {col.title}
-                        </div>
-                    ))}
-                </div>
+            <div
+                className="flex-shrink-0 h-40px flex justify-between bg-ppGridHeader text-white font-medium text-sm rounded-t-[5px] mx-20px">
+                {columns.map((col) => (
+                    <div key={col.key} className={`flex justify-center items-center ${col.className}`}>
+                        {col.title}
+                    </div>
+                ))}
             </div>
 
             {/* 테이블 바디 */}
-            <div className="flex-1 flex flex-col min-h-0">
-                <div className="px-10px mr-20px py-10px rounded-default flex-shrink-0">
-                    {mockData.map((row, idx) => (
-                        <div
-                            key={idx}
-                            className={`flex-1 py-10px  border-b border-whiteGray cursor-pointer hover ${
-                                selectedRowIndex === idx ? 'bg-yellow' : idx % 2 === 1 ? 'bg-white' : 'bg-white'
-                            }`}
-                            onClick={() => setSelectedRowIndex(selectedRowIndex === idx ? null : idx)}
-                        >
-                            <div
-                                className="grid items-center gap-10px"
-                                style={{
-                                    gridTemplateColumns:
-                                        "10fr 10fr 25fr 10fr 12fr 12fr 12fr 12fr 10fr 10fr 15fr 10fr 15fr 9fr"
-                                }}
-                            >
-                                {columns.map(col => {
-                                    const v = row[col.key];
-                                    const isNum =
-                                        typeof v === 'number' &&
-                                        ['price', 'paidAmt', 'discountAmt', 'discountAmt2', 'totalCnt', 'remainCnt'].includes(
-                                            col.key as string
-                                        );
-                                    return (
-                                        <div
-                                            key={col.key as string}
-                                            className={`px-3 py-2 ${
-                                                col.className?.includes('text-right') ? 'text-right' :
-                                                    col.className?.includes('text-center') ? 'text-center' : 'text-left'
-                                            }`}
-                                        >
-                                            {isNum ? formatNumber(v as number) : (v as React.ReactNode)}
-                                        </div>
-                                    );
-                                })}
+            <div className="flex-1 overflow-y-auto min-h-0 custom-scrollbar ml-20px">
+                {data.map((item) => (
+                    <div
+                        key={item.clsPassId}
+                        className={`h-40px flex justify-between text-gray text-base border-b-[1px]  ${
+                            selectedRowIndex === item.clsPassId ? 'bg-yellow' : 'bg-white'
+                        }`}
+                        onDoubleClick={() => setSelectedRowIndex(item.clsPassId)}
+                    >
+                        {columns.map((col) => (
+                            <div key={col.key} className={`${commonStyle} ${col.className} cursor-pointer`}>
+                                {col.render ? col.render(item[col.key]) : item[col.key]}
                             </div>
-                        </div>
-                    ))}
-                </div>
+                        ))}
+                    </div>
+                ))}
             </div>
 
             {/* 하단 합계 바 */}
@@ -383,20 +142,20 @@ export default function ClsPassAll() {
                 <div className="grid grid-cols-6 items-center">
                     <div className="col-span-6 bg-lightGray text-white grid grid-cols-6">
                         <div className="px-3 py-2 border-r border-gray">총 결제건수 <span
-                            className="float-right">{formatNumber(footerSummary.totalPayCnt)}</span></div>
+                            className="float-right">{formatNumber(summary.totalPayCnt)}</span></div>
                         <div className="px-3 py-2 border-r border-gray">총 결제금액 <span
-                            className="float-right">{formatNumber(footerSummary.totalPayAmt)}</span></div>
+                            className="float-right">{formatNumber(summary.totalPayAmt)}</span></div>
                         <div className="px-3 py-2 border-r border-gray">총 할인금액 <span
-                            className="float-right">{formatNumber(footerSummary.totalDisAmt)}</span></div>
+                            className="float-right">{formatNumber(summary.totalDisAmt)}</span></div>
                         <div className="px-3 py-2 border-r border-gray">총 환불건수 <span
-                            className="float-right">{formatNumber(footerSummary.totalRefCnt)}</span></div>
+                            className="float-right">{formatNumber(summary.totalRefCnt)}</span></div>
                         <div className="px-3 py-2 border-r border-gray">카드 결제건수 <span
-                            className="float-right">{formatNumber(footerSummary.totalCardCnt)}</span></div>
+                            className="float-right">{formatNumber(summary.totalCardCnt)}</span></div>
                         <div className="px-3 py-2 border-r border-gray">계좌 결제건수 <span
-                            className="float-right">{formatNumber(footerSummary.totalCashCnt)}</span></div>
+                            className="float-right">{formatNumber(summary.totalCashCnt)}</span></div>
                     </div>
                 </div>
             </div>
-        </section>
+        </div>
     );
 }
