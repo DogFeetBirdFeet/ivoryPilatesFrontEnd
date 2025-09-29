@@ -35,3 +35,41 @@
 .custom-scrollbar:hover::-webkit-scrollbar-thumb:hover {
   background-color: rgba(107, 114, 128, 0.8);
 }
+
+/* 체크박스 기본 스타일 초기화 */
+input[type='checkbox'] {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 16px;
+  height: 16px;
+  border: 2px solid #2b265c; /* border 색상 */
+  border-radius: 3px;
+  background-color: white;
+  cursor: pointer;
+  position: relative;
+}
+
+/* 체크된 상태 */
+input[type='checkbox']:checked {
+  background-color: #2b265c; /* 배경색 - yellow */
+  border-color: #2b265c; /* border 색상 */
+}
+
+/* 체크 표시 */
+input[type='checkbox']:checked::after {
+  content: '';
+  position: absolute;
+  left: 4px;
+  top: 1px;
+  width: 4px;
+  height: 8px;
+  border: solid white;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+/* disabled 상태 */
+input[type='checkbox']:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}

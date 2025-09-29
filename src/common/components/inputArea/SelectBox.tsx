@@ -11,6 +11,8 @@ interface SelectBoxProps {
   options: OptionItem[];
   className?: string;
   icon?: string;
+  value: number;
+  onChange: (value: number) => void;
 }
 
 /**
@@ -20,16 +22,17 @@ interface SelectBoxProps {
  * @param options - 선택 옵션 목록
  * @param className - 추가 CSS 클래스
  * @param icon - 필터 이미지 필요할 경우
+ * @param value - 화면에서 상태로 관리하고 있는 필터 값
+ * @param onChange - 화면 필터 상태를 변경하는 함수
  */
-export default function SelectBox({ id, label, options, className, icon }: SelectBoxProps) {
+export default function SelectBox({ id, label, options, className, icon, value, onChange }: SelectBoxProps) {
   const [isOpen, setIsOpen] = useState(false);
-  const [selectedValue, setSelectedValue] = useState<number>(0); // 초기값 '전체'로 설정
   const wrapperRef = useRef<HTMLDivElement | null>(null);
 
   const displayOptions = [{ codeId: 0, dtlNm: '전체' }, ...options];
 
   const getDisplayValue = () => {
-    return displayOptions.find((opt) => opt.codeId === selectedValue)?.dtlNm;
+    return displayOptions.find((opt) => opt.codeId === value)?.dtlNm;
   };
 
   // 외부 클릭 시 드롭다운 닫기
@@ -51,8 +54,8 @@ export default function SelectBox({ id, label, options, className, icon }: Selec
   };
 
   const handleSelect = (optionItem: OptionItem) => {
-    setSelectedValue(optionItem.codeId);
     setIsOpen(false);
+    onChange(optionItem.codeId);
   };
 
   return (
@@ -64,7 +67,7 @@ export default function SelectBox({ id, label, options, className, icon }: Selec
         <button
           type="button"
           id={id}
-          className={`w-[250px] h-30px px-10px py-5px rounded-default bg-white border-[1px] border-gray text-base text-left focus:outline-none focus:border-yellow hover:border-yellow transition-colors ${className}`}
+          className={`h-30px px-10px py-5px rounded-default bg-white border-[1px] border-gray text-base text-left focus:outline-none focus:border-yellow hover:border-yellow transition-colors ${className}`}
           onClick={handleToggle}
         >
           <p className="block truncate pr-[24px] text-gray">
@@ -93,8 +96,8 @@ export default function SelectBox({ id, label, options, className, icon }: Selec
                 <button
                   key={index}
                   type="button"
-                  className={`w-full h-30px px-5px text-left text-sm text-black rounded-[5px] ${
-                    selectedValue === optionItem.codeId && 'bg-ppWhite'
+                  className={`w-full h-30px px-5px text-left text-sm text-black rounded-[5px] hover:bg-ppbg transition-colors ${
+                    value === optionItem.codeId && 'bg-ppWhite'
                   }`}
                   onClick={() => handleSelect(optionItem)}
                 >
