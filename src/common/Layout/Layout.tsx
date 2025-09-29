@@ -92,7 +92,7 @@ export default function Layout() {
       </LayoutGroup>
 
       <MotionDiv
-        className={`h-full grid grid-rows-[auto_1fr] min-w-[1280px] px-30px pb-20px ${
+        className={`h-full grid grid-rows-[auto_1fr] px-30px pb-20px min-w-0 ${
           isSchedulePage ? 'bg-white' : 'bg-ppbg '
         }`}
         animate={{ marginLeft: menuFold ? 80 : 250 }}

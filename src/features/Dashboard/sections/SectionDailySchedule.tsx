@@ -116,7 +116,7 @@ export default function SectionDailySchedule() {
         <div className="">
           {timeSlots.map((slot) => (
             <div
-              key={slot.id}
+              key={`slot_time_${slot.time}`}
               className={`px-10px py-10px border-b border-[#d9d9d9] last:border-b-0 
                 ${currentHour === slot.time && 'bg-yellow'}`}
             >
@@ -128,7 +128,9 @@ export default function SectionDailySchedule() {
                   {/* 스케줄 */}
                   <div className="flex flex-col gap-10px">
                     {slot.schedule ? (
-                      slot.schedule.map((schedule) => <ScheduleItem schedule={schedule} />)
+                      slot.schedule.map((schedule) => (
+                        <ScheduleItem key={`schedule_${schedule.id}`} schedule={schedule} />
+                      ))
                     ) : (
                       <ScheduleItem />
                     )}

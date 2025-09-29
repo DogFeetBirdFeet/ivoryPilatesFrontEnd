@@ -4,9 +4,44 @@ import { useEffect, useState } from 'react';
 import { Outlet } from 'react-router-dom';
 import InputText from '@/common/components/inputArea/InputText';
 import BtnSearch from '@/common/components/buttons/BtnSearch';
+import InputDate from '@/common/components/inputArea/InputDate';
+import SearchCondition from '@/common/components/searchBar/searchCondition';
+import InputNumber from '@/common/components/inputArea/InputNumber';
+import { useForm } from 'react-hook-form';
+
+interface ISearchForm {
+  searchName: string;
+  searchNumber: string;
+  searchCnt: string;
+  searchDateFrom: string;
+  searchDateTo: string;
+}
 
 export default function Member() {
   const [curTab, setCurTab] = useState(1);
+
+  // react-hook-form 검색조건
+  const { register, watch, setValue, handleSubmit } = useForm<ISearchForm>({
+    defaultValues: {
+      searchName: '',
+      searchNumber: '',
+      searchCnt: '',
+      searchDateFrom: '',
+      searchDateTo: '',
+    },
+  });
+
+  const formValues = watch();
+
+  useEffect(() => {
+    console.log('📝 Form State:', {
+      searchName: formValues.searchName,
+      searchNumber: formValues.searchNumber,
+      searchCnt: formValues.searchCnt,
+      searchDateFrom: formValues.searchDateFrom,
+      searchDateTo: formValues.searchDateTo,
+    });
+  }, [formValues]);
 
   // 헤더정보 세팅
   const { setHeaderTitle, setHeaderIcon } = useLayoutContext();
@@ -23,6 +58,12 @@ export default function Member() {
     { text: '휴면 회원', route: '/inactive' },
     { text: '탈퇴 회원', route: '/quit' },
   ];
+
+  // 검색 실행
+  const onSubmit = (data: ISearchForm) => {
+    console.log('검색 데이터:', data);
+    // TODO: 실제 검색 API 호출
+  };
 
   return (
     <div className="h-full">
@@ -46,40 +87,58 @@ export default function Member() {
       </div>
 
       {/* 서치바 */}
-      <section className="flex p-20px gap-30px font-medium text-xl text-black bg-ppLight rounded-default mt-10px">
-        <div className="flex-1 flex justify-between">
-          <div className="flex w-[220px] gap-20px">
-            <label htmlFor="name" className="flex-shrink-0 ">
-              이름
-            </label>
-            <InputText id="name" className="flex-1" />
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <section className="grid grid-cols-[auto_30px] p-20px gap-30px font-medium text-xl text-black bg-ppLight rounded-default mt-10px">
+          <div className="grid grid-cols-[250px_250px_180px_400px] justify-between gap-30px">
+            <SearchCondition id="searchName" labelText="이름">
+              <InputText
+                id="searchName"
+                className="w-full"
+                value={watch('searchName')}
+                onChange={(value) => setValue('searchName', value)}
+              />
+            </SearchCondition>
+
+            <SearchCondition id="searchNumber" labelText="연락처">
+              <InputNumber
+                id="searchNumber"
+                className="w-full"
+                value={watch('searchNumber')}
+                onChange={(value) => setValue('searchNumber', value)}
+              />
+            </SearchCondition>
+
+            <SearchCondition id="searchCnt" labelText="잔여회차">
+              <InputNumber
+                id="searchCnt"
+                className="w-full text-right"
+                value={watch('searchCnt')}
+                onChange={(value) => setValue('searchCnt', value)}
+              />
+              <span className="flex-shrink-0 ml-5px">회 미만</span>
+            </SearchCondition>
+
+            <SearchCondition id="searchDateFrom" labelText="최근 수강일자">
+              <InputDate
+                id="searchDateFrom"
+                className="w-full"
+                value={watch('searchDateFrom')}
+                onChange={(value) => setValue('searchDateFrom', value)}
+              />
+              <span className="mx-5px">~</span>
+              <InputDate
+                id="searchDateTo"
+                className="w-full"
+                sortRight={true}
+                value={watch('searchDateTo')}
+                onChange={(value) => setValue('searchDateTo', value)}
+              />
+            </SearchCondition>
           </div>
 
-          <div className="flex w-[220px] gap-20px">
-            <label htmlFor="phoneNumber" className="flex-shrink-0 ">
-              연락처
-            </label>
-            <InputText id="phoneNumber" className="flex-1" />
-          </div>
-
-          <div className="flex w-[280px]">
-            <label htmlFor="cnt" className="mr-20px flex-shrink-0">
-              잔여 회차
-            </label>
-            <InputText id="cnt" className="flex-1" />
-            <span className="flex-shrink-0 ml-10px">회 미만</span>
-          </div>
-
-          <div className="flex gap-20px w-[420px]">
-            <label htmlFor="date" className="flex-shrink-0 ">
-              최근 수강 일자
-            </label>
-            <InputText id="date" className="flex-1" />
-          </div>
-        </div>
-
-        <BtnSearch />
-      </section>
+          <BtnSearch />
+        </section>
+      </form>
     </div>
   );
 }

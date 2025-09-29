@@ -61,7 +61,7 @@ export default function SectionWeeklyReservation() {
       {/* 주간 캘린더 */}
       <div className="h-110px flex justify-between py-10px mb-10px w-[440px]">
         {weekDays.map((day: WeekDay) => (
-          <WeeklyDate day={day} onClick={() => setCurDate(day.date)} />
+          <WeeklyDate key={`res_${day.day}`} day={day} onClick={() => setCurDate(day.date)} />
         ))}
       </div>
 
