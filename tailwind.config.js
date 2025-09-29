@@ -19,6 +19,7 @@ export default {
         ppp: '#6756C0', //purplePoint
         ppbg: '#F5F5FF', //purpleBG
         ppLight: '#DDDCEB', //purpleLight
+        ppGridHeader: '#61557D',
         ppWhite: '#E8E6F8',
         yellow: '#FFBB00',
         beige: '#FFE9AE',
