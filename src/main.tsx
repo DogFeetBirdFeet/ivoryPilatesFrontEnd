@@ -8,7 +8,7 @@ import Dashboard from './pages/Dashboard';
 import Layout from './common/Layout/Layout';
 import Member from './pages/Member/Member';
 import MemberGroup from './pages/Member/MemberGroup';
-import Register from './pages/Member/Register';
+import MemberRegister from './pages/Member/MemberRegister';
 import ClsPass from './pages/ClassPass';
 
 const router = createBrowserRouter([
@@ -34,7 +34,7 @@ const router = createBrowserRouter([
       },
       {
         path: 'member/register',
-        element: <Register />,
+        element: <MemberRegister />,
       },
       {
         path: 'schedule',
@@ -56,8 +56,8 @@ const router = createBrowserRouter([
       },
       {
         path: 'class-pass',
-        element: <ClsPass />
-      }
+        element: <ClsPass />,
+      },
     ],
   },
 ]);

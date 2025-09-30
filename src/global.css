@@ -73,3 +73,43 @@ input[type='checkbox']:disabled {
   opacity: 0.5;
   cursor: not-allowed;
 }
+
+/* 기본 radio 버튼 스타일 초기화 */
+input[type='radio'] {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  width: 16px;
+  height: 16px;
+  border: 2px solid #b3b3b3; /* whiteGray */
+  border-radius: 50%;
+  outline: none;
+  cursor: pointer;
+  position: relative;
+  background-color: white;
+  transition: all 0.2s ease;
+}
+
+/* hover 상태 */
+input[type='radio']:hover {
+  border-color: #6756c0; /* ppp */
+}
+
+/* checked 상태 */
+input[type='radio']:checked {
+  border-color: #6756c0; /* ppp */
+  background-color: white;
+}
+
+/* checked 상태의 내부 원 */
+input[type='radio']:checked::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: #6756c0; /* ppp */
+}
