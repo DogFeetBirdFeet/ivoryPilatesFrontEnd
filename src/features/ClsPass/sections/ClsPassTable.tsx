@@ -77,7 +77,7 @@ const formatNumber = (n: unknown) =>
 
 const commonStyle = 'flex justify-center items-center';
 
-export default function ClsPassAll({data, isLoading}: ClsPassProps) {
+export default function ClsPassTable({data, isLoading}: ClsPassProps) {
     const [selectedRowIndex, setSelectedRowIndex] = useState<string | null>(null);
 
     const summary = useMemo(() => {
@@ -151,7 +151,8 @@ export default function ClsPassAll({data, isLoading}: ClsPassProps) {
             </div>
 
             {/* 하단 합계 바 */}
-            <div className="px-10px mr-20px py-10px rounded-default flex-shrink-0 mx-20px">
+            {/*<div className="px-10px mr-20px py-10px rounded-default flex-shrink-0 mx-20px">*/}
+                <div className="flex-shrink-0 overflow-y-auto mr-20px min-h-0 mx-20px">
                 <div className="grid grid-cols-6 items-center">
                     <div className="col-span-6 bg-lightGray text-white grid grid-cols-6">
                         <div className="px-3 py-2 border-r border-gray">총 결제건수 <span

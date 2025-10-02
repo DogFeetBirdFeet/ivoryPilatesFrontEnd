@@ -4,7 +4,8 @@ import headerIcon from '@/assets/icon/yellow/icon_mem.png';
 import InputText from '@/common/components/inputArea/InputText.tsx';
 import BtnSearch from '@/common/components/buttons/BtnSearch.tsx';
 import InputDate from '@/common/components/inputArea/InputDate.tsx';
-import ClsPassAll from '@/features/ClsPass/sections/ClsPassAll.tsx';
+import ClsPassTable from '@/features/ClsPass/sections/ClsPassTable.tsx';
+import ClsPassInfo from '@/features/ClsPass/sections/ClsPassInfo';
 import iconPlus from '@/assets/icon/white/icon_cls_plus.png';
 import BtnIconText from '@/common/components/buttons/BtnIconText.tsx';
 import SelectBox from '@/common/components/inputArea/SelectBox.tsx';
@@ -91,6 +92,7 @@ export default function ClassPass() {
     const [selectedRefundYn, setSelectedRefundYn] = useState<number>(0);
     const [selectedPayMethod, setSelectedPayMethod] = useState<number>(0);
     const [mockData, setMockData] = useState<IClsPassData[]>(generateMockData(50));
+    const [currentView, setCurrentView] = useState<'list' | 'register'>('list');
 
     // react-hook-form 검색조건
     const {watch, setValue, handleSubmit} = useForm<ISearchForm>({
@@ -157,12 +159,31 @@ export default function ClassPass() {
         setMockData(generateMockData(50));
     };
 
+    // 신규결제 등록하기 버튼 클릭 핸들러
+    const handleRegisterClick = () => {
+        setCurrentView('register');
+    };
+
+    // 등록 페이지 렌더링
+    if (currentView === 'register') {
+        return (
+            <ClsPassInfo
+                title="결제수강권 등록"
+                userId="0000"
+                userNm="원예진"
+                clsPassId="0000"
+                useAge={5}
+                authority={1}
+                onCancel={() => setCurrentView('list')}
+            />
+        );
+    }
+
     return (
         <div className="w-full h-full flex flex-col">
             {/* 버튼 */}
             <section className="flex justify-end py-5px mx-20px">
-                <BtnIconText type="A" icon={iconPlus} text="신규결제 등록하기" onClick={() => {
-                }}/>
+                <BtnIconText type="A" icon={iconPlus} text="신규결제 등록하기" onClick={handleRegisterClick}/>
             </section>
             {/* 서치 바 */}
             <form onSubmit={handleSubmit(onSubmit)}>
@@ -261,7 +282,7 @@ export default function ClassPass() {
                 />
             </section>
             {/* 테이블 그리드 */}
-            <ClsPassAll data={filteredData} isLoading={false}/>
+            <ClsPassTable data={filteredData} isLoading={false}/>
         </div>
     );
 }

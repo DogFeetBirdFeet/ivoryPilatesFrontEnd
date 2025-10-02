@@ -30,7 +30,8 @@ export default {
         white: '#FFFFFF',
         blue: '#3C0CE9',
         red: '#B8001F',
-        calGray: '#B3B3B3'
+        calGray: '#B3B3B3',
+        blueBtn: '#0C8CE9'
       },
       fontSize: {
         base: ['12px', { lineHeight: '18px' }],
