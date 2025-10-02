@@ -18,7 +18,8 @@ interface OverlayItem {
 interface OverlayStore {
   overlays: OverlayItem[];
   open: (overlay: Omit<OverlayItem, 'id'>) => string;
-  close: (id: string) => void;
+  close: () => void;
+  closePopupId: (id: string) => void;
   closeAll: () => void;
 }
 
@@ -43,8 +44,12 @@ const useOverlayStore = create<OverlayStore>((set) => ({
     }));
     return id;
   },
-
-  close: (id) => {
+  close: () => {
+    set((state) => ({
+      overlays: state.overlays.slice(0, state.overlays.length - 2),
+    }));
+  },
+  closePopupId: (id) => {
     set((state) => ({
       overlays: state.overlays.filter((overlay) => overlay.id !== id),
     }));

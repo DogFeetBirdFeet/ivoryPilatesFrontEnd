@@ -19,8 +19,7 @@ import loginProfile from '@/assets/pilates_img.png';
 import type { LayoutContextType } from '@/hooks/useLayoutContext';
 import OverlayProvider from './OverlayProvider';
 import useOverlay from '@/hooks/useOverlay';
-// import PopupCancel from '../popup/PopupCancel';
-import PopupRefundCls from '@/common/popup/PopupRefundCls.tsx';
+import PopupSearchMem from '../popup/PopupSearchMem';
 
 // Framer Motion ClassName 타입에러 방지용 컴포넌트
 export const MotionAside = motion('aside') as React.FC<HTMLMotionAsideProps>;
@@ -127,7 +126,14 @@ export default function Layout() {
               icon={iconLogout}
               text="로그아웃"
               onClick={() => {
-                overlay.showPopup(<PopupRefundCls />);
+                overlay.showPopup(
+                  <PopupSearchMem
+                    onDoubleClick={(data) => {
+                      console.log(data);
+                      overlay.closePopup();
+                    }}
+                  />
+                );
               }}
             />
           </div>

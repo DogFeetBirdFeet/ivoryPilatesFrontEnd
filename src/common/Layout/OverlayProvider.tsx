@@ -5,7 +5,7 @@ import { AnimatePresence, motion, type HTMLMotionDivProps } from 'framer-motion'
 const MotionDiv = motion('div') as React.FC<HTMLMotionDivProps>;
 
 export default function OverlayProvider() {
-  const { overlays, close, closeAll } = useOverlayStore();
+  const { overlays, closePopupId, closeAll } = useOverlayStore();
 
   // ESC 키와 body 스크롤 관리
   useEffect(() => {
@@ -14,7 +14,7 @@ export default function OverlayProvider() {
       if (event.key === 'Escape' && overlays.length > 0) {
         const topOverlay = overlays[overlays.length - 1];
         if (topOverlay.options?.closeOnEsc) {
-          close(topOverlay.id);
+          closePopupId(topOverlay.id);
         }
       }
     };
