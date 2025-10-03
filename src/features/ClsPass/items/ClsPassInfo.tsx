@@ -1,0 +1,150 @@
+import {useState} from 'react';
+import InputDate from "@/common/components/inputArea/InputDate.tsx";
+import InputNumber from "@/common/components/inputArea/InputNumber";
+import SelectBox from "@/common/components/inputArea/SelectBox";
+
+interface IClsPassInfoData {
+    clsPassId: string;
+    staDtm: string;
+    endDtm: string;
+    totalCnt: number;
+    remainCnt: number;
+    useYn: boolean;
+    refundYn: boolean;
+}
+
+interface IClsPassInfoProps {
+    data: IClsPassInfoData;
+    editable: boolean;
+    authority: number;
+    currentUseAge: number;
+    onDataChange: (data: IClsPassInfoData) => void;
+}
+
+const mockDataYN = [
+    {codeId: 12, dtlNm: '사용 중'},
+    {codeId: 13, dtlNm: '만료'},
+];
+
+export default function ClsPassInfo({data, editable, authority, currentUseAge, onDataChange}: IClsPassInfoProps) {
+    const [startDate, setStartDate] = useState(data.staDtm || new Date().toISOString().split('T')[0]);
+
+    const handleDataChange = (field: keyof IClsPassInfoData, value: any) => {
+        onDataChange({
+            ...data,
+            [field]: value
+        });
+    };
+
+    return (
+        <section className="mb-15px">
+            <div className="flex items-center gap-5px mb-10px">
+                <h3 className="text-3xl font-bold py-5px my-5px">수강권 정보</h3>
+                {currentUseAge !== 5 && data.clsPassId && data.remainCnt > 0 && !data.refundYn && (
+                    <span className="bg-blueBtn text-white text-center h-30px w-60px">사용중</span>
+                )}
+                {currentUseAge !== 5 && data.clsPassId && (data.remainCnt <= 0 || data.refundYn) && (
+                    <span className="bg-red text-white text-center h-30px w-60px">만료</span>
+                )}
+            </div>
+            <div className="p-20px bg-white rounded-default shadow-md">
+                <div className="flex justify-between py-5px">
+                    <span className="text-2xl font-bold">개시 일자</span>
+                    {currentUseAge === 5 && (
+                        <InputDate
+                            id="staDtm"
+                            value={startDate}
+                            onChange={(value) => {
+                                setStartDate(value);
+                                handleDataChange('staDtm', value);
+                            }}
+                        />
+                    )}
+                    {currentUseAge !== 5 && (
+                        <span className="text-xl">{data.staDtm}</span>
+                    )}
+                </div>
+                <div className="flex justify-between py-5px my-5px">
+
+                    {currentUseAge !== 5 && (
+                        <>
+                            <span className="text-2xl font-bold">종료 예정 일자</span>
+                            {editable && authority === 2 && !data.refundYn && (
+                                <InputDate
+                                    id="endDtm"
+                                    value={data.endDtm}
+                                    onChange={(value) => handleDataChange('endDtm', value)}
+                                />
+                            )}
+                            {editable && authority === 2 && data.refundYn && (
+                                <span className="text-xl">{data.endDtm}</span>
+                            )}
+                            {editable && authority === 1 && (
+                                <span className="text-xl">{data.endDtm}</span>
+                            )}
+                            {!editable && (
+                                <span className="text-xl">{data.endDtm}</span>
+                            )}
+                        </>
+                    )}
+                </div>
+                <div className="flex justify-between py-5px my-5px">
+                    <span className="text-2xl font-bold">총 회차</span>
+                    {currentUseAge !== 5 && (
+                        <>
+                            {editable && authority === 2 && !data.refundYn && (
+                                <InputNumber
+                                    id="totalCnt"
+                                    value={data.totalCnt}
+                                    onChange={(value) => handleDataChange('totalCnt', Number(value))}
+                                    suffix="회"
+                                />
+                            )}
+                            {editable && authority === 2 && data.refundYn && (
+                                <span className="text-xl">{data.totalCnt} 회</span>
+                            )}
+                            {editable && authority === 1 && (
+                                <span className="text-xl">{data.totalCnt} 회</span>
+                            )}
+                            {!editable && (
+                                <span className="text-xl">{data.totalCnt} 회</span>
+                            )}
+                        </>
+                    )}
+                    {currentUseAge === 5 && (
+                        <>
+                            <InputNumber
+                                id="totalCnt"
+                                value={data.totalCnt}
+                                onChange={(value) => handleDataChange('totalCnt', Number(value))}
+                                suffix="회"
+                            />
+                        </>
+                    )}
+                </div>
+                <div className="flex justify-between py-5px my-5px">
+                    {currentUseAge !== 5 && (
+                        <>
+                            <span className="text-2xl font-bold">잔여 회차</span>
+                            <span className="text-xl">{data.remainCnt} 회</span>
+                        </>
+                    )}
+                </div>
+                <div className="flex justify-between py-5px my-5px">
+                    {editable && authority === 2 && !data.refundYn && currentUseAge !== 5 && (
+                        <>
+                            <span className="text-2xl font-bold">만료 여부</span>
+                            <SelectBox
+                                id="useYn"
+                                label=""
+                                options={mockDataYN}
+                                value={data.useYn ? 12 : 13}
+                                onChange={(value) => handleDataChange('useYn', value === 12)}
+                            />
+                        </>
+                    )}
+                </div>
+            </div>
+        </section>
+    );
+}

@@ -5,7 +5,7 @@ import InputText from '@/common/components/inputArea/InputText.tsx';
 import BtnSearch from '@/common/components/buttons/BtnSearch.tsx';
 import InputDate from '@/common/components/inputArea/InputDate.tsx';
 import ClsPassTable from '@/features/ClsPass/sections/ClsPassTable.tsx';
-import ClsPassInfo from '@/features/ClsPass/sections/ClsPassInfo';
+import ClsPassDetailView from '@/features/ClsPass/sections/ClsPassDetailView.tsx';
 import iconPlus from '@/assets/icon/white/icon_cls_plus.png';
 import BtnIconText from '@/common/components/buttons/BtnIconText.tsx';
 import SelectBox from '@/common/components/inputArea/SelectBox.tsx';
@@ -105,7 +105,7 @@ export default function ClassPass() {
             refundDateFrom: dateFormatToString(new Date()),
             refundDateTo: dateFormatToString(new Date()),
             searchPayName: '',
-            searchName: '',
+            searchName: ''
         },
     });
 
@@ -181,7 +181,7 @@ export default function ClassPass() {
     // 등록 페이지 렌더링
     if (currentView === 'register') {
         return (
-            <ClsPassInfo
+            <ClsPassDetailView
                 title="결제수강권 등록"
                 userId={selectedItem?.cusId || ''}
                 userNm={selectedItem?.cusNm || ''}
@@ -196,7 +196,7 @@ export default function ClassPass() {
     // 상세 페이지 렌더링
     if (currentView === 'detail' && selectedItem) {
         return (
-            <ClsPassInfo
+            <ClsPassDetailView
                 title="결제 수강권 상세"
                 userId={selectedItem.cusId}
                 userNm={selectedItem.cusNm}
