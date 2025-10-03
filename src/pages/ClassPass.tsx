@@ -16,6 +16,7 @@ import SearchCondition from '@/common/components/searchBar/SearchCondition';
 
 interface IClsPassData {
     clsPassId: string;
+    cusId: string;
     cusNm: string;
     clsPkgNm: string;
     clsTyp: string;
@@ -69,6 +70,7 @@ const roundTo = (n: number, unit = 1) => Math.round(n / unit) * unit;
 const generateMockData = (count: number): IClsPassData[] => {
     return Array.from({length: count}, (_, i) => ({
         clsPassId: `PAYCLS${i + 1}`,
+        cusId: `CUS${i + 1}`,
         cusNm: '김혜준',
         clsPkgNm: '1:1 10회 기본',
         clsTyp: '1:1',
@@ -92,7 +94,8 @@ export default function ClassPass() {
     const [selectedRefundYn, setSelectedRefundYn] = useState<number>(0);
     const [selectedPayMethod, setSelectedPayMethod] = useState<number>(0);
     const [mockData, setMockData] = useState<IClsPassData[]>(generateMockData(50));
-    const [currentView, setCurrentView] = useState<'list' | 'register'>('list');
+    const [currentView, setCurrentView] = useState<'list' | 'register' | 'detail'>('list');
+    const [selectedItem, setSelectedItem] = useState<IClsPassData | null>(null);
 
     // react-hook-form 검색조건
     const {watch, setValue, handleSubmit} = useForm<ISearchForm>({
@@ -164,17 +167,43 @@ export default function ClassPass() {
         setCurrentView('register');
     };
 
+    // 상세 페이지로 이동 핸들러
+    const handleDetailView = (item: IClsPassData) => {
+        setSelectedItem(item);
+        setCurrentView('detail');
+    };
+
+    // 목록으로 돌아가기 핸들러
+    const handleBackToList = () => {
+        setCurrentView('list');
+    };
+
     // 등록 페이지 렌더링
     if (currentView === 'register') {
         return (
             <ClsPassInfo
                 title="결제수강권 등록"
-                userId="0000"
-                userNm="원예진"
-                clsPassId="0000"
+                userId={selectedItem?.cusId || ''}
+                userNm={selectedItem?.cusNm || ''}
+                clsPassId={selectedItem?.clsPassId || ''}
                 useAge={5}
                 authority={1}
-                onCancel={() => setCurrentView('list')}
+                onCancel={handleBackToList}
+            />
+        );
+    }
+
+    // 상세 페이지 렌더링
+    if (currentView === 'detail' && selectedItem) {
+        return (
+            <ClsPassInfo
+                title="결제 수강권 상세"
+                userId={selectedItem.cusId}
+                userNm={selectedItem.cusNm}
+                clsPassId={selectedItem.clsPassId}
+                useAge={selectedItem.refundYn ? 2 : 1} // 환불 여부에 따라 useAge 설정
+                authority={2}
+                onCancel={handleBackToList}
             />
         );
     }
@@ -282,7 +311,11 @@ export default function ClassPass() {
                 />
             </section>
             {/* 테이블 그리드 */}
-            <ClsPassTable data={filteredData} isLoading={false}/>
+            <ClsPassTable
+                data={filteredData}
+                isLoading={false}
+                onDetailView={handleDetailView}
+            />
         </div>
     );
 }

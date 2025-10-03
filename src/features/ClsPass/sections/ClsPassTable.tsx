@@ -3,6 +3,7 @@ import {useMemo, useState} from "react";
 
 interface IClsPassData {
     clsPassId: string;
+    cusId: string;
     cusNm: string;
     clsPkgNm: string;
     clsTyp: string;
@@ -22,6 +23,7 @@ interface IClsPassData {
 interface ClsPassProps {
     data: IClsPassData[];
     isLoading: boolean;
+    onDetailView?: (item: IClsPassData) => void;
 }
 
 const columns: {
@@ -31,6 +33,7 @@ const columns: {
     render?: (value: any) => React.ReactNode;
 }[] = [
     {key: 'clsPassId', title: '결제수강권ID', className: 'min-w-[140px]'},
+    {key: 'cusId', title: '회원ID', className: 'min-w-[90px] hidden'},
     {key: 'cusNm', title: '회원명', className: 'min-w-[90px]'},
     {key: 'clsPkgNm', title: '상품명', className: 'min-w-[160px]'},
     {key: 'clsTyp', title: '상품타입', className: 'min-w-[80px]'},
@@ -77,7 +80,7 @@ const formatNumber = (n: unknown) =>
 
 const commonStyle = 'flex justify-center items-center';
 
-export default function ClsPassTable({data, isLoading}: ClsPassProps) {
+export default function ClsPassTable({data, isLoading, onDetailView}: ClsPassProps) {
     const [selectedRowIndex, setSelectedRowIndex] = useState<string | null>(null);
 
     const summary = useMemo(() => {
@@ -113,6 +116,14 @@ export default function ClsPassTable({data, isLoading}: ClsPassProps) {
         );
     }
 
+    const handleRegisterClick = (item: IClsPassData) => {
+        console.log('더블클릭된 아이템:', item);
+        // 부모 컴포넌트에 상세 페이지 진입 알림 (선택된 아이템 전달)
+        if (onDetailView) {
+            onDetailView(item);
+        }
+    };
+
     return (
         <div className="h-full w-full max-h-[calc(100vh-340px)] flex flex-col overflow-hidden min-h-0">
             {/* 테이블 헤더 */}
@@ -133,7 +144,8 @@ export default function ClsPassTable({data, isLoading}: ClsPassProps) {
                         className={`h-40px flex justify-between text-gray text-base border-b-[1px]  ${
                             selectedRowIndex === item.clsPassId ? 'bg-yellow' : 'bg-white'
                         }`}
-                        onDoubleClick={() => setSelectedRowIndex(item.clsPassId)}
+                        onClick={() => setSelectedRowIndex(item.clsPassId)}
+                        onDoubleClick={() => handleRegisterClick(item)}
                     >
                         {columns.map((col) => {
                             const raw = item[col.key];
@@ -152,7 +164,7 @@ export default function ClsPassTable({data, isLoading}: ClsPassProps) {
 
             {/* 하단 합계 바 */}
             {/*<div className="px-10px mr-20px py-10px rounded-default flex-shrink-0 mx-20px">*/}
-                <div className="flex-shrink-0 overflow-y-auto mr-20px min-h-0 mx-20px">
+            <div className="flex-shrink-0 overflow-y-auto mr-20px min-h-0 mx-20px">
                 <div className="grid grid-cols-6 items-center">
                     <div className="col-span-6 bg-lightGray text-white grid grid-cols-6">
                         <div className="px-3 py-2 border-r border-gray">총 결제건수 <span

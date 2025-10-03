@@ -9,6 +9,7 @@ interface IInputNumber {
   maxLength?: number;
   disabled?: boolean;
   allowDecimal?: boolean;
+  suffix?: string;
 }
 
 /**
@@ -24,6 +25,7 @@ export default function InputNumber({
   maxLength,
   disabled = false,
   allowDecimal = false,
+  suffix,
 }: IInputNumber) {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     let numbersOnly = e.target.value;
@@ -64,7 +66,7 @@ export default function InputNumber({
       type="text"
       inputMode={allowDecimal ? 'decimal' : 'numeric'}
       id={id}
-      value={value}
+      value={value + (suffix || '')}
       className={`${INPUT_BASE_CLASS} ${className || ''}`}
       placeholder={placeholder}
       onChange={handleChange}
