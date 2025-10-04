@@ -312,6 +312,7 @@ export default function ClsPassDetailView(props: IPropsAuthority) {
                         refundAmt: mockUserData.refundAmt
                     }}
                     editable={editable}
+                    authority={props.authority}
                     currentUseAge={currentUseAge}
                     onDataChange={(newData) => {
                         setMockUserData({
