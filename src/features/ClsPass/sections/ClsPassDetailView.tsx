@@ -12,6 +12,8 @@ import ClsPassInfoItem from "@/features/ClsPass/items/ClsPassInfo";
 import ClsPkgInfo from "@/features/ClsPass/items/ClsPkgInfo";
 import ClsPayInfo from "@/features/ClsPass/items/ClsPayInfo";
 import InputText from "@/common/components/inputArea/InputText.tsx";
+import useOverlay from '@/hooks/useOverlay';
+import PopupRefundCls from '@/common/popup/PopupRefundCls';
 
 interface ISearchForm {
     cusId: string;
@@ -69,6 +71,7 @@ export default function ClsPassDetailView(props: IPropsAuthority) {
     });
 
     const formValues = watch();
+    const overlay = useOverlay();
 
     useEffect(() => {
         console.log('📝 Form State:', {
@@ -155,8 +158,14 @@ export default function ClsPassDetailView(props: IPropsAuthority) {
                     {/* 조회 - 사용중 */}
                     {currentUseAge === 1 && (
                         <>
-                            <BtnIconText type="A" icon={iconRefund} text="환불하기" onClick={() => {
-                            }}/>
+                            <BtnIconText
+                                type="A"
+                                icon={iconRefund}
+                                text="환불하기"
+                                onClick={() => {
+                                    overlay.showPopup(<PopupRefundCls/>);
+                                }}
+                            />
                             <BtnIconText type="B" icon={iconSavePurple} text="결제정보 수정하기" onClick={handleEdit}/>
                         </>
                     )}
@@ -224,17 +233,17 @@ export default function ClsPassDetailView(props: IPropsAuthority) {
                     {currentUseAge === 5 && (
                         <>
                             {/* 상품정보 섹션 */}
-                             <ClsPkgInfo
-                                 data={{
-                                     clsPkgNm: mockUserData.clsPkgNm,
-                                     clsPassId: mockUserData.clsPassId,
-                                     price: mockUserData.price,
-                                     discountAmtPkg: mockUserData.discountAmtPkg,
-                                     clsPkgCnt: mockUserData.clsPkgCnt,
-                                     expRate: mockUserData.expRate
-                                 }}
-                                 currentUseAge={currentUseAge}
-                             />
+                            <ClsPkgInfo
+                                data={{
+                                    clsPkgNm: mockUserData.clsPkgNm,
+                                    clsPassId: mockUserData.clsPassId,
+                                    price: mockUserData.price,
+                                    discountAmtPkg: mockUserData.discountAmtPkg,
+                                    clsPkgCnt: mockUserData.clsPkgCnt,
+                                    expRate: mockUserData.expRate
+                                }}
+                                currentUseAge={currentUseAge}
+                            />
                             {/* 수강권 정보 섹션 */}
                             <ClsPassInfoItem
                                 data={{
@@ -254,8 +263,8 @@ export default function ClsPassDetailView(props: IPropsAuthority) {
                                         ...mockUserData,
                                         ...newData
                                     });
-                                 }}
-                             />
+                                }}
+                            />
                         </>
                     )}
                     {currentUseAge !== 5 && (
@@ -279,21 +288,21 @@ export default function ClsPassDetailView(props: IPropsAuthority) {
                                         ...mockUserData,
                                         ...newData
                                     });
-                                 }}
-                             />
+                                }}
+                            />
 
                             {/* 상품정보 섹션 */}
-                             <ClsPkgInfo
-                                 data={{
-                                     clsPkgNm: mockUserData.clsPkgNm,
-                                     clsPassId: mockUserData.clsPassId,
-                                     price: mockUserData.price,
-                                     discountAmtPkg: mockUserData.discountAmtPkg,
-                                     clsPkgCnt: mockUserData.clsPkgCnt,
-                                     expRate: mockUserData.expRate
-                                 }}
-                                 currentUseAge={currentUseAge}
-                             />
+                            <ClsPkgInfo
+                                data={{
+                                    clsPkgNm: mockUserData.clsPkgNm,
+                                    clsPassId: mockUserData.clsPassId,
+                                    price: mockUserData.price,
+                                    discountAmtPkg: mockUserData.discountAmtPkg,
+                                    clsPkgCnt: mockUserData.clsPkgCnt,
+                                    expRate: mockUserData.expRate
+                                }}
+                                currentUseAge={currentUseAge}
+                            />
                         </>
                     )}
                 </div>
@@ -319,8 +328,8 @@ export default function ClsPassDetailView(props: IPropsAuthority) {
                             ...mockUserData,
                             ...newData
                         });
-                                 }}
-                             />
+                    }}
+                />
             </div>
         </div>
     )

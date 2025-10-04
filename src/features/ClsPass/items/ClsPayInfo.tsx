@@ -120,7 +120,7 @@ export default function ClsPayInfo({data, editable, authority, currentUseAge, on
                     </div>
                     <div className="flex items-center py-5px my-5px">
                         {currentUseAge !== 5 && (
-                            <>  
+                            <>
                                 <span className="text-2xl font-bold w-200px">결제자</span>
                                 <span className="text-xl ml-20px">{data.payUserNm}</span>
                             </>
