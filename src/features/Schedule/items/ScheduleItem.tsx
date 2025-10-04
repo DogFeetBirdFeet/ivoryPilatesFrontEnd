@@ -1,0 +1,40 @@
+import StatusBadge from '@/common/components/schedule/StatusBadge';
+import imgPlus from '@/assets/dashboard/plus.png';
+import iconPix from '@/assets/icon_pix.png';
+import type {IScheduleItem} from '@/features/Schedule/types';
+
+export default function ScheduleItem({schedule}: { schedule?: IScheduleItem }) {
+    // 회원명 포맷팅 (2:1 수업인 경우 (2:1) 추가)
+    const formatCustomerName = (schedule: IScheduleItem): string => {
+        return schedule.type === 'D' ? `${schedule.cusNm} 회원님 (2:1)` : `${schedule.cusNm} 회원님`;
+    };
+
+    return (
+        <>
+            {schedule ? (
+                <div
+                    key={schedule.id}
+                    className="grid grid-cols-[40px_160px_160px_160px] gap-20px items-center place-items-center"
+                >
+                    <div className="flex items-center gap-5px justify-self-start">
+                        {schedule.pix ? <img src={iconPix} className="w-15px h-15px" alt={'pix'}/> : ''}
+                    </div>
+                    <div className="text-black text-xl text-center font-medium">{formatCustomerName(schedule)}</div>
+                    <div className="text-gray text-xl text-center font-medium">{schedule.trainerNm} 강사</div>
+                    <div>
+                        <StatusBadge status={schedule.status}/>
+                    </div>
+                </div>
+            ) : (
+                <div className="grid grid-cols-[1fr_120px] gap-20px items-center place-items-center">
+                    <div className="text-lightGray text-base">예약된 수업이 없습니다</div>
+                    <button
+                        className="flex items-center gap-5px bg-[#D6D4EE] text-base text-gray px-10px py-5px rounded-full">
+                        <img src={imgPlus} className="w-15px h-15px" alt={'plus'}/>
+                        스케줄 추가
+                    </button>
+                </div>
+            )}
+        </>
+    );
+}
