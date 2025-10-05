@@ -3,10 +3,10 @@ import {useMemo, useState} from "react";
 
 interface IClsPassData {
     clsPassId: string;
-    cusId: string;
-    cusNm: string;
+    userId: string;
+    userNm: string;
     clsPkgNm: string;
-    clsTyp: string;
+    clsType: string;
     price: number;
     paidAmt: number;
     discountAmt: number;
@@ -33,10 +33,10 @@ const columns: {
     render?: (value: any) => React.ReactNode;
 }[] = [
     {key: 'clsPassId', title: '결제수강권ID', className: 'min-w-[140px]'},
-    {key: 'cusId', title: '회원ID', className: 'min-w-[90px] hidden'},
-    {key: 'cusNm', title: '회원명', className: 'min-w-[90px]'},
+    {key: 'userId', title: '회원ID', className: 'min-w-[90px] hidden'},
+    {key: 'userNm', title: '회원명', className: 'min-w-[90px]'},
     {key: 'clsPkgNm', title: '상품명', className: 'min-w-[160px]'},
-    {key: 'clsTyp', title: '상품타입', className: 'min-w-[80px]'},
+    {key: 'clsType', title: '상품타입', className: 'min-w-[80px]'},
     {key: 'price', title: '기본금액', className: 'min-w-[110px] text-right'},
     {key: 'paidAmt', title: '결제 금액', className: 'min-w-[110px] text-right'},
     {key: 'discountAmt', title: '기본할인금액', className: 'min-w-[120px] text-right'},

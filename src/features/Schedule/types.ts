@@ -4,7 +4,7 @@ export interface ITimeSlot {
     id: string;
     time: number;
     schedule: IScheduleItem[] | null;
-    trainerBreak: string[] | null;
+    trainerBreak?: string[] | null;
 }
 
 export interface IScheduleItem {

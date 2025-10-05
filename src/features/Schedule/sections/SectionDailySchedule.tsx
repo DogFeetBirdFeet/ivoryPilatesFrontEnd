@@ -2,6 +2,11 @@ import {useEffect, useMemo, useState} from 'react';
 import ScheduleItem from '@/features/Schedule/items/ScheduleItem';
 import type {ITimeSlot} from '@/features/Schedule/types';
 
+interface SectionDailyScheduleProps {
+    selectedRowIndex?: string | null;
+    setSelectedRowIndex?: (index: string | null) => void;
+}
+
 // 스케줄 Mock 데이터
 const mockApiData = [
     {
@@ -37,16 +42,17 @@ const mockApiData = [
     },
 ];
 
-// 강사 휴식 Mock 데이터
-const trainerBreakData = [
-    {hour: 13, trainers: ['원예진']},
-    {hour: 15, trainers: ['김용진']},
-    {hour: 17, trainers: ['김혜준']},
-];
-
-export default function SectionDailySchedule() {
+export default function SectionDailySchedule({
+                                                 selectedRowIndex: propSelectedRowIndex,
+                                                 setSelectedRowIndex: propSetSelectedRowIndex
+                                             }: SectionDailyScheduleProps = {}) {
     // 현재 시간대만 추적 (시간이 바뀔 때만 렌더링)
     const [currentHour, setCurrentHour] = useState(new Date().getHours());
+
+    // props가 있으면 props 사용, 없으면 내부 상태 사용
+    const selectedRowIndex = propSelectedRowIndex ?? `slot-${new Date().getHours()}`;
+    const setSelectedRowIndex = propSetSelectedRowIndex ?? (() => {
+    });
 
     useEffect(() => {
         // 10초마다 시간대 체크 (시간이 바뀔 때만 상태 업데이트)
@@ -54,6 +60,7 @@ export default function SectionDailySchedule() {
             const newHour = new Date().getHours();
             if (newHour !== currentHour) {
                 setCurrentHour(newHour);
+                setSelectedRowIndex(`slot-${newHour}`);
             }
         }, 10000);
 
@@ -69,24 +76,15 @@ export default function SectionDailySchedule() {
             const scheduleData = mockApiData.find((item) => item.hour === hour);
             const scheduleItems = scheduleData ? scheduleData.schedules : null;
 
-            // 해당 시간의 강사 휴식 찾기
-            const breakData = trainerBreakData.find((item) => item.hour === hour);
-            const trainerBreaks = breakData ? breakData.trainers : null;
-
             slots.push({
                 id: `slot-${hour}`,
                 time: hour,
-                schedule: scheduleItems,
-                trainerBreak: trainerBreaks,
+                schedule: scheduleItems
             });
         }
 
         return slots;
     }, [currentHour]); // TODO : fetch 후 재계산 필요
-
-    const formatTrainerBreak = (slotItem: ITimeSlot): string => {
-        return slotItem.trainerBreak ? `+ ${slotItem.trainerBreak.join(', ')} 강사 휴식` : '';
-    };
 
     const formatTime = (hour: number): string => {
         const timeString = `${hour.toString().padStart(2, '0')}:00`;
@@ -118,7 +116,8 @@ export default function SectionDailySchedule() {
                         <div
                             key={`slot_time_${slot.time}`}
                             className={`px-10px py-10px border-b border-[#d9d9d9] last:border-b-0 
-                ${currentHour === slot.time && 'bg-yellow'}`}
+                ${selectedRowIndex === slot.id && 'bg-yellow'}`}
+                            onClick={() => setSelectedRowIndex(slot.id)}
                         >
                             <div className="grid grid-cols-[120px_1fr] gap-20px items-center">
                                 {/* 시간 */}
@@ -135,9 +134,6 @@ export default function SectionDailySchedule() {
                                             <ScheduleItem/>
                                         )}
                                     </div>
-
-                                    {/* 강사 휴식 */}
-                                    <div className="text-red text-base">{formatTrainerBreak(slot)}</div>
                                 </div>
                             </div>
                         </div>

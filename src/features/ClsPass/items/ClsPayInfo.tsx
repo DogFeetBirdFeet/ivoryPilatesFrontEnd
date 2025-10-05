@@ -93,7 +93,7 @@ export default function ClsPayInfo({data, editable, authority, currentUseAge, on
                                     options={mockDataPAYMET}
                                     value={mockDataPAYMET.find(option => option.dtlNm === data.payMethod)?.codeId || 0}
                                     onChange={(value) => handleDataChange('payMethod', mockDataPAYMET.find(option => option.codeId === value)?.dtlNm || 'CARD')}
-                                    className="ml-20px flex-1 text-center"
+                                    className="px-300px ml-20px flex-1 text-center"
                                 />
                             </>
                         )}

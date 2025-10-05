@@ -13,24 +13,25 @@ import iconFilter from '@/assets/icon/white/icon_filter.png';
 import {useForm} from "react-hook-form";
 import {dateFormatToString} from "@/utils/date.ts";
 import SearchCondition from '@/common/components/searchBar/SearchCondition';
+import {clsPassApi} from '@/services/api';
 
 interface IClsPassData {
-    clsPassId: string;
-    cusId: string;
-    cusNm: string;
-    clsPkgNm: string;
-    clsTyp: string;
-    price: number;
-    paidAmt: number;
-    discountAmt: number;
-    discountAmt2: number;
-    totalCnt: number;
-    remainCnt: number;
-    expRate: string;
-    payMethod: string;  // 'CARD' | 'CASH'
-    payDate: string;
-    refundYn: boolean; // 'Y' | 'N'
-    useYn: boolean; // 'Y' | 'N'
+    clsPassId: string;      // 결제 수강권 ID
+    userId: string;          // 회원 ID
+    userNm: string;          // 회원명
+    clsPkgNm: string;       // 상품명
+    clsType: string;         // 상품타입
+    price: number;          // 기본금액
+    paidAmt: number;        // 결제 금액
+    discountAmt: number;    // 기본할인금액
+    discountAmt2: number;    // 추가할인금액
+    totalCnt: number;        // 총 회차
+    remainCnt: number;      // 잔여 회차
+    expRate: string;        // 유효 기간
+    payMethod: string;  // 결제 수단
+    payDate: string;    // 결제 일자    
+    refundYn: boolean; // 환불 여부
+    useYn: boolean;     // 사용 여부
 }
 
 interface ISearchForm {
@@ -70,10 +71,10 @@ const roundTo = (n: number, unit = 1) => Math.round(n / unit) * unit;
 const generateMockData = (count: number): IClsPassData[] => {
     return Array.from({length: count}, (_, i) => ({
         clsPassId: `PAYCLS${i + 1}`,
-        cusId: `CUS${i + 1}`,
-        cusNm: '김혜준',
+        userId: `CUS${i + 1}`,
+        userNm: '김혜준',
         clsPkgNm: '1:1 10회 기본',
-        clsTyp: '1:1',
+        clsType: '1:1',
         price: roundTo(Math.random() * 1_000_000, 100),
         paidAmt: roundTo(Math.random() * 700_000, 100),
         discountAmt: roundTo(Math.random() * 200_000, 100),
@@ -93,7 +94,8 @@ export default function ClassPass() {
     const [selectedUseYn, setSelectedUseYn] = useState<number>(0);
     const [selectedRefundYn, setSelectedRefundYn] = useState<number>(0);
     const [selectedPayMethod, setSelectedPayMethod] = useState<number>(0);
-    const [mockData, setMockData] = useState<IClsPassData[]>(generateMockData(50));
+    const [mockData, setMockData] = useState<IClsPassData[]>([]);
+    const [isLoading, setIsLoading] = useState<boolean>(false);
     const [currentView, setCurrentView] = useState<'list' | 'register' | 'detail'>('list');
     const [selectedItem, setSelectedItem] = useState<IClsPassData | null>(null);
 
@@ -135,6 +137,43 @@ export default function ClassPass() {
 
     const formValues = watch();
 
+    // 데이터 로드 함수
+    const loadClsPassData = async (searchParams?: ISearchForm) => {
+        setIsLoading(true);
+        try {
+            const params = {
+                payDateFrom: searchParams?.payDateFrom,
+                payDateTo: searchParams?.payDateTo,
+                refundDateFrom: searchParams?.refundDateFrom,
+                refundDateTo: searchParams?.refundDateTo,
+                searchPayName: searchParams?.searchPayName,
+                searchName: searchParams?.searchName,
+                useYn: selectedUseYn !== 0 ? mockDataYN.find(yn => yn.codeId === selectedUseYn)?.dtlNm : undefined,
+                refundYn: selectedRefundYn !== 0 ? mockDataYN.find(yn => yn.codeId === selectedRefundYn)?.dtlNm : undefined,
+                payMethod: selectedPayMethod !== 0 ? mockDataPAYMET.find(pay => pay.codeId === selectedPayMethod)?.dtlNm : undefined,
+            };
+
+            console.log('API 요청 파라미터:', params);
+            const response = await clsPassApi.getClsPassList(params);
+            console.log('API 응답:', response.data);
+
+            // 백엔드 응답 데이터를 IClsPassData 형태로 변환
+            const apiData = response.data as IClsPassData[];
+            setMockData(apiData);
+        } catch (error) {
+            console.error('데이터 로드 실패:', error);
+            // 에러 시 mock 데이터로 fallback
+            setMockData(generateMockData(50));
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    // 컴포넌트 마운트 시 초기 데이터 로드
+    useEffect(() => {
+        loadClsPassData();
+    }, []);
+
     useEffect(() => {
         console.log('📝 Form State:', {
             payDateFrom: formValues.payDateFrom,
@@ -157,9 +196,7 @@ export default function ClassPass() {
     // 검색 실행
     const onSubmit = (data: ISearchForm) => {
         console.log('검색 데이터:', data);
-        // TODO: 실제 검색 API 호출
-        // 퍼블리싱용 - 새로운 mock 데이터 생성
-        setMockData(generateMockData(50));
+        loadClsPassData(data);
     };
 
     // 신규결제 등록하기 버튼 클릭 핸들러
@@ -183,8 +220,8 @@ export default function ClassPass() {
         return (
             <ClsPassDetailView
                 title="결제수강권 등록"
-                userId={selectedItem?.cusId || ''}
-                userNm={selectedItem?.cusNm || ''}
+                userId={selectedItem?.userId || ''}
+                userNm={selectedItem?.userNm || ''}
                 clsPassId={selectedItem?.clsPassId || ''}
                 useAge={5}
                 authority={1}
@@ -198,8 +235,8 @@ export default function ClassPass() {
         return (
             <ClsPassDetailView
                 title="결제 수강권 상세"
-                userId={selectedItem.cusId}
-                userNm={selectedItem.cusNm}
+                userId={selectedItem.userId}
+                userNm={selectedItem.userNm}
                 clsPassId={selectedItem.clsPassId}
                 useAge={selectedItem.refundYn ? 2 : 1} // 환불 여부에 따라 useAge 설정
                 authority={2}
@@ -313,7 +350,7 @@ export default function ClassPass() {
             {/* 테이블 그리드 */}
             <ClsPassTable
                 data={filteredData}
-                isLoading={false}
+                isLoading={isLoading}
                 onDetailView={handleDetailView}
             />
         </div>
