@@ -16,15 +16,15 @@ import useOverlay from '@/hooks/useOverlay';
 import PopupRefundCls from '@/common/popup/PopupRefundCls';
 
 interface ISearchForm {
-    cusId: string;
+    cusId: number;
     cusName: string;
 }
 
 interface IPropsAuthority {
     title: string;
-    userId: string;
+    userId: number;
     userNm: string;
-    clsPassId: string;
+    clsPassId: number;
     useAge: number;     // 1 : 조회 - 사용중, 2 :  조회 - 만료/환불, 3 : 수정 - 사용중, 4 : 수정 - 만료/환불, 5 : 등록
     authority: number;  // 1 : 강사, 2 : 관리자
     onCancel?: () => void;  // 취소 버튼 클릭 시 호출될 함수
@@ -65,7 +65,7 @@ export default function ClsPassDetailView(props: IPropsAuthority) {
     // react-hook-form 검색조건
     const {watch, setValue} = useForm<ISearchForm>({
         defaultValues: {
-            cusId: '',
+            cusId: 0,
             cusName: ''
         },
     });

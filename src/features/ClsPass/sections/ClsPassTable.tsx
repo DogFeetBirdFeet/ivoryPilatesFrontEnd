@@ -2,8 +2,9 @@ import * as React from "react";
 import {useMemo, useState} from "react";
 
 interface IClsPassData {
-    clsPassId: string;
-    userId: string;
+    clsPkgId: number;
+    clsPassId: number;
+    userId: number;
     userNm: string;
     clsPkgNm: string;
     clsType: string;
@@ -16,8 +17,8 @@ interface IClsPassData {
     expRate: string;
     payMethod: string;  // 'CARD' | 'CASH'
     payDate: string;
-    refundYn: boolean; // 'Y' | 'N'
-    useYn: boolean;
+    refundYn: string; // 'Y' | 'N'
+    useYn: string;
 }
 
 interface ClsPassProps {
@@ -30,13 +31,18 @@ const columns: {
     key: keyof IClsPassData;
     title: string;
     className?: string;
-    render?: (value: any) => React.ReactNode;
+    render?: (value: unknown) => React.ReactNode;
 }[] = [
     {key: 'clsPassId', title: '결제수강권ID', className: 'min-w-[140px]'},
     {key: 'userId', title: '회원ID', className: 'min-w-[90px] hidden'},
     {key: 'userNm', title: '회원명', className: 'min-w-[90px]'},
     {key: 'clsPkgNm', title: '상품명', className: 'min-w-[160px]'},
-    {key: 'clsType', title: '상품타입', className: 'min-w-[80px]'},
+    {
+        key: 'clsType',
+        title: '상품타입',
+        className: 'min-w-[100px]',
+        render: (value) => value === 'IOI' ? '1 : 1 수업' : '2 : 1 수업',
+    },
     {key: 'price', title: '기본금액', className: 'min-w-[110px] text-right'},
     {key: 'paidAmt', title: '결제 금액', className: 'min-w-[110px] text-right'},
     {key: 'discountAmt', title: '기본할인금액', className: 'min-w-[120px] text-right'},
@@ -48,7 +54,7 @@ const columns: {
         key: 'payMethod',
         title: '결제 수단',
         className: 'min-w-[100px]',
-        render: (value) => value === 'CASH' ? '현금' : '카드',
+        render: (value) => value === 'CASH' ? '계좌이체' : '카드',
 
     },
     {key: 'payDate', title: '결제일자', className: 'min-w-[120px]'},
@@ -56,18 +62,18 @@ const columns: {
         key: 'refundYn',
         title: '환불여부',
         className: 'min-w-[90px] text-center',
-        render: (value) => <input type="checkbox" checked={value} disabled className="w-16px h-16px"/>,
+        render: (value) => <input type="checkbox" checked={value === 'Y'} disabled className="w-16px h-16px"/>,
     },
     {
         key: 'useYn',
         title: '사용여부',
         className: 'min-w-[90px] text-center',
-        render: (value) => <input type="checkbox" checked={value} disabled className="w-16px h-16px"/>,
+        render: (value) => <input type="checkbox" checked={value === 'Y'} disabled className="w-16px h-16px"/>,
     },
 ];
 
 const numericKeys: Array<keyof IClsPassData> = [
-    'price', 'paidAmt', 'discountAmt', 'discountAmt2', 'totalCnt', 'remainCnt',
+    'clsPassId', 'clsPkgId', 'userId', 'price', 'paidAmt', 'discountAmt', 'discountAmt2', 'totalCnt', 'remainCnt',
 ];
 
 function toNumber(v: unknown) {
@@ -81,7 +87,10 @@ const formatNumber = (n: unknown) =>
 const commonStyle = 'flex justify-center items-center';
 
 export default function ClsPassTable({data, isLoading, onDetailView}: ClsPassProps) {
-    const [selectedRowIndex, setSelectedRowIndex] = useState<string | null>(null);
+
+
+    console.log('data', data);
+    const [selectedRowIndex, setSelectedRowIndex] = useState<number | null>(null);
 
     const summary = useMemo(() => {
         return data.reduce(
@@ -90,7 +99,7 @@ export default function ClsPassTable({data, isLoading, onDetailView}: ClsPassPro
                 acc.totalPayAmt += toNumber(cur.paidAmt);
                 // 기본 + 추가 할인 합산이 맞다면 이렇게
                 acc.totalDisAmt += toNumber(cur.discountAmt) + toNumber(cur.discountAmt2);
-                acc.totalRefCnt += cur.refundYn ? 1 : 0;
+                acc.totalRefCnt += cur.refundYn === 'Y' ? 1 : 0;
                 acc.totalCardCnt += cur.payMethod === 'CARD' ? 1 : 0;
                 acc.totalCashCnt += cur.payMethod === 'CASH' ? 1 : 0;
                 return acc;
@@ -142,16 +151,16 @@ export default function ClsPassTable({data, isLoading, onDetailView}: ClsPassPro
                     <div
                         key={item.clsPassId}
                         className={`h-40px flex justify-between text-gray text-base border-b-[1px]  ${
-                            selectedRowIndex === item.clsPassId ? 'bg-yellow' : 'bg-white'
+                            selectedRowIndex === item.userId ? 'bg-yellow' : 'bg-white'
                         }`}
-                        onClick={() => setSelectedRowIndex(item.clsPassId)}
+                        onClick={() => setSelectedRowIndex(item.userId)}
                         onDoubleClick={() => handleRegisterClick(item)}
                     >
                         {columns.map((col) => {
                             const raw = item[col.key];
                             const content = col.render
                                 ? col.render(raw)
-                                : (numericKeys.includes(col.key) ? formatNumber(raw) : (raw as any));
+                                : (numericKeys.includes(col.key) ? formatNumber(raw) : String(raw));
                             return (
                                 <div key={col.key} className={`${commonStyle} ${col.className} cursor-pointer`}>
                                     {content}

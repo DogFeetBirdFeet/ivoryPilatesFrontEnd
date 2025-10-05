@@ -13,11 +13,12 @@ import iconFilter from '@/assets/icon/white/icon_filter.png';
 import {useForm} from "react-hook-form";
 import {dateFormatToString} from "@/utils/date.ts";
 import SearchCondition from '@/common/components/searchBar/SearchCondition';
-import {clsPassApi} from '@/services/api';
+import {clsPassApi, commonCodeApi} from '@/services/api';
 
 interface IClsPassData {
-    clsPassId: string;      // 결제 수강권 ID
-    userId: string;          // 회원 ID
+    clsPkgId: number;
+    clsPassId: number;      // 결제 수강권 ID
+    userId: number;          // 회원 ID
     userNm: string;          // 회원명
     clsPkgNm: string;       // 상품명
     clsType: string;         // 상품타입
@@ -30,8 +31,8 @@ interface IClsPassData {
     expRate: string;        // 유효 기간
     payMethod: string;  // 결제 수단
     payDate: string;    // 결제 일자    
-    refundYn: boolean; // 환불 여부
-    useYn: boolean;     // 사용 여부
+    refundYn: string; // 환불 여부
+    useYn: string;     // 사용 여부
 }
 
 interface ISearchForm {
@@ -43,58 +44,20 @@ interface ISearchForm {
     searchName: string;
 }
 
-// 결제 수강권 공통 코드 Mock 데이터
-const mockDataPAYMET = [
-    {
-        codeId: 7,
-        dtlNm: 'CARD',
-    },
-    {
-        codeId: 8,
-        dtlNm: 'CASH',
-    },
-];
-const mockDataYN = [
-    {
-        codeId: 12,
-        dtlNm: 'Y',
-    },
-    {
-        codeId: 13,
-        dtlNm: 'N',
-    },
-];
-
-const roundTo = (n: number, unit = 1) => Math.round(n / unit) * unit;
-
-// Mock 데이터 생성
-const generateMockData = (count: number): IClsPassData[] => {
-    return Array.from({length: count}, (_, i) => ({
-        clsPassId: `PAYCLS${i + 1}`,
-        userId: `CUS${i + 1}`,
-        userNm: '김혜준',
-        clsPkgNm: '1:1 10회 기본',
-        clsType: '1:1',
-        price: roundTo(Math.random() * 1_000_000, 100),
-        paidAmt: roundTo(Math.random() * 700_000, 100),
-        discountAmt: roundTo(Math.random() * 200_000, 100),
-        discountAmt2: roundTo(Math.random() * 100_000, 100),
-        totalCnt: roundTo(Math.random() * 100, 10),
-        remainCnt: roundTo(Math.random() * 5, 1),
-        expRate: '2025-10-30',
-        payMethod: Math.random() > 0.5 ? 'CASH' : 'CARD',
-        payDate: '2025-08-01',
-        refundYn: Math.random() > 0.5,
-        useYn: Math.random() > 0.5
-    }));
-};
+// 공통 코드 데이터 타입
+interface ICommonCode {
+    codeId: number;
+    dtlNm: string;
+}
 
 export default function ClassPass() {
 
     const [selectedUseYn, setSelectedUseYn] = useState<number>(0);
     const [selectedRefundYn, setSelectedRefundYn] = useState<number>(0);
     const [selectedPayMethod, setSelectedPayMethod] = useState<number>(0);
-    const [mockData, setMockData] = useState<IClsPassData[]>([]);
+    const [data, setData] = useState<IClsPassData[]>([]);
+    const [PAYMENT, setPAYMENT] = useState<ICommonCode[]>();
+    const [YN, setYN] = useState<ICommonCode[]>();
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [currentView, setCurrentView] = useState<'list' | 'register' | 'detail'>('list');
     const [selectedItem, setSelectedItem] = useState<IClsPassData | null>(null);
@@ -112,30 +75,53 @@ export default function ClassPass() {
     });
 
     // 클라이언트 필터링 (강사, 블랙리스트)
-    const filteredData = mockData.filter((item) => {
+    const filteredData = data.filter((item) => {
 
         // 사용여부 필터
         if (selectedUseYn !== 0) {
-            const useYn = mockDataYN.find((yn) => yn.codeId === selectedUseYn)?.dtlNm === 'Y';
+
+            const useYn = YN?.find((yn) => yn.codeId === selectedUseYn)?.dtlNm;
             if (item.useYn !== useYn) return false;
         }
 
-        // 블랙리스트 필터
+        // 환불 필터
         if (selectedRefundYn !== 0) {
-            const isRefundYN = mockDataYN.find((yn) => yn.codeId === selectedRefundYn)?.dtlNm === 'Y';
+            const isRefundYN = YN?.find((yn) => yn.codeId === selectedRefundYn)?.dtlNm;
             if (item.refundYn !== isRefundYN) return false;
         }
 
         // 결제 방법 필터
         if (selectedPayMethod !== 0) {
-            const payMethod = mockDataPAYMET.find((payMethod) => payMethod.codeId === selectedPayMethod)?.dtlNm;
-            if (item.payMethod !== payMethod) return false;
+            // 백엔드 데이터 값으로 매핑
+            const payMethodMapping: { [key: string]: string } = {
+                '카드': 'CARD',
+                '계좌이체': 'CASH'
+            };
+            const selectedPayMethodName = PAYMENT?.find((payMethod) => payMethod.codeId === selectedPayMethod)?.dtlNm;
+            const backendPayMethod = selectedPayMethodName ? payMethodMapping[selectedPayMethodName] : undefined;
+
+            if (item.payMethod !== backendPayMethod) return false;
         }
 
         return true;
     });
 
     const formValues = watch();
+
+    // 공통 코드 로드 함수
+    const loadCommonCode = async () => {
+        try {
+            const response = await commonCodeApi.getCommonCodeList(3);
+            setPAYMENT(response.data);
+
+            const response2 = await commonCodeApi.getCommonCodeList(5);
+            setYN(response2.data);
+
+        } catch (error) {
+            console.error('공통 코드 로드 실패:', error);
+            // 에러 시 기본값 유지
+        }
+    };
 
     // 데이터 로드 함수
     const loadClsPassData = async (searchParams?: ISearchForm) => {
@@ -148,22 +134,15 @@ export default function ClassPass() {
                 refundDateTo: searchParams?.refundDateTo,
                 searchPayName: searchParams?.searchPayName,
                 searchName: searchParams?.searchName,
-                useYn: selectedUseYn !== 0 ? mockDataYN.find(yn => yn.codeId === selectedUseYn)?.dtlNm : undefined,
-                refundYn: selectedRefundYn !== 0 ? mockDataYN.find(yn => yn.codeId === selectedRefundYn)?.dtlNm : undefined,
-                payMethod: selectedPayMethod !== 0 ? mockDataPAYMET.find(pay => pay.codeId === selectedPayMethod)?.dtlNm : undefined,
+                useYn: selectedUseYn ? YN?.find(yn => yn.codeId === selectedUseYn)?.dtlNm : undefined,
+                refundYn: selectedRefundYn ? YN?.find(yn => yn.codeId === selectedRefundYn)?.dtlNm : undefined,
+                payMethod: selectedPayMethod ? PAYMENT?.find(pay => pay.codeId === selectedPayMethod)?.dtlNm : undefined,
             };
 
-            console.log('API 요청 파라미터:', params);
             const response = await clsPassApi.getClsPassList(params);
-            console.log('API 응답:', response.data);
-
-            // 백엔드 응답 데이터를 IClsPassData 형태로 변환
-            const apiData = response.data as IClsPassData[];
-            setMockData(apiData);
+            setData(response.data);
         } catch (error) {
             console.error('데이터 로드 실패:', error);
-            // 에러 시 mock 데이터로 fallback
-            setMockData(generateMockData(50));
         } finally {
             setIsLoading(false);
         }
@@ -171,18 +150,14 @@ export default function ClassPass() {
 
     // 컴포넌트 마운트 시 초기 데이터 로드
     useEffect(() => {
-        loadClsPassData();
+        const initializeData = async () => {
+            await loadCommonCode(); // 공통 코드 먼저 로드
+            await loadClsPassData();
+        };
+        initializeData();
     }, []);
 
     useEffect(() => {
-        console.log('📝 Form State:', {
-            payDateFrom: formValues.payDateFrom,
-            payDateTo: formValues.payDateTo,
-            refundDateFrom: formValues.refundDateFrom,
-            refundDateTo: formValues.refundDateTo,
-            searchPayName: formValues.searchPayName,
-            searchName: formValues.searchName,
-        });
     }, [formValues]);
 
     // 헤더 정보 세팅
@@ -195,7 +170,6 @@ export default function ClassPass() {
 
     // 검색 실행
     const onSubmit = (data: ISearchForm) => {
-        console.log('검색 데이터:', data);
         loadClsPassData(data);
     };
 
@@ -220,9 +194,9 @@ export default function ClassPass() {
         return (
             <ClsPassDetailView
                 title="결제수강권 등록"
-                userId={selectedItem?.userId || ''}
+                userId={selectedItem?.userId || 0}
                 userNm={selectedItem?.userNm || ''}
-                clsPassId={selectedItem?.clsPassId || ''}
+                clsPassId={selectedItem?.clsPassId || 0}
                 useAge={5}
                 authority={1}
                 onCancel={handleBackToList}
@@ -324,7 +298,7 @@ export default function ClassPass() {
                 <SelectBox
                     id="use_yn"
                     label="상품 사용 여부"
-                    options={mockDataPAYMET}
+                    options={YN ?? []}
                     icon={iconFilter}
                     className="w-180px"
                     value={selectedUseYn}
@@ -333,7 +307,7 @@ export default function ClassPass() {
                 <SelectBox
                     id="refund_yn"
                     label="환불 여부"
-                    options={mockDataYN}
+                    options={YN ?? []}
                     className="w-180px"
                     value={selectedRefundYn}
                     onChange={(value) => setSelectedRefundYn(value)}
@@ -341,7 +315,7 @@ export default function ClassPass() {
                 <SelectBox
                     id="pay_method"
                     label="결제 수단"
-                    options={mockDataPAYMET}
+                    options={PAYMENT ?? []}
                     className="w-180px"
                     value={selectedPayMethod}
                     onChange={(value) => setSelectedPayMethod(value)}

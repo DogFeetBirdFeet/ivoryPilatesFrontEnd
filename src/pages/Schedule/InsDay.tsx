@@ -5,6 +5,8 @@ import CenterAndAcctInfo from '@/features/Schedule/items/CenterAndAcctInfo';
 import IconSchedule from '@/assets/icon/yellow/icon_sche.png';
 import SectionDailySchedule from '@/features/Schedule/sections/SectionDailySchedule';
 import iconClock from '@/assets/icon_clock.png';
+import iconPlus from '@/assets/icon/white/icon_plus.png';
+import BtnIconText from '@/common/components/buttons/BtnIconText';
 
 interface IInsDay {
     centerInfo: boolean;
@@ -95,14 +97,14 @@ export default function InsDay() {
                             {/* 오른쪽 섹션 - 버튼들 */}
                             <div className="flex gap-3">
                                 {/* 스케줄 추가 버튼 */}
-                                <button
-                                    className="bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-lg flex items-center gap-2 font-bold transition-colors">
-                                    <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                                        <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
-                                              clipRule="evenodd"/>
-                                    </svg>
-                                    스케줄 추가하기
-                                </button>
+                                <BtnIconText
+                                    type="A"
+                                    icon={iconPlus}
+                                    text="스케줄 추가하기"
+                                    onClick={() => {
+                                        console.log('스케줄 추가');
+                                    }}
+                                />
                             </div>
                         </div>
                     </div>
