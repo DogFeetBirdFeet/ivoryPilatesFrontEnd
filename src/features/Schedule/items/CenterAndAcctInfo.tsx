@@ -3,27 +3,26 @@ import pilatesLogo from '@/assets/pilates_logo.png';
 import iconSettings from '@/assets/icon/purple/icon_setting.png';
 import iconVac from '@/assets/icon/purple/icon_vac.png';
 import BtnIconText from '@/common/components/buttons/BtnIconText';
-
-interface IInsDay {
-    centerInfo: boolean;
-    acctInfo: string[];
-}
+import type {IInsDay} from '@/features/Schedule/type/types';
 
 interface CenterAndAcctInfoProps {
-    mockData: IInsDay[];
+    data?: IInsDay[];
 }
 
-export default function CenterAndAcctInfo({mockData}: CenterAndAcctInfoProps) {
+export default function CenterAndAcctInfo({data}: CenterAndAcctInfoProps) {
     return (
         <>
             <div className="flex-1 flex items-center justify-between mb-10px">
                 <div className="flex items-center gap-4">
                     <img src={pilatesLogo} className="w-70px h-70px" draggable="false" alt={''}/>
                     <p className="text-xl font-bold">센터 </p>
-                    {mockData[0].centerInfo && (
+                    {data?.[0]?.centerOffYn === 'Y' && (
                         <p className="text-xl text-red text-center">휴무일</p>
                     )}
-                    {!mockData[0].centerInfo && (
+                    {data?.[0]?.centerOffYn === 'N' && (
+                        <p className="text-xl text-black text-center">휴무일이 아닙니다</p>
+                    )}
+                    {data?.[0]?.centerOffYn === undefined && (
                         <p className="text-xl text-black text-center">휴무일이 아닙니다</p>
                     )}
                 </div>
@@ -40,14 +39,17 @@ export default function CenterAndAcctInfo({mockData}: CenterAndAcctInfoProps) {
                 <div className="flex items-center gap-4">
                     <img src={pilatesAcct} className="w-70px h-70px" draggable="false" alt={''}/>
                     <p className="text-xl font-bold">강사 </p>
-                    {mockData[0].acctInfo.length > 0 && (
+                    {data?.[0]?.acctOffYn === 'Y' && (
                         <>
-                            {mockData[0].acctInfo.map((acct) => (
+                            {data?.[0].offAcctNm.split(',').map((acct) => (
                                 <p key={acct} className="text-xl text-red text-center">{acct} 휴가</p>
                             ))}
                         </>
                     )}
-                    {mockData[0].acctInfo.length === 0 && (
+                    {data?.[0]?.acctOffYn === 'N' && (
+                        <p className="text-xl text-black text-center">휴가자가 없습니다</p>
+                    )}
+                    {data?.[0]?.acctOffYn === undefined && (
                         <p className="text-xl text-black text-center">휴가자가 없습니다</p>
                     )}
                 </div>

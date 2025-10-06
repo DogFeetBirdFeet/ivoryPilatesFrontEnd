@@ -7,18 +7,9 @@ import SectionDailySchedule from '@/features/Schedule/sections/SectionDailySched
 import iconClock from '@/assets/icon_clock.png';
 import iconPlus from '@/assets/icon/white/icon_plus.png';
 import BtnIconText from '@/common/components/buttons/BtnIconText';
-
-interface IInsDay {
-    centerInfo: boolean;
-    acctInfo: string[];
-}
-
-const generateMockData = (count: number): IInsDay[] => {
-    return Array.from({length: count}, (_, i) => ({
-        centerInfo: Math.random() > 0.5,
-        acctInfo: Math.random() > 0.5 ? [] : ["강사 " + i, "강사 " + (i + 1), "강사 " + (i + 2)],
-    }));
-};
+import ScheduleInfo from '@/features/Schedule/items/ScheduleInfo';
+import {scheduleApi} from '@/services/api';
+import type {IInsDay} from '@/features/Schedule/type/types';
 
 export default function InsDay() {
 
@@ -26,8 +17,23 @@ export default function InsDay() {
     const [currentWeek, setCurrentWeek] = useState<Date>(() => new Date());
     const [curDate, setCurDate] = useState<number>(today.getDate());
     const [selectedDayOfWeek, setSelectedDayOfWeek] = useState<number>(today.getDay());
-    const [mockData] = useState<IInsDay[]>(generateMockData(1));
+    const [data, setData] = useState<IInsDay[]>([]);
     const [selectedRowIndex, setSelectedRowIndex] = useState<string | null>(`slot-${new Date().getHours()}`);
+    const [, setIsLoading] = useState<boolean>(false);
+
+    const loadScheduleData = async (param: { schDate: string }) => {
+        setIsLoading(true);
+        try {
+            const response = await scheduleApi.getScheduleList(param);
+            setData(response?.data || []);
+
+            console.log(response?.data);
+        } catch (error) {
+            console.error('데이터 로드 실패:', error);
+        } finally {
+            setIsLoading(false);
+        }
+    }
 
     // 선택된 시간에서 시간 범위 계산
     const getTimeRange = () => {
@@ -46,6 +52,18 @@ export default function InsDay() {
 
     // 헤더정보 세팅
     const {setHeaderTitle, setHeaderIcon} = useLayoutContext();
+
+    useEffect(() => {
+        // 현재 선택된 날짜를 YYYYMMDD 형식으로 변환
+        const selectedDate = new Date(currentWeek.getFullYear(), currentWeek.getMonth(), curDate);
+        const schDate = selectedDate.getFullYear().toString() +
+            (selectedDate.getMonth() + 1).toString().padStart(2, '0') +
+            selectedDate.getDate().toString().padStart(2, '0');
+
+        const initialFormValues = {schDate: schDate};
+        loadScheduleData(initialFormValues);
+
+    }, [curDate, currentWeek]);
 
     useEffect(() => {
         setHeaderTitle('강사 일간 일정');
@@ -69,10 +87,11 @@ export default function InsDay() {
             <div className="flex-1 flex flex-col py-20px">
                 <div className="flex gap-20px mb-15px">
                     <div className="flex-1 bg-ppLight">
-                        <CenterAndAcctInfo mockData={mockData}/>
+                        <CenterAndAcctInfo data={data}/>
                         <div className="flex-1 flex items-center justify-center bg-white py-20px">
                             <SectionDailySchedule
                                 selectedRowIndex={selectedRowIndex}
+                                data={data}
                                 setSelectedRowIndex={setSelectedRowIndex}
                             />
                         </div>
@@ -87,9 +106,14 @@ export default function InsDay() {
                                         {timeRange.start} ~ {timeRange.end}
                                     </div>
                                     <div className="text-lg">
-                                        <span className="text-red-500">강사 휴식</span>
-                                        <span className="text-gray-600 mx-2">|</span>
-                                        <span className="text-gray-600">원예진 강사</span>
+                                        {data?.find(item =>
+                                            item.schedTime === parseInt(selectedRowIndex?.replace('slot-', '') || '0').toString()
+                                        )?.acctOffYn === 'Y' && <span className="text-red">강사 휴식 | </span>}
+                                        <span className="text-gray-600">
+                                            {data?.find(item =>
+                                                item.schedTime === parseInt(selectedRowIndex?.replace('slot-', '') || '0').toString()
+                                            )?.trainerNm || '원예진'} 강사
+                                        </span>
                                     </div>
                                 </div>
                             </div>
@@ -106,6 +130,13 @@ export default function InsDay() {
                                     }}
                                 />
                             </div>
+                        </div>
+                        <div className="flex items-center justify-between py-20px">
+                            <ScheduleInfo
+                                data={data?.find(item =>
+                                    item.schedTime === parseInt(selectedRowIndex?.replace('slot-', '') || '0').toString()
+                                )}
+                            />
                         </div>
                     </div>
                 </div>

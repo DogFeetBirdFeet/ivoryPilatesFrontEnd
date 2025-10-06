@@ -1,50 +1,17 @@
 import {useEffect, useMemo, useState} from 'react';
 import ScheduleItem from '@/features/Schedule/items/ScheduleItem';
-import type {ITimeSlot} from '@/features/Schedule/types';
+import type {IInsDay, ITimeSlot} from '@/features/Schedule/type/types';
 
 interface SectionDailyScheduleProps {
     selectedRowIndex?: string | null;
     setSelectedRowIndex?: (index: string | null) => void;
+    data?: IInsDay[];
 }
-
-// 스케줄 Mock 데이터
-const mockApiData = [
-    {
-        hour: 9,
-        schedules: [{id: '1', pix: true, cusNm: '김혜준', trainerNm: '원예진', status: 'COM' as const, type: 'S' as const}],
-    },
-    {
-        hour: 10,
-        schedules: [{id: '2', pix: true, cusNm: '김혜준', trainerNm: '원예진', status: 'COM' as const, type: 'S' as const}],
-    },
-    {
-        hour: 11,
-        schedules: [{id: '3', pix: false, cusNm: '최호연', trainerNm: '김용진', status: 'NOS' as const, type: 'S' as const}],
-    },
-    {
-        hour: 12,
-        schedules: [{id: '4', pix: true, cusNm: '신화원', trainerNm: '원예진', status: 'SCH' as const, type: 'S' as const}],
-    },
-    {
-        hour: 13,
-        schedules: [{id: '5', pix: false, cusNm: '나큰솔', trainerNm: '원예진', status: 'SCH' as const, type: 'S' as const}],
-    },
-    {
-        hour: 16,
-        schedules: [
-            {id: '6', pix: true, cusNm: '신화원', trainerNm: '최호연', status: 'SCH' as const, type: 'D' as const},
-            {id: '7', pix: true, cusNm: '김용진', trainerNm: '최호연', status: 'SCH' as const, type: 'D' as const},
-        ],
-    },
-    {
-        hour: 17,
-        schedules: [{id: '8', pix: false, cusNm: '나큰솔', trainerNm: '김혜준', status: 'SCH' as const, type: 'S' as const}],
-    },
-];
 
 export default function SectionDailySchedule({
                                                  selectedRowIndex: propSelectedRowIndex,
-                                                 setSelectedRowIndex: propSetSelectedRowIndex
+                                                 setSelectedRowIndex: propSetSelectedRowIndex,
+                                                 data: data,
                                              }: SectionDailyScheduleProps = {}) {
     // 현재 시간대만 추적 (시간이 바뀔 때만 렌더링)
     const [currentHour, setCurrentHour] = useState(new Date().getHours());
@@ -73,18 +40,19 @@ export default function SectionDailySchedule({
 
         for (let hour = 9; hour <= 21; hour++) {
             // 해당 시간의 스케줄 데이터 찾기
-            const scheduleData = mockApiData.find((item) => item.hour === hour);
-            const scheduleItems = scheduleData ? scheduleData.schedules : null;
+            const timeData = data?.filter(item =>
+                item.schedTime === hour.toString()
+            ) || [];
 
             slots.push({
                 id: `slot-${hour}`,
                 time: hour,
-                schedule: scheduleItems
+                schedule: timeData.length > 0 ? timeData : null
             });
         }
 
         return slots;
-    }, [currentHour]); // TODO : fetch 후 재계산 필요
+    }, [data, currentHour]);
 
     const formatTime = (hour: number): string => {
         const timeString = `${hour.toString().padStart(2, '0')}:00`;
@@ -128,7 +96,10 @@ export default function SectionDailySchedule({
                                     <div className="flex flex-col gap-10px">
                                         {slot.schedule ? (
                                             slot.schedule.map((schedule) => (
-                                                <ScheduleItem key={`schedule_${schedule.id}`} schedule={schedule}/>
+                                                <ScheduleItem
+                                                    key={`schedule_${schedule.schedId}`}
+                                                    schedule={schedule}
+                                                />
                                             ))
                                         ) : (
                                             <ScheduleItem/>

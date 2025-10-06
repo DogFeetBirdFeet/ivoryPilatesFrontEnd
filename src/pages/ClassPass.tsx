@@ -65,10 +65,10 @@ export default function ClassPass() {
     // react-hook-form 검색조건
     const {watch, setValue, handleSubmit} = useForm<ISearchForm>({
         defaultValues: {
-            payDateFrom: dateFormatToString(new Date()),
+            payDateFrom: dateFormatToString(new Date(new Date().getFullYear(), 0, 1)),
             payDateTo: dateFormatToString(new Date()),
-            refundDateFrom: dateFormatToString(new Date()),
-            refundDateTo: dateFormatToString(new Date()),
+            refundDateFrom: '',
+            refundDateTo: '',
             searchPayName: '',
             searchName: ''
         },
@@ -128,15 +128,15 @@ export default function ClassPass() {
         setIsLoading(true);
         try {
             const params = {
+                searchName: searchParams?.searchName,
+                searchPayName: searchParams?.searchPayName,
+                payMethod: selectedPayMethod ? PAYMENT?.find(pay => pay.codeId === selectedPayMethod)?.dtlNm : undefined,
+                useYn: selectedUseYn ? YN?.find(yn => yn.codeId === selectedUseYn)?.dtlNm : undefined,
+                refundYn: selectedRefundYn ? YN?.find(yn => yn.codeId === selectedRefundYn)?.dtlNm : undefined,
                 payDateFrom: searchParams?.payDateFrom,
                 payDateTo: searchParams?.payDateTo,
                 refundDateFrom: searchParams?.refundDateFrom,
-                refundDateTo: searchParams?.refundDateTo,
-                searchPayName: searchParams?.searchPayName,
-                searchName: searchParams?.searchName,
-                useYn: selectedUseYn ? YN?.find(yn => yn.codeId === selectedUseYn)?.dtlNm : undefined,
-                refundYn: selectedRefundYn ? YN?.find(yn => yn.codeId === selectedRefundYn)?.dtlNm : undefined,
-                payMethod: selectedPayMethod ? PAYMENT?.find(pay => pay.codeId === selectedPayMethod)?.dtlNm : undefined,
+                refundDateTo: searchParams?.refundDateTo
             };
 
             const response = await clsPassApi.getClsPassList(params);
@@ -152,13 +152,27 @@ export default function ClassPass() {
     useEffect(() => {
         const initializeData = async () => {
             await loadCommonCode(); // 공통 코드 먼저 로드
-            await loadClsPassData();
+            // 초기 폼 값으로 데이터 로드
+            const initialFormValues = {
+                payDateFrom: dateFormatToString(new Date(new Date().getFullYear(), 0, 1)),
+                payDateTo: dateFormatToString(new Date()),
+                refundDateFrom: '',
+                refundDateTo: '',
+                searchPayName: '',
+                searchName: ''
+            };
+            await loadClsPassData(initialFormValues);
         };
         initializeData();
-    }, []);
+    }, [watch]);
 
+    // 조회 조건 변경 시 자동 데이터 조회
     useEffect(() => {
-    }, [formValues]);
+        // 초기 로드가 완료된 후에만 실행
+        if (PAYMENT && YN) {
+            loadClsPassData(formValues);
+        }
+    }, [formValues.payDateFrom, formValues.payDateTo, formValues.refundDateFrom, formValues.refundDateTo, formValues.searchName, formValues.searchPayName]);
 
     // 헤더 정보 세팅
     const {setHeaderTitle, setHeaderIcon} = useLayoutContext();
