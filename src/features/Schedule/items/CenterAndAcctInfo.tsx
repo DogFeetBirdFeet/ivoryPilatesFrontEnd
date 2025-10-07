@@ -17,7 +17,7 @@ export default function CenterAndAcctInfo({data}: CenterAndAcctInfoProps) {
     const overlay = useOverlay();
     const navigate = useNavigate();
 
-    function handleCneterOffConfirm() {
+    function handleCenterOffConfirm() {
 
         let isSchExists = false;
         data?.map((item) => {
@@ -49,7 +49,7 @@ export default function CenterAndAcctInfo({data}: CenterAndAcctInfoProps) {
         }
     }
 
-    function handleCneterOnConfirm() {
+    function handleCenterOnConfirm() {
         overlay.showPopup(<PopupConfirm titleText="센터 휴무/영업 설정"
                                         onClickConfirm={() => handleConfirm('영업일')}
                                         onClickBack={handleBack} confirmText="확인"
@@ -59,6 +59,36 @@ export default function CenterAndAcctInfo({data}: CenterAndAcctInfoProps) {
                 <p>영업일일로 변경하시겠습니까?</p>
             </div>
         </PopupConfirm>)
+    }
+
+    function handleChangeCenterOffConfirm() {
+        const holyYn = data?.[0]?.holYn;
+
+        if (undefined === holyYn || holyYn === 'N')
+        {
+            overlay.showPopup(<PopupConfirm titleText="센터 휴무/영업 설정"
+                                            onClickConfirm={handleCenterOnConfirm}
+                                            onClickBack={handleBack} confirmText="확인"
+                                            cancelText="취소">
+                <div>
+                    <p>{data?.[0].year}년 {data?.[0].month}월 {data?.[0].day}일은 센터 영업일입니다.</p>
+                    <p>휴무일로 변경하시겠습니까?</p>
+                </div>
+            </PopupConfirm>)
+        }
+
+        if (holyYn === 'Y')
+        {
+            overlay.showPopup(<PopupConfirm titleText="센터 휴무/영업 설정"
+                                            onClickConfirm={handleCenterOffConfirm}
+                                            onClickBack={handleBack} confirmText="확인"
+                                            cancelText="취소">
+                <div>
+                    <p>{data?.[0].year}년 {data?.[0].month}월 {data?.[0].day}일은 공휴일입니다.</p>
+                    <p>센터 영업일로 변경하시겠습니까?</p>
+                </div>
+            </PopupConfirm>)
+        }
     }
 
     function handleConfirm(text: string) {
@@ -75,7 +105,7 @@ export default function CenterAndAcctInfo({data}: CenterAndAcctInfoProps) {
         <>
             <div className="flex-1 flex items-center justify-between mb-10px">
                 <div className="flex items-center gap-4">
-                    <img src={pilatesLogo} className="w-70px h-70px" draggable="false" alt={''}/>
+                    <img src={pilatesLogo} className="w-70px h-70px" draggable="false" alt={'필라테스 로고'}/>
                     <p className="text-xl font-bold">센터 </p>
                     {data?.[0]?.centerOffYn === 'Y' && (
                         <>
@@ -107,40 +137,9 @@ export default function CenterAndAcctInfo({data}: CenterAndAcctInfoProps) {
                     icon={iconSettings}
                     text="휴무 변경하기"
                     onClick={() => {
-                        {
-                            data?.[0]?.holYn === 'Y' && (
-                                <>
-                                    {data?.[0]?.centerOffYn === 'Y' ? (
-                                        overlay.showPopup(<PopupConfirm titleText="센터 휴무/영업 설정"
-                                                                        onClickConfirm={handleCneterOffConfirm}
-                                                                        onClickBack={handleBack} confirmText="확인"
-                                                                        cancelText="취소">
-                                            <div>
-                                                <p>{data?.[0].year}년 {data?.[0].month}월 {data?.[0].day}일은 공휴일입니다.</p>
-                                                <p>센터 영업일로 변경하시겠습니까?</p>
-                                            </div>
-                                        </PopupConfirm>)
-                                    ) : (
-                                        overlay.showPopup(<PopupConfirm titleText="센터 휴무/영업 설정"
-                                                                        onClickConfirm={handleCneterOnConfirm}
-                                                                        onClickBack={handleBack} confirmText="확인"
-                                                                        cancelText="취소">
-                                            <div>
-                                                <p>{data?.[0].year}년 {data?.[0].month}월 {data?.[0].day}일은 센터 영업일입니다.</p>
-                                                <p>휴무일로 변경하시겠습니까?</p>
-                                            </div>
-                                        </PopupConfirm>)
-                                    )}
-                                </>
-                            )
-                            data?.[0]?.holYn === 'N' && (
-                                <>
-                                    {handleCneterOffConfirm()}
-                                </>
-                            )
-                        }
-                    }}
-                />
+                        handleChangeCenterOffConfirm();
+                    }
+                    }/>
             </div>
             <div className="flex-1 flex items-center justify-between mb-10px">
                 <div className="flex items-center gap-4">

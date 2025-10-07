@@ -83,9 +83,7 @@ export default function ScheduleInfo({data}: { data?: IInsDay }) {
                                             </PopupConfirm>);
                                         }}
                                     />
-                                ) : (
-                                    null
-                                )}
+                                ) : <></>}
                             </div>
                             <div className="flex items-center gap-4">
                                 <span className="text-xl text-black font-bold w-28">수업 상태</span>

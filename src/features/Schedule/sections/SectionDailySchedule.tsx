@@ -34,7 +34,7 @@ export default function SectionDailySchedule({
         }, 10000);
 
         return () => clearInterval(interval);
-    }, [currentHour]);
+    }, [currentHour, setSelectedRowIndex]);
 
     // 13개 타임슬롯 생성 및 데이터 매핑
     const timeSlots: ITimeSlot[] = useMemo(() => {
@@ -54,7 +54,7 @@ export default function SectionDailySchedule({
         }
 
         return slots;
-    }, [data, currentHour]);
+    }, [data]);
 
     const formatTime = (hour: number): string => {
         const timeString = `${hour.toString().padStart(2, '0')}:00`;
