@@ -3,8 +3,14 @@ import imgPlus from '@/assets/dashboard/plus.png';
 import iconPix from '@/assets/icon_pix.png';
 import type {IInsDay} from '@/features/Schedule/type/types';
 import {SCHEDULE_STATUS} from '@/constants/schedule';
+import BtnIconText from '@/common/components/buttons/BtnIconText';
 
-export default function ScheduleItem({schedule}: { schedule?: IInsDay }) {
+interface ScheduleItemProps {
+    schedule?: IInsDay;
+    onAddSchedule?: () => void;
+}
+
+export default function ScheduleItem({schedule, onAddSchedule}: ScheduleItemProps) {
     // 회원명 포맷팅 (2:1 수업인 경우 (2:1) 추가)
     const formatCustomerName = (schedule: IInsDay): string => {
         return schedule.grpYn === 'Y' ? `${schedule.cusNm} 회원님 (2:1)` : `${schedule.cusNm} 회원님`;
@@ -12,7 +18,7 @@ export default function ScheduleItem({schedule}: { schedule?: IInsDay }) {
 
     return (
         <>
-            {schedule ? (
+            {schedule?.schedId ? (
                 <div
                     key={schedule.schedId}
                     className="grid grid-cols-[40px_160px_160px_160px] gap-20px items-center place-items-center"
@@ -29,11 +35,15 @@ export default function ScheduleItem({schedule}: { schedule?: IInsDay }) {
             ) : (
                 <div className="grid grid-cols-[1fr_120px] gap-20px items-center place-items-center">
                     <div className="text-lightGray text-base">예약된 수업이 없습니다</div>
-                    <button
-                        className="flex items-center gap-5px bg-[#D6D4EE] text-base text-gray px-10px py-5px rounded-full">
-                        <img src={imgPlus} className="w-15px h-15px" alt={'plus'}/>
-                        스케줄 추가
-                    </button>
+                    <BtnIconText
+                        type="B"
+                        icon={imgPlus}
+                        text="스케줄 추가하기"
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            onAddSchedule?.();
+                        }}
+                    />
                 </div>
             )}
         </>

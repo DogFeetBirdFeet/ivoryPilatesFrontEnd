@@ -8,6 +8,7 @@ import iconClock from '@/assets/icon_clock.png';
 import iconPlus from '@/assets/icon/white/icon_plus.png';
 import BtnIconText from '@/common/components/buttons/BtnIconText';
 import ScheduleInfo from '@/features/Schedule/items/ScheduleInfo';
+import ScheduleDetailInfo from '@/features/Schedule/items/ScheduleDetailInfo';
 import {scheduleApi} from '@/services/api';
 import type {IInsDay} from '@/features/Schedule/type/types';
 
@@ -20,6 +21,13 @@ export default function InsDay() {
     const [data, setData] = useState<IInsDay[]>([]);
     const [selectedRowIndex, setSelectedRowIndex] = useState<string | null>(`slot-${new Date().getHours()}`);
     const [, setIsLoading] = useState<boolean>(false);
+    const [isAddingSchedule, setIsAddingSchedule] = useState<boolean>(false);
+
+    // 선택된 로우가 변경될 때 편집/추가 상태 초기화
+    const handleRowSelection = (index: string | null) => {
+        setSelectedRowIndex(index);
+        setIsAddingSchedule(false); // 스케줄 추가 상태도 초기화
+    };
 
     const loadScheduleData = async (param: { schDate: string }) => {
         setIsLoading(true);
@@ -49,6 +57,21 @@ export default function InsDay() {
     };
 
     const timeRange = getTimeRange();
+
+    // 스케줄 추가 핸들러
+    function handleAddSchedule() {
+        setIsAddingSchedule(true);
+    }
+
+    function handleCancelAddSchedule() {
+        setIsAddingSchedule(false);
+    }
+
+    function handleSaveAddSchedule() {
+        // 스케줄 추가 로직 구현
+        console.log('스케줄 추가 저장');
+        setIsAddingSchedule(false);
+    }
 
     // 헤더정보 세팅
     const {setHeaderTitle, setHeaderIcon} = useLayoutContext();
@@ -92,7 +115,8 @@ export default function InsDay() {
                             <SectionDailySchedule
                                 selectedRowIndex={selectedRowIndex}
                                 data={data}
-                                setSelectedRowIndex={setSelectedRowIndex}
+                                setSelectedRowIndex={handleRowSelection}
+                                onAddSchedule={handleAddSchedule}
                             />
                         </div>
                     </div>
@@ -119,25 +143,35 @@ export default function InsDay() {
                             </div>
 
                             {/* 오른쪽 섹션 - 버튼들 */}
-                            <div className="flex gap-3">
+                            <div className="flex gap-15">
                                 {/* 스케줄 추가 버튼 */}
                                 <BtnIconText
                                     type="A"
                                     icon={iconPlus}
                                     text="스케줄 추가하기"
-                                    onClick={() => {
-                                        console.log('스케줄 추가');
-                                    }}
+                                    onClick={handleAddSchedule}
                                 />
                             </div>
                         </div>
-                        <div className="flex items-center justify-between py-20px">
+                        <div className="flex items-center justify-between py-40px">
                             <ScheduleInfo
+                                key={selectedRowIndex}
                                 data={data?.find(item =>
                                     item.schedTime === parseInt(selectedRowIndex?.replace('slot-', '') || '0').toString()
                                 )}
                             />
                         </div>
+
+                        {/* 스케줄 추가 폼 */}
+                        {isAddingSchedule && (
+                            <div className="mt-4">
+                                <ScheduleDetailInfo
+                                    data={undefined}
+                                    onCancel={handleCancelAddSchedule}
+                                    onSave={handleSaveAddSchedule}
+                                />
+                            </div>
+                        )}
                     </div>
                 </div>
             </div>

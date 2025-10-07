@@ -6,12 +6,14 @@ interface SectionDailyScheduleProps {
     selectedRowIndex?: string | null;
     setSelectedRowIndex?: (index: string | null) => void;
     data?: IInsDay[];
+    onAddSchedule?: () => void;
 }
 
 export default function SectionDailySchedule({
                                                  selectedRowIndex: propSelectedRowIndex,
                                                  setSelectedRowIndex: propSetSelectedRowIndex,
                                                  data: data,
+                                                 onAddSchedule,
                                              }: SectionDailyScheduleProps = {}) {
     // 현재 시간대만 추적 (시간이 바뀔 때만 렌더링)
     const [currentHour, setCurrentHour] = useState(new Date().getHours());
@@ -99,10 +101,11 @@ export default function SectionDailySchedule({
                                                 <ScheduleItem
                                                     key={`schedule_${schedule.schedId}`}
                                                     schedule={schedule}
+                                                    onAddSchedule={onAddSchedule}
                                                 />
                                             ))
                                         ) : (
-                                            <ScheduleItem/>
+                                            <ScheduleItem onAddSchedule={onAddSchedule}/>
                                         )}
                                     </div>
                                 </div>
