@@ -1,13 +1,50 @@
 import bgImg from '@/assets/login/login_background.png';
+import aboIcon from '@/assets/login/icon_abo.png';
+import loginIcon from '@/assets/login/icon_login.png';
+import loginErrorIcon from '@/assets/login/icon_login_error.png';
 import {
     motion,
     type HTMLMotionSvgProps,
     type HTMLMotionDivProps,
 } from 'framer-motion';
+import { FadeLoader  } from 'react-spinners';
+import React, { useState } from 'react';
 export const MotionSvg = motion('svg') as React.FC<HTMLMotionSvgProps>;
 export const MotionDiv = motion('div') as React.FC<HTMLMotionDivProps>;
 
 export default function Login() {
+    const loadingText = [
+        "강사 / 회원 스케줄을 불러오는 중...",
+        "회원 목록을 불러오는 중...",
+        "휴일이 언제인지 체크하는 중...",
+        "수업 일지를 작성하는 중..."
+    ]
+    const override = {
+        display: "block",
+        margin: "0 auto",
+    };
+    const [loading, setLoading] = useState(true);
+    function loginCheck(){
+         const id = document.getElementById('login_id') as HTMLInputElement;
+         const pw = document.getElementById('login_pw') as HTMLInputElement;
+         const loading = document.getElementById('loading') as HTMLInputElement;
+         const loading_text = document.getElementById('loading_text') as HTMLInputElement;
+         const inputBox = document.getElementById('input_box') as HTMLInputElement;
+         const errorMsg = document.getElementById('error_msg');
+         if(errorMsg && loading && inputBox){
+             if(id.value === "test" && pw.value === "test1234"){
+                 errorMsg.style.display = "none";
+                 inputBox.style.display = "none";
+                 loading.style.display = "flex";
+                 const random = Math.floor(Math.random() * loadingText.length);
+                 loading_text.innerText = loadingText[random];
+             }else{
+                 loading.style.display = "none";
+                 errorMsg.style.display = "flex";
+             }
+         }
+    }
+
     return (
     <div className="h-lvh  w-full overflow-y-hidden relative" style={{
         background: `url(${bgImg}) no-repeat center center`,
@@ -33,7 +70,7 @@ export default function Login() {
             />
         </MotionSvg>
         <MotionDiv
-            className={`w-[500px] h-[240px] px-80px py-100px rounded-[40px] bg-white absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2`}
+            className={`w-[600px] h-[600px] px-80px py-100px rounded-[40px] bg-white absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col justify-center`}
             initial={{
                 translateX: "-50%",
                 translateY: "50%",
@@ -46,9 +83,47 @@ export default function Login() {
             }}
             transition={{ duration: 0.3, ease: 'easeOut', delay: 3  }}
         >
-            {/*<img src={} />*/}
-            <div>
-
+            <div className="flex flex-row justify-center gap-10px items-center mb-60px">
+                <img src={aboIcon} />
+                <h1 className="text-[64px] font-black leading-[61px] text-ppm">IVORY<br/>PILATES</h1>
+            </div>
+            <div id="input_box" className="flex flex-row justify-center gap-20px items-center">
+                <div className="flex flex-col gap-15px items-center">
+                    <div>
+                        <input
+                            type="text"
+                            id="login_id"
+                            className="w-[320px] h-[70px] rounded-[35px] border border-gray px-[32px] py-[12px] text-[24px] placeholder:text-[24px] placeholder:text-gray"
+                            placeholder="ID"
+                        />
+                    </div>
+                    <div>
+                        <input
+                            type="password"
+                            id="login_pw"
+                            className="w-[320px] h-[70px] rounded-[35px] border border-gray px-[32px] py-[12px] text-[24px] placeholder:text-[24px] placeholder:text-gray"
+                            placeholder="PASSWORD"
+                        />
+                    </div>
+                </div>
+                <button className="w-[100px] min-w-[100px] h-[100px] bg-ppm rounded-[50%] flex justify-center items-center" onClick={() => loginCheck()}>
+                    <img src={loginIcon} />
+                </button>
+            </div>
+            <div id="error_msg" className="flex flex-row gap-10px items-center mt-30px hidden">
+                <img src={loginErrorIcon}/>
+                <p className="text-red text-[16px]">아이디 또는 비밀번호를 잘못 입력하였습니다.</p>
+            </div>
+            <div id="loading" className="flex flex-col gap-30px items-center py-[16px] px-[10px] hidden">
+                <FadeLoader
+                    color={"#123abc"}
+                    loading={loading}
+                    cssOverride={override}
+                    size={150}
+                    aria-label="Loading Spinner"
+                    data-testid="loader"
+                />
+                <p id="loading_text" className="text-[20px] text-gray font-medium">강사 / 회원 스케줄을 불러오는 중...</p>
             </div>
         </MotionDiv>
     </div>
