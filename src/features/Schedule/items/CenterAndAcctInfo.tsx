@@ -105,7 +105,7 @@ export default function CenterAndAcctInfo({data}: CenterAndAcctInfoProps) {
         <>
             <div className="flex-1 flex items-center justify-between mb-10px">
                 <div className="flex items-center gap-4">
-                    <img src={pilatesLogo} className="w-70px h-70px" draggable="false" alt={'필라테스 로고'}/>
+                    <img src={pilatesLogo} className="w-35px h-35px m-10px" draggable="false" alt={'필라테스 로고'}/>
                     <p className="text-xl font-bold">센터 </p>
                     {data?.[0]?.centerOffYn === 'Y' && (
                         <>
@@ -129,21 +129,24 @@ export default function CenterAndAcctInfo({data}: CenterAndAcctInfoProps) {
                         </>
                     )}
                     {data?.[0] === undefined && (
-                        <p className="text-xl text-black text-center">휴무일이 아닙니다</p>
+                        <p className="text-xl text-gray text-center">휴무일이 아닙니다</p>
                     )}
                 </div>
-                <BtnIconText
-                    type="B"
-                    icon={iconSettings}
-                    text="휴무 변경하기"
-                    onClick={() => {
-                        handleChangeCenterOffConfirm();
-                    }
-                    }/>
+                <div className="m-10px">  
+                    <BtnIconText
+                        type="B"
+                        icon={iconSettings}
+                        text="휴무 변경하기"
+                        onClick={() => {
+                            handleChangeCenterOffConfirm();
+                        }
+
+                        }/>
+                </div>
             </div>
             <div className="flex-1 flex items-center justify-between mb-10px">
                 <div className="flex items-center gap-4">
-                    <img src={pilatesAcct} className="w-70px h-70px" draggable="false" alt={''}/>
+                    <img src={pilatesAcct} className="w-35px h-35px m-10px" draggable="false" alt={''}/>
                     <p className="text-xl font-bold">강사 </p>
                     {data?.[0]?.acctOffYn === 'Y' && (
                         <>
@@ -153,20 +156,22 @@ export default function CenterAndAcctInfo({data}: CenterAndAcctInfoProps) {
                         </>
                     )}
                     {data?.[0]?.acctOffYn === 'N' && (
-                        <p className="text-xl text-black text-center">휴가자가 없습니다</p>
+                        <p className="text-xl text-gray text-center">휴가자가 없습니다</p>
                     )}
                     {data?.[0]?.acctOffYn === undefined && (
-                        <p className="text-xl text-black text-center">휴가자가 없습니다</p>
+                        <p className="text-xl text-gray text-center">휴가자가 없습니다</p>
                     )}
                 </div>
-                <BtnIconText
-                    type="B"
-                    icon={iconVac}
-                    text="휴가 추가하기"
-                    onClick={() => {
-                        console.log('강사 설정');
-                    }}
-                />
+                <div className="m-10px">  
+                    <BtnIconText
+                        type="B"
+                        icon={iconVac}
+                        text="휴가 추가하기"
+                        onClick={() => {
+                            console.log('강사 설정');
+                        }}
+                    />
+                </div>
             </div>
         </>
     )

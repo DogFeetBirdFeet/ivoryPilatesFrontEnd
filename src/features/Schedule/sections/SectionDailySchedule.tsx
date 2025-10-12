@@ -69,13 +69,13 @@ export default function SectionDailySchedule({
     return (
         <div className="flex-1 flex flex-col min-h-0">
             {/* 테이블 헤더 */}
-            <div className="flex-shrink-0 h-40px flex justify-between bg-ppLight">
+            <div className="flex-shrink-0 h-40px flex justify-between bg-ppWhite rounded-lg">
                 <div className="grid grid-cols-[120px_40px_160px_160px_160px] gap-20px items-center">
-                    <div className="text-ppt text-xl font-bold text-center">시간</div>
-                    <div className="text-ppt text-xl font-bold text-center">고정</div>
-                    <div className="text-ppt text-xl font-bold text-center">회원명</div>
-                    <div className="text-ppt text-xl font-bold text-center">강사명</div>
-                    <div className="text-ppt text-xl font-bold text-center">상태</div>
+                    <div className="text-ppt text-2xl font-bold text-center">시간</div>
+                    <div className="text-ppt text-2xl font-bold text-center">고정</div>
+                    <div className="text-ppt text-2xl font-bold text-center">회원명</div>
+                    <div className="text-ppt text-2xl font-bold text-center">강사명</div>
+                    <div className="text-ppt text-2xl font-bold text-center">상태</div>
                 </div>
             </div>
 
@@ -91,7 +91,7 @@ export default function SectionDailySchedule({
                         >
                             <div className="grid grid-cols-[120px_1fr] gap-20px items-center">
                                 {/* 시간 */}
-                                <div className="text-gray text-xl font-bold text-center">{formatTime(slot.time)}</div>
+                                <div className="text-gray44 text-2xl font-bold text-center">{formatTime(slot.time)}</div>
 
                                 <div className="flex flex-col">
                                     {/* 스케줄 */}

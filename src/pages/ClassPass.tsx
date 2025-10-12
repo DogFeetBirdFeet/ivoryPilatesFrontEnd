@@ -196,6 +196,7 @@ export default function ClassPass() {
     const handleDetailView = (item: IClsPassData) => {
         setSelectedItem(item);
         setCurrentView('detail');
+        // useNavigate 사용으로 페이지 이동
     };
 
     // 목록으로 돌아가기 핸들러
@@ -226,7 +227,7 @@ export default function ClassPass() {
                 userId={selectedItem.userId}
                 userNm={selectedItem.userNm}
                 clsPassId={selectedItem.clsPassId}
-                useAge={selectedItem.refundYn ? 2 : 1} // 환불 여부에 따라 useAge 설정
+                useAge={selectedItem.refundYn ? 1 : 2} // 환불 여부에 따라 useAge 설정
                 authority={2}
                 onCancel={handleBackToList}
             />
@@ -242,34 +243,34 @@ export default function ClassPass() {
             {/* 서치 바 */}
             <form onSubmit={handleSubmit(onSubmit)}>
                 <section
-                    className="flex p-20px gap-30px font-medium text-xl text-black bg-ppLight rounded-default mt-10px flex-shrink-0 mx-20px">
+                    className="flex p-20px gap-30px font-medium bg-ppLight rounded-md mt-10px flex-shrink-0 mx-20px">
                     <div className="flex-1 flex justify-between">
                         <div className="flex items-center gap-10px">
-                            <SearchCondition id="payDateFrom" labelText="결제 일자">
+                            <SearchCondition id="payDateFrom" labelText="결제 일자" className='text-2xl'>
                                 <InputDate
                                     id="payDateFrom"
                                     value={watch('payDateFrom')}
                                     onChange={(value) => setValue('payDateFrom', value)}
-                                    className="required ml-auto w-130px"
+                                    className="required ml-auto w-130px text-xl"
                                 />
                                 <span className="mx-5px">~</span>
                                 <InputDate
                                     id="payDateTo"
                                     value={watch('payDateTo')}
                                     onChange={(value) => setValue('payDateTo', value)}
-                                    className="required ml-auto w-130px"
+                                    className="required ml-auto w-130px text-xl"
                                 />
                             </SearchCondition>
                         </div>
 
                         <div className="flex items-center gap-10px">
 
-                            <SearchCondition id="refundDateFrom" labelText="환불 일자">
+                            <SearchCondition id="refundDateFrom" labelText="환불 일자" className='text-2xl'>
                                 <InputDate
                                     id="refundDateFrom"
                                     value={watch('refundDateFrom')}
                                     onChange={(value) => setValue('refundDateFrom', value)}
-                                    className="required ml-auto w-130px"
+                                    className="required ml-auto w-130px text-xl"
                                 />
                                 <span className="mx-5px">~</span>
                                 <InputDate
@@ -282,7 +283,7 @@ export default function ClassPass() {
                         </div>
 
                         <div className="flex items-center gap-10px">
-                            <SearchCondition id="searchName" labelText="회원명">
+                            <SearchCondition id="searchName" labelText="회원명" className='text-2xl'>
                                 <InputText
                                     id="searchName"
                                     className="w-full required ml-auto"
@@ -293,7 +294,7 @@ export default function ClassPass() {
                         </div>
 
                         <div className="flex items-center gap-10px mr-10px">
-                            <SearchCondition id="searchPayName" labelText="결제자">
+                            <SearchCondition id="searchPayName" labelText="결제자" className='text-2xl'>
                                 <InputText
                                     id="searchPayName"
                                     className="w-full required ml-auto"

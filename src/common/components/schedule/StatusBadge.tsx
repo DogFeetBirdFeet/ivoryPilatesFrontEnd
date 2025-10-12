@@ -25,8 +25,8 @@ export default function StatusBadge({ status }: { status: keyof typeof SCHEDULE_
 
   return (
     <div className="flex gap-10px items-center">
-      <div className={`w-15px h-15px rounded-full ${color}`}></div>
-      <div className="text-xl font-medium text-gray">{text}</div>
+      <div className={`w-20px h-20px rounded-full ${color}`}></div>
+      <div className="text-2xl font-medium text-gray55">{text}</div>
     </div>
   );
 }

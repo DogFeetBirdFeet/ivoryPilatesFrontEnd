@@ -40,35 +40,34 @@ export default function ClsPayInfo({data, editable, authority, currentUseAge, on
     return (
         <div className="flex-1">
             <section>
-                <h3 className="text-3xl font-bold py-5px my-5px">결제정보</h3>
-                <div className="p-20px bg-whiteGray rounded-default shadow-md">
+                <h3 className="text-3xl font-bold text-ppm py-5px my-5px">결제정보</h3>
+                <div className="p-20px bg-ppLight rounded-md">
                     <div className="flex items-center py-5px my-5px">
-                        <span className="text-2xl font-bold w-200px">결제 금액</span>
-                        <span className="text-xl ml-20px">{data.paidAmt.toLocaleString()}원</span>
+                        <span className="text-2xl font-bold text-ppm w-200px">결제 금액</span>
+                        <span className="text-2xl ml-20px">{data.paidAmt.toLocaleString()}</span>
                     </div>
                     {}
                     <div className="flex items-center py-5px my-5px">
                         {currentUseAge === 5 && authority === 2 && (
                             <>
-                                <span className="text-2xl font-bold w-200px">추가 할인 금액</span>
+                                <span className="text-2xl font-bold text-ppm w-200px">추가 할인 금액</span>
                                 <InputNumber
                                     id="discountAmtPass"
                                     value={data.discountAmtPass}
                                     onChange={(value) => handleDataChange('discountAmtPass', Number(value))}
-                                    suffix="원"
-                                    className="text-xl ml-20px flex-1 text-right"
+                                    className="text-2xl ml-20px flex-1 text-right"
                                 />
                             </>
                         )}
                         {currentUseAge !== 5 && (
                             <>
-                                <span className="text-2xl font-bold w-200px">추가 할인 금액</span>
-                                <span className="text-xl ml-20px">{data.discountAmtPass.toLocaleString()}원</span>
+                                <span className="text-2xl font-bold text-ppm w-200px">추가 할인 금액</span>
+                                <span className="text-2xl ml-20px">{data.discountAmtPass.toLocaleString()}</span>
                             </>
                         )}
                     </div>
                     <div className="flex items-center py-5px my-5px">
-                        <span className="text-2xl font-bold w-200px">결제 일자</span>
+                        <span className="text-2xl font-bold text-ppm w-200px">결제 일자</span>
                         {currentUseAge === 5 && (
                             <>
                                 <InputDate
@@ -80,11 +79,11 @@ export default function ClsPayInfo({data, editable, authority, currentUseAge, on
                             </>
                         )}
                         {currentUseAge !== 5 && (
-                            <span className="text-xl ml-20px">{data.payDate}</span>
+                            <span className="text-2xl ml-20px">{data.payDate}</span>
                         )}
                     </div>
                     <div className="flex items-center py-5px my-5px">
-                        <span className="text-2xl font-bold w-200px">결제 수단</span>
+                        <span className="text-2xl font-bold text-ppm w-200px">결제 수단</span>
                         {currentUseAge === 5 && (
                             <>
                                 <SelectBox
@@ -98,42 +97,42 @@ export default function ClsPayInfo({data, editable, authority, currentUseAge, on
                             </>
                         )}
                         {currentUseAge !== 5 && (
-                            <span className="text-xl ml-20px">{data.payMethod}</span>
+                            <span className="text-2xl ml-20px">{data.payMethod}</span>
                         )}
                     </div>
                     <div className="flex items-center py-5px my-5px">
-                        <span className="text-2xl font-bold w-200px">할부개월수</span>
+                        <span className="text-2xl font-bold text-ppm w-200px">할부개월수</span>
                         {currentUseAge === 5 && (
                             <>
                                 <InputNumber
                                     id="instMm"
                                     value={data.instMm}
                                     onChange={(value) => handleDataChange('instMm', Number(value))}
-                                    className="ml-20px flex-1 text-center"
+                                    className="text-2xl ml-20px flex-1 text-center"
                                     suffix="개월"
                                 />
                             </>
                         )}
                         {currentUseAge !== 5 && (
-                            <span className="text-xl ml-20px">{data.instMm}개월</span>
+                            <span className="text-2xl ml-20px">{data.instMm}개월</span>
                         )}
                     </div>
                     <div className="flex items-center py-5px my-5px">
                         {currentUseAge !== 5 && (
                             <>
-                                <span className="text-2xl font-bold w-200px">결제자</span>
-                                <span className="text-xl ml-20px">{data.payUserNm}</span>
+                                <span className="text-2xl font-bold text-ppm w-200px">결제자</span>
+                                <span className="text-2xl ml-20px">{data.payUserNm}</span>
                             </>
                         )}
                     </div>
                     <div className="flex items-center py-5px my-5px">
-                        <span className="text-2xl font-bold w-200px">메모</span>
+                        <span className="text-2xl font-bold text-ppm w-200px">메모</span>
                         {currentUseAge === 5 && (
                             <Textarea
                                 id="remark"
                                 value={data.remark}
                                 onChange={(value) => onDataChange({remark: value})}
-                                className="text-xl p-150px ml-20px flex-1"
+                                className="text-2xl p-150px ml-20px flex-1"
                             />
                         )}
                         {editable && (
@@ -141,11 +140,11 @@ export default function ClsPayInfo({data, editable, authority, currentUseAge, on
                                 id="remark"
                                 value={data.remark}
                                 onChange={(value) => onDataChange({remark: value})}
-                                className="text-xl p-150px ml-20px flex-1"
+                                className="text-2xl p-150px ml-20px flex-1"
                             />
                         )}
                         {!editable && (
-                            <span className="text-xl ml-20px">{data.remark}</span>
+                            <span className="text-2xl ml-20px">{data.remark}</span>
                         )}
                     </div>
                 </div>
@@ -153,12 +152,12 @@ export default function ClsPayInfo({data, editable, authority, currentUseAge, on
             {/* 만료 + 환불 O */}
             {currentUseAge === 2 && (
                 <section>
-                    <div className="p-20px bg-red rounded-default shadow-md mb-10px py-5px my-50px">
+                    <div className="p-20px bg-red2 rounded-md mb-10px py-5px my-50px">
                         <div className="flex items-center py-5px my-5px">
                             <span className="text-2xl font-bold text-white w-200px">환불 일자</span>
-                            <span className="text-xl text-white ml-20px w-200px">{data.refundDtm}</span>
+                            <span className="text-2xl text-white ml-20px w-200px">{data.refundDtm}</span>
                             <span className="text-2xl font-bold text-white w-200px">환불 금액</span>
-                            <span className="text-xl text-white ml-20px">{data.refundAmt.toLocaleString()}원</span>
+                            <span className="text-2xl text-white ml-20px">{data.refundAmt.toLocaleString()}</span>
                         </div>
                     </div>
                 </section>

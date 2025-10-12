@@ -11,6 +11,7 @@ import MemberGroup from './pages/Member/MemberGroup';
 import MemberRegister from './pages/Member/MemberRegister';
 import ClsPass from './pages/ClassPass';
 import InsDay from './pages/Schedule/InsDay';
+import InsWeek from './pages/Schedule/InsWeek';
 
 const router = createBrowserRouter([
     {
@@ -40,20 +41,18 @@ const router = createBrowserRouter([
             {
                 path: 'schedule',
                 element: <InsDay/>,
-                children: [
-                    {
-                        path: 'ins-month',
-                        element: <></>,
-                    },
-                    {
-                        path: 'ins-week',
-                        element: <></>,
-                    },
-                    {
-                        path: 'ins-day',
-                        element: <InsDay/>,
-                    },
-                ],
+            },
+            {
+                path: 'schedule/ins-month',
+                element: <></>,
+            },
+            {
+                path: 'schedule/ins-week',
+                element: <InsWeek/>,
+            },
+            {
+                path: 'schedule/ins-day',
+                element: <InsDay/>,
             },
             {
                 path: 'class-pass',

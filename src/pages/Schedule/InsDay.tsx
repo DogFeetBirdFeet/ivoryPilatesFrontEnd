@@ -1,6 +1,6 @@
 import {useEffect, useState} from 'react';
 import {useLayoutContext} from '@/hooks/useLayoutContext';
-import WeeklyCalender from '@/features/Schedule/items/WeeklyCalender';
+import WeeklyDayCalender from '@/features/Schedule/items/WeeklyDayCalender.tsx';
 import CenterAndAcctInfo from '@/features/Schedule/items/CenterAndAcctInfo';
 import IconSchedule from '@/assets/icon/yellow/icon_sche.png';
 import SectionDailySchedule from '@/features/Schedule/sections/SectionDailySchedule';
@@ -97,8 +97,8 @@ export default function InsDay() {
 
     return (
         <>
-            <div className="flex-1 flex flex-col bg-ppLight">
-                <WeeklyCalender
+            <div className="flex-1 flex flex-col bg-ppLight rounded-lg p-6">
+                <WeeklyDayCalender
                     currentWeek={currentWeek}
                     setCurrentWeek={setCurrentWeek}
                     curDate={curDate}
@@ -107,9 +107,9 @@ export default function InsDay() {
                     setSelectedDayOfWeek={setSelectedDayOfWeek}
                 />
             </div>
-            <div className="flex-1 flex flex-col py-20px">
+            <div className="flex-1 flex flex-col py-20px ">
                 <div className="flex gap-20px mb-15px">
-                    <div className="flex-1 bg-ppLight">
+                    <div className="flex-1 bg-purpleLight2 rounded-lg">
                         <CenterAndAcctInfo data={data}/>
                         <div className="flex-1 flex items-center justify-center bg-white py-20px">
                             <SectionDailySchedule
@@ -126,17 +126,17 @@ export default function InsDay() {
                             <div className="flex items-center gap-4">
                                 <img src={iconClock} alt="시계" className="w-16 h-16"/>
                                 <div className="flex flex-col">
-                                    <div className="text-2xl font-bold text-gray-800">
+                                    <div className="text-3xl font-bold text-ppt">
                                         {timeRange.start} ~ {timeRange.end}
                                     </div>
                                     <div className="text-lg">
                                         {data?.find(item =>
                                             item.schedTime === parseInt(selectedRowIndex?.replace('slot-', '') || '0').toString()
-                                        )?.acctOffYn === 'Y' && <span className="text-red">강사 휴식 | </span>}
-                                        <span className="text-gray-600">
+                                        )?.acctOffYn === 'Y' && <span className="text-2xl font-bold text-red">강사 휴식 | </span>}
+                                        <span className="text-2xl text-ppt">
                                             {data?.find(item =>
                                                 item.schedTime === parseInt(selectedRowIndex?.replace('slot-', '') || '0').toString()
-                                            )?.trainerNm || '원예진'} 강사
+                                            )?.trainerNm + ' 강사' || '원예진 강사'} 
                                         </span>
                                     </div>
                                 </div>

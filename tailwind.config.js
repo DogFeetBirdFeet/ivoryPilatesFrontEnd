@@ -32,7 +32,13 @@ export default {
                 blue: '#3C0CE9',
                 red: '#B8001F',
                 calGray: '#B3B3B3',
-                blueBtn: '#0C8CE9'
+                blueBtn: '#0C8CE9',
+                purpleLight2:"#D6D4EE",
+                gray44:"#444444",
+                gray55:"#555555",
+                gray4A:"#4A484E",
+                red2:"#DA4962"
+
             },
             fontSize: {
                 base: ['12px', {lineHeight: '18px'}],

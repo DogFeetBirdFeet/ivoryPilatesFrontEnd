@@ -47,12 +47,12 @@ export default function ScheduleInfo({data}: { data?: IInsDay }) {
                         <div className="space-y-3">
                             <div className="flex items-center gap-4">
                                 <span className="text-xl text-black font-bold w-28">회원명</span>
-                                <span className="text-base font-medium">{data?.cusNm} 회원님</span>
+                                <span className="text-xl text-gray4A">{data?.cusNm} 회원님</span>
                             </div>
                             <div className="flex items-center justify-between">
                                 <div className="flex items-center gap-4">
                                     <span className="text-xl text-black font-bold w-28">담당강사</span>
-                                    <span className="text-base font-medium">{data?.trainerNm} 강사</span>
+                                    <span className="text-xl text-gray4A">{data?.trainerNm} 강사</span>
                                 </div>
                                 <BtnIconText
                                     type="B"
@@ -64,7 +64,7 @@ export default function ScheduleInfo({data}: { data?: IInsDay }) {
                             <div className="flex items-center justify-between">
                                 <div className="flex items-center gap-4">
                                     <span className="text-xl text-black font-bold w-28">고정수업 여부</span>
-                                    <span className="text-base font-medium">{data?.fixYn}</span>
+                                    <span className="text-xl text-gray4A">{data?.fixYn ? 'Y' : 'N'}</span>
                                 </div>
                                 {data?.schedId ? (
                                     <BtnIconText
@@ -87,7 +87,7 @@ export default function ScheduleInfo({data}: { data?: IInsDay }) {
                             </div>
                             <div className="flex items-center gap-4">
                                 <span className="text-xl text-black font-bold w-28">수업 상태</span>
-                                <span className={`inline-block px-3 py-1 rounded-full text-sm font-medium text-white ${
+                                <span className={`inline-block px-3 py-1 rounded-md text-base font-medium text-white ${
                                     data?.clsStatus === 'COM' ? 'bg-[#0C8CE9]' :
                                         data?.clsStatus === 'SCH' ? 'bg-[#FF8000]' :
                                             data?.clsStatus === 'NOS' ? 'bg-[#DA4962]' :

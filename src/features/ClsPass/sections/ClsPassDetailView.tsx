@@ -92,11 +92,11 @@ export default function ClsPassDetailView(props: IPropsAuthority) {
     // Mock 데이터 (실제로는 props에서 받아와야 함)
     const [mockUserData, setMockUserData] = useState<IClsAndUserData>({
         contact: "010-0000-0000",
-        birthDate: "9999.99.99",
+        birthDate: "9999-99-99",
         gender: "여자",
         userClass: "등록회원",
-        staDtm: "2024.01.01",
-        endDtm: "2024.12.31",
+        staDtm: "2024-01-01",
+        endDtm: "2024-12-31",
         totalCnt: 10,
         remainCnt: 5,
         useYn: true,
@@ -108,12 +108,12 @@ export default function ClsPassDetailView(props: IPropsAuthority) {
         expRate: "365",
         paidAmt: 450000,
         discountAmtPass: 0,
-        payDate: "2024.01.01",
+        payDate: "2024-01-01",
         payMethod: "CARD",
         instMm: 0,
         payUserNm: "원예진",
         remark: "",
-        refundDtm: "2025.10.03",
+        refundDtm: "2025-10-03",
         refundAmt: 222220,
         refundYn: true,
     });
@@ -128,14 +128,14 @@ export default function ClsPassDetailView(props: IPropsAuthority) {
     return (
         <div className="w-full h-full flex flex-col">
             {/* 헤더 섹션 - 유저 정보와 버튼 */}
-            <section className="flex justify-between items-center bg-ppLight py-15px px-20px">
+            <section className="flex justify-between items-center py-15px px-20px">
                 {/* 왼쪽: 유저 정보 */}
                 {props.userNm !== '' && (
                     <div className="flex items-center gap-10px">
                         <div className="w-24px h-24px rounded-full bg-ppDark flex items-center justify-center">
                             <img src={iconIvo} className="w-16px h-16px" alt="User Icon"/>
                         </div>
-                        <label className="text-2xl font-bold text-ppDark">{props.userNm} 회원님</label>
+                        <label className="text-[40px] font-bold text-ppm">{props.userNm} 회원님</label>
                     </div>
                 )}
                 {props.userNm === '' && (
@@ -208,26 +208,26 @@ export default function ClsPassDetailView(props: IPropsAuthority) {
 
             {/* 사용자 데이터 필드들 */}
             <section className="flex flex-wrap gap-15px mb-20px">
-                <div className="flex-1 min-w-[200px] bg-ppLight p-15px rounded-md">
-                    <label className="text-xl font-medium text-gray mb-5px">연락처</label>
-                    <p className="text-2xl font-bold text-gray">{mockUserData.contact}</p>
+                <div className="flex-1 min-w-[200px] bg-purpleLight2 p-15px rounded-md">
+                    <label className="text-xl font-bold text-ppt mb-5px">연락처</label>
+                    <p className="text-2xl font-bold text-black">{mockUserData.contact}</p>
                 </div>
-                <div className="flex-1 min-w-[200px] bg-ppLight p-15px rounded-md">
-                    <label className="text-xl font-medium text-gray-600 mb-5px">생년월일</label>
-                    <p className="text-2xl font-bold text-gray">{mockUserData.birthDate}</p>
+                <div className="flex-1 min-w-[200px] bg-purpleLight2 p-15px rounded-md">
+                    <label className="text-xl font-bold text-ppt mb-5px">생년월일</label>
+                    <p className="text-2xl font-bold text-black">{mockUserData.birthDate}</p>
                 </div>
-                <div className="flex-1 min-w-[200px] bg-ppLight p-15px rounded-md">
-                    <label className="text-xl font-medium text-gray-600 mb-5px">성별</label>
-                    <p className="text-2xl font-bold text-gray">{mockUserData.gender}</p>
+                <div className="flex-1 min-w-[200px] bg-purpleLight2 p-15px rounded-md">
+                    <label className="text-xl font-bold text-ppt mb-5px">성별</label>
+                    <p className="text-2xl font-bold text-black">{mockUserData.gender}</p>
                 </div>
-                <div className="flex-1 min-w-[200px] bg-ppLight p-15px rounded-md">
-                    <label className="text-xl font-medium text-gray-600 mb-5px">회원구분</label>
-                    <p className="text-2xl font-bold text-gray">{mockUserData.userClass}</p>
+                <div className="flex-1 min-w-[200px] bg-purpleLight2 p-15px rounded-md">
+                    <label className="text-xl font-bold text-ppt mb-5px">회원구분</label>
+                    <p className="text-2xl font-bold text-black">{mockUserData.userClass}</p>
                 </div>
             </section>
 
             {/* 메인 콘텐츠 영역 - 2컬럼 레이아웃 */}
-            <div className="flex gap-20px px-20px mb-15px">
+            <div className="flex flex-wrap gap-15px mb-20px">
                 {/* 왼쪽 컬럼 - 수강권 정보 & 상품정보 */}
                 <div className="flex-1">
                     {currentUseAge === 5 && (
