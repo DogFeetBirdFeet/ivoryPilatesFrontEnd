@@ -130,7 +130,7 @@ export default function MemberRegister() {
   };
 
   return (
-    <form className="m-auto w-[1000px] my-10px">
+    <form className="m-auto w-[1000px] my-10px" autoComplete="off">
       {/* 기본정보 */}
       <section>
         <div className="h-50px text-[25px] text-gray font-bold border-b-[2px] border-lightGray">기본정보</div>

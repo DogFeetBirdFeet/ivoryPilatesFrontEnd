@@ -6,9 +6,7 @@ import BtnSearch from '@/common/components/buttons/BtnSearch';
 import InputDate from '@/common/components/inputArea/InputDate';
 import SearchCondition from '@/common/components/searchBar/SearchCondition';
 import InputNumber from '@/common/components/inputArea/InputNumber';
-import { useForm } from 'react-hook-form';
-import { dateFormatToString } from '@/utils/date';
-import SelectBox from '@/common/components/inputArea/SelectBox';
+import FilterSelectBox from '@/common/components/inputArea/FilterSelectBox';
 import iconFilter from '@/assets/icon/white/icon_filter.png';
 import MemberTable from '@/features/Member/sections/MemberTable';
 
@@ -66,6 +64,13 @@ const generateMockData = (count: number): IMemberData[] => {
 
 export default function Member() {
   const [curTab, setCurTab] = useState(1);
+  const [searchForm, setSearchForm] = useState<ISearchForm>({
+    searchName: '',
+    searchNumber: '',
+    searchCnt: '',
+    searchDateFrom: '',
+    searchDateTo: '',
+  });
   const [selectedInstructor, setSelectedInstructor] = useState<number>(0);
   const [selectedBlacklist, setSelectedBlacklist] = useState<number>(0);
   const [memberData, setMemberData] = useState<IMemberData[]>(generateMockData(50));
@@ -77,17 +82,6 @@ export default function Member() {
     { text: '휴면 회원', type: 'inactive' },
     { text: '탈퇴 회원', type: 'quit' },
   ];
-
-  // react-hook-form 검색조건
-  const { watch, setValue, handleSubmit } = useForm<ISearchForm>({
-    defaultValues: {
-      searchName: '',
-      searchNumber: '',
-      searchCnt: '',
-      searchDateFrom: dateFormatToString(new Date()),
-      searchDateTo: dateFormatToString(new Date()),
-    },
-  });
 
   // 클라이언트 필터링 (강사, 블랙리스트)
   const filteredData = memberData.filter((item) => {
@@ -115,8 +109,8 @@ export default function Member() {
   }, [setHeaderTitle, setHeaderIcon]);
 
   // 검색 실행
-  const onSubmit = (data: ISearchForm) => {
-    console.log('검색 데이터:', data);
+  const handleSubmit = () => {
+    console.log('검색 데이터:', searchForm);
     // TODO: 실제로는 API 호출하여 데이터 받아오기
     // 퍼블리싱용 - 새로운 mock 데이터 생성
     setMemberData(generateMockData(50));
@@ -131,7 +125,7 @@ export default function Member() {
   };
 
   return (
-    <div className="h-full flex flex-col pb-20px">
+    <div className="min-w-[1310px] h-full flex flex-col pb-20px">
       <h1 className="h-50px text-[25px] text-gray font-bold mx-20px">
         {tabList[curTab].text} ({filteredData.length})
       </h1>
@@ -153,15 +147,15 @@ export default function Member() {
       </div>
 
       {/* 서치바 */}
-      <form onSubmit={handleSubmit(onSubmit)} className="flex-shrink-0 mx-20px">
+      <form onSubmit={handleSubmit} className="flex-shrink-0 mx-20px" autoComplete="off">
         <section className="grid grid-cols-[auto_30px] p-20px gap-30px font-medium text-xl text-black bg-ppLight rounded-default mt-10px">
           <div className="grid grid-cols-[250px_250px_180px_400px] justify-between gap-30px">
             <SearchCondition id="searchName" labelText="이름">
               <InputText
                 id="searchName"
                 className="w-full"
-                value={watch('searchName')}
-                onChange={(value) => setValue('searchName', value)}
+                value={searchForm.searchName}
+                onChange={(value) => setSearchForm((form) => ({ ...form, searchName: value }))}
               />
             </SearchCondition>
 
@@ -169,8 +163,8 @@ export default function Member() {
               <InputNumber
                 id="searchNumber"
                 className="w-full"
-                value={watch('searchNumber')}
-                onChange={(value) => setValue('searchNumber', value)}
+                value={searchForm.searchNumber}
+                onChange={(value) => setSearchForm((form) => ({ ...form, searchNumber: value }))}
               />
             </SearchCondition>
 
@@ -178,8 +172,8 @@ export default function Member() {
               <InputNumber
                 id="searchCnt"
                 className="w-full text-right"
-                value={watch('searchCnt')}
-                onChange={(value) => setValue('searchCnt', value)}
+                value={searchForm.searchCnt}
+                onChange={(value) => setSearchForm((form) => ({ ...form, searchCnt: value }))}
               />
               <span className="flex-shrink-0 ml-5px">회 미만</span>
             </SearchCondition>
@@ -188,16 +182,16 @@ export default function Member() {
               <InputDate
                 id="searchDateFrom"
                 className="w-full"
-                value={watch('searchDateFrom')}
-                onChange={(value) => setValue('searchDateFrom', value)}
+                value={searchForm.searchDateFrom}
+                onChange={(value) => setSearchForm((form) => ({ ...form, searchDateFrom: value }))}
               />
               <span className="mx-5px">~</span>
               <InputDate
                 id="searchDateTo"
                 className="w-full"
                 sortRight={true}
-                value={watch('searchDateTo')}
-                onChange={(value) => setValue('searchDateTo', value)}
+                value={searchForm.searchDateTo}
+                onChange={(value) => setSearchForm((form) => ({ ...form, searchDateTo: value }))}
               />
             </SearchCondition>
           </div>
@@ -209,7 +203,7 @@ export default function Member() {
       <section className="flex-1 flex flex-col mt-10px overflow-hidden min-h-0">
         {/* 필터리스트 */}
         <div className="flex justify-end py-10px gap-10px mx-20px">
-          <SelectBox
+          <FilterSelectBox
             id="ins_list"
             label="담당 강사"
             options={MockDataIns}
@@ -218,7 +212,7 @@ export default function Member() {
             value={selectedInstructor}
             onChange={(value) => setSelectedInstructor(value)}
           />
-          <SelectBox
+          <FilterSelectBox
             id="black-yn"
             label="블랙리스트 여부"
             options={mockDataYN}
