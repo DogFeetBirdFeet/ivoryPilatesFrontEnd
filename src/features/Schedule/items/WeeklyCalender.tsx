@@ -44,24 +44,24 @@ export default function WeeklyCalender({
     }, [currentWeek]);
 
     return (
-        <div className="bg-ppbg rounded-lg p-4 shadow-sm">
+        <div className="w-full">
             <div className="flex items-center justify-center gap-4 h-12">
                 {/* 왼쪽 화살표 */}
                 <button
-                    className="w-10 h-10 bg-ppp rounded-full flex items-center justify-center text-white hover:bg-ppp/80 transition-colors"
+                    className="w-[40px] h-[40px] bg-ppp rounded-full flex items-center justify-center text-white hover:bg-ppp/80 transition-colors"
                     onClick={handleLeftClick}
                 >
                     <img src={iconLeft} alt="이전 주" className="w-4 h-4" />
                 </button>
 
                 {/* 주차 정보 */}
-                <div className="text-lg font-medium text-gray">
+                <div className="text-3xl font-bold text-ppt">
                     {weekInfo.year}년 {weekInfo.month}월 {weekInfo.weekNumber}주차
                 </div>
 
                 {/* 오른쪽 화살표 */}
                 <button
-                    className="w-10 h-10 bg-ppp rounded-full flex items-center justify-center text-white hover:bg-ppp/80 transition-colors"
+                    className="w-[40px] h-[40px] bg-ppp rounded-full flex items-center justify-center text-white hover:bg-ppp/80 transition-colors"
                     onClick={handleRightClick}
                 >
                     <img src={iconRight} alt="다음 주" className="w-4 h-4" />
