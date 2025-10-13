@@ -36,7 +36,7 @@ export default function BtnIconText({
   return (
     <div
       onClick={onClick}
-      className={`flex gap-[5px] p-[5px] border-[1px] rounded-default cursor-pointer text-base font-medium ${buttonStyle()}`}
+      className={`h-30px flex items-center gap-[7px] py-[5px] px-10px border-[1px] rounded-[7px] cursor-pointer text-base font-medium ${buttonStyle()}`}
     >
       <img src={icon} className="w-[16px] h-[16px]" draggable="false" />
       <span className="text-base">{text}</span>

@@ -125,7 +125,7 @@ export default function Member() {
   };
 
   return (
-    <div className="min-w-[1310px] h-full flex flex-col pb-20px">
+    <div className="min-w-[1310px] flex flex-col pb-20px">
       <h1 className="h-50px text-[25px] text-gray font-bold mx-20px">
         {tabList[curTab].text} ({filteredData.length})
       </h1>

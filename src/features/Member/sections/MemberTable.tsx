@@ -87,7 +87,7 @@ export default function MemberTable({ data, isLoading }: MemberTableProps) {
         {data.map((item) => (
           <div
             key={item.memberId}
-            className={`h-40px flex justify-between text-gray text-base border-b-[1px]  ${
+            className={`h-40px flex justify-between text-gray text-base border-b-[1px] border-grayD9 ${
               curRow === item.memberId ? 'bg-yellow' : 'bg-white'
             }`}
             onDoubleClick={() => setCurRow(item.memberId)}

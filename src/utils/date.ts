@@ -33,3 +33,7 @@ export const parseStringToDate = (str: string): Date | null => {
 
 export const isSameDate = (a: Date | null, b: Date | null) =>
   !!a && !!b && a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate();
+
+export const formatBirth = (birth: string) => {
+  return birth.replace(/(\d{4})(\d{2})(\d{2})/, '$1.$2.$3');
+};
