@@ -22,6 +22,13 @@ interface IForm {
   memo: string;
   bodyImg: File | null;
 }
+interface IError {
+  name: null | string;
+  number: null | string;
+  birth: null | string;
+  heightWeight: null | string;
+  consDate: null | string;
+}
 
 export default function MemberRegister() {
   const [formData, setFormData] = useState<IForm>({
@@ -39,11 +46,19 @@ export default function MemberRegister() {
     memo: '',
     bodyImg: null,
   });
+  const [errorMsg, setErrorMsg] = useState<IError>({
+    name: null,
+    number: null,
+    birth: null,
+    heightWeight: null,
+    consDate: null,
+  });
   const { setHeaderTitle, setHeaderIcon } = useLayoutContext();
   const [imagePreview, setImagePreview] = useState<string>('');
 
   useEffect(() => {
     console.log(formData);
+    console.log(errorMsg);
   }, [formData]);
 
   // 헤더정보 세팅
@@ -52,6 +67,7 @@ export default function MemberRegister() {
     setHeaderIcon(headerIcon);
   }, [setHeaderTitle, setHeaderIcon]);
 
+  // Maxlength 체크 이벤트
   const surHistLength = useMemo(() => {
     return new Blob([formData.surHist || '']).size;
   }, [formData.surHist]);
@@ -64,6 +80,7 @@ export default function MemberRegister() {
     return new Blob([formData.memo || '']).size;
   }, [formData.memo]);
 
+  // 바디체킹 이미지 업로드 이벤트
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -78,13 +95,36 @@ export default function MemberRegister() {
     }
   };
 
-  const handleSubmit = () => {
-    // 필수값 검증
-    if (!formData.name || !formData.numberFirst || !formData.numberSecond || !formData.numberThird) {
-      alert('필수 항목을 입력해주세요.');
-      return;
-    }
+  // 저장버튼 클릭 이벤트
+  const handleSubmit = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
 
+    // 필수값 검증
+    if (!formData.name) {
+      setErrorMsg((prev) => {
+        return { ...prev, name: '필수 입력 항목입니다.' };
+      });
+    }
+    if (!formData.numberFirst || !formData.numberSecond || !formData.numberThird) {
+      setErrorMsg((prev) => {
+        return { ...prev, number: '필수 입력 항목입니다.' };
+      });
+    }
+    if (formData.birth == '') {
+      setErrorMsg((prev) => {
+        return { ...prev, birth: '필수 입력 항목입니다.' };
+      });
+    }
+    if (!formData.height || !formData.weight) {
+      setErrorMsg((prev) => {
+        return { ...prev, heightWeight: '필수 입력 항목입니다.' };
+      });
+    }
+    if (formData.consDate === '') {
+      setErrorMsg((prev) => {
+        return { ...prev, consDate: '필수 입력 항목입니다.' };
+      });
+    }
     // TODO submit
     console.log('Form submitted:', formData);
   };
@@ -94,7 +134,7 @@ export default function MemberRegister() {
       {/* 기본정보 */}
       <section>
         <div className="h-50px text-[25px] text-gray font-bold border-b-[2px] border-lightGray">기본정보</div>
-        <div className="flex flex-col gap-20px p-30px">
+        <div className="flex flex-col gap-30px p-30px">
           {/* 첫 번째 행 */}
           <div className="flex gap-100px">
             {/* 이름 */}
@@ -102,12 +142,15 @@ export default function MemberRegister() {
               <label htmlFor="name" className="flex-shrink-0 w-150px text-xl text-black font-medium">
                 이름<span className="text-red">*</span>
               </label>
-              <InputText
-                id="name"
-                value={formData.name}
-                onChange={(value) => setFormData((form) => ({ ...form, name: value }))}
-                className="flex-1"
-              />
+              <div className="flex-1 relative">
+                <InputText
+                  id="name"
+                  value={formData.name}
+                  onChange={(value) => setFormData((form) => ({ ...form, name: value }))}
+                  error={!!errorMsg.name}
+                />
+                <p className="absolute text-red text-base left-[10px] bottom-[-20px]">{errorMsg.name}</p>
+              </div>
             </div>
 
             {/* 연락처 */}
@@ -115,30 +158,36 @@ export default function MemberRegister() {
               <label htmlFor="numberFirst" className="flex-shrink-0 w-150px text-xl text-black font-medium">
                 연락처<span className="text-red">*</span>
               </label>
-              <div className="flex-1 flex items-center gap-5px">
-                <InputNumber
-                  id="numberFirst"
-                  value={formData.numberFirst}
-                  onChange={(value) => setFormData((form) => ({ ...form, numberFirst: value }))}
-                  className="w-1/3 text-center"
-                  maxLength={3}
-                />
-                <span>-</span>
-                <InputNumber
-                  id="numberSecond"
-                  value={formData.numberSecond}
-                  onChange={(value) => setFormData((form) => ({ ...form, numberSecond: value }))}
-                  className="w-1/3 text-center"
-                  maxLength={4}
-                />
-                <span>-</span>
-                <InputNumber
-                  id="numberThird"
-                  value={formData.numberThird}
-                  onChange={(value) => setFormData((form) => ({ ...form, numberThird: value }))}
-                  className="w-1/3 text-center"
-                  maxLength={4}
-                />
+              <div className="flex-1 relative">
+                <div className="flex items-center gap-5px">
+                  <InputNumber
+                    id="numberFirst"
+                    value={formData.numberFirst}
+                    onChange={(value) => setFormData((form) => ({ ...form, numberFirst: value }))}
+                    className="w-1/3 text-center"
+                    maxLength={3}
+                    error={!!errorMsg.number}
+                  />
+                  <span>-</span>
+                  <InputNumber
+                    id="numberSecond"
+                    value={formData.numberSecond}
+                    onChange={(value) => setFormData((form) => ({ ...form, numberSecond: value }))}
+                    className="w-1/3 text-center"
+                    maxLength={4}
+                    error={!!errorMsg.number}
+                  />
+                  <span>-</span>
+                  <InputNumber
+                    id="numberThird"
+                    value={formData.numberThird}
+                    onChange={(value) => setFormData((form) => ({ ...form, numberThird: value }))}
+                    className="w-1/3 text-center"
+                    maxLength={4}
+                    error={!!errorMsg.number}
+                  />
+                </div>
+                <p className="absolute text-red text-base left-[10px] bottom-[-20px]">{errorMsg.number}</p>
               </div>
             </div>
           </div>
@@ -150,12 +199,15 @@ export default function MemberRegister() {
               <label htmlFor="birth" className="flex-shrink-0 w-150px text-xl text-black font-medium">
                 생년월일<span className="text-red">*</span>
               </label>
-              <InputDate
-                id="birth"
-                value={formData.birth}
-                onChange={(value) => setFormData((form) => ({ ...form, birth: value }))}
-                className="flex-1"
-              />
+              <div className="relative flex-1">
+                <InputDate
+                  id="birth"
+                  value={formData.birth}
+                  onChange={(value) => setFormData((form) => ({ ...form, birth: value }))}
+                  error={!!errorMsg.birth}
+                />
+                <p className="absolute text-red text-base left-[10px] bottom-[-20px]">{errorMsg.birth}</p>
+              </div>
             </div>
 
             {/* 성별 */}
@@ -193,29 +245,35 @@ export default function MemberRegister() {
       {/* 상세정보 */}
       <section className="mt-10px">
         <div className="h-50px text-[25px] text-gray font-bold border-b-[2px] border-lightGray">상세정보</div>
-        <div className="flex flex-col gap-20px p-30px">
+        <div className="flex flex-col gap-30px p-30px">
           {/* 키/몸무게 */}
           <div className="flex items-center">
             <label htmlFor="height" className="flex-shrink-0 w-150px text-xl text-black font-medium">
               키 / 몸무게<span className="text-red">*</span>
             </label>
-
-            <InputNumber
-              id="height"
-              value={formData.height}
-              onChange={(value) => setFormData((form) => ({ ...form, height: value }))}
-              className="w-110px text-right"
-              maxLength={3}
-            />
-            <span className="pl-5px mr-30px">cm</span>
-            <InputNumber
-              id="weight"
-              value={formData.weight}
-              onChange={(value) => setFormData((form) => ({ ...form, weight: value }))}
-              className="w-110px text-right"
-              maxLength={3}
-            />
-            <span className="pl-5px mr-20px">kg</span>
+            <div className="relative">
+              <div className="flex">
+                <InputNumber
+                  id="height"
+                  value={formData.height}
+                  onChange={(value) => setFormData((form) => ({ ...form, height: value }))}
+                  className="w-110px text-right"
+                  maxLength={3}
+                  error={!!errorMsg.heightWeight}
+                />
+                <span className="pl-5px mr-30px">cm</span>
+                <InputNumber
+                  id="weight"
+                  value={formData.weight}
+                  onChange={(value) => setFormData((form) => ({ ...form, weight: value }))}
+                  className="w-110px text-right"
+                  maxLength={3}
+                  error={!!errorMsg.heightWeight}
+                />
+                <span className="pl-5px mr-20px">kg</span>
+              </div>
+              <p className="absolute text-red text-base left-[10px] bottom-[-20px]">{errorMsg.heightWeight}</p>
+            </div>
           </div>
 
           {/* 상담일자 */}
@@ -223,12 +281,16 @@ export default function MemberRegister() {
             <label htmlFor="consDate" className="flex-shrink-0 w-150px text-xl text-black font-medium">
               상담일자<span className="text-red">*</span>
             </label>
-            <InputDate
-              id="consDate"
-              value={formData.consDate}
-              onChange={(value) => setFormData((form) => ({ ...form, consDate: value }))}
-              className="w-[300px]"
-            />
+            <div className="relative">
+              <InputDate
+                id="consDate"
+                value={formData.consDate}
+                onChange={(value) => setFormData((form) => ({ ...form, consDate: value }))}
+                className="w-[300px]"
+                error={!!errorMsg.consDate}
+              />
+              <p className="absolute text-red text-base left-[10px] bottom-[-20px]">{errorMsg.consDate}</p>
+            </div>
           </div>
 
           {/* 수술 및 시술내역 */}

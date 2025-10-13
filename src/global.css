@@ -113,3 +113,18 @@ input[type='radio']:checked::before {
   border-radius: 50%;
   background-color: #6756c0; /* ppp */
 }
+
+img {
+  user-select: none;
+  -webkit-user-drag: none;
+  -moz-user-drag: none;
+  -ms-user-drag: none;
+  pointer-events: auto; /* 클릭 이벤트는 유지 */
+}
+
+/* body {
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+} */

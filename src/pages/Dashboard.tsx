@@ -19,7 +19,7 @@ export default function Dashboard() {
   }, [setHeaderTitle, setHeaderIcon]);
 
   return (
-    <div className="h-full grid grid-cols-[1fr_500px] gap-30px">
+    <div className="min-w-[1310px] h-full grid grid-cols-[1fr_500px] gap-30px">
       {/* 일간 일정 정보*/}
       <section className="h-full max-h-[calc(100vh-82px)] min-w-[1050px] bg-[#FCFBFF] flex flex-col py-20px pl-30px pr-15px rounded-default">
         <SectionTitle icon={calenderIcon} title="일간 일정 정보" />

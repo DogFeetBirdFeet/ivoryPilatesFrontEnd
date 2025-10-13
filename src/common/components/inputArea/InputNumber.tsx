@@ -1,4 +1,4 @@
-import { INPUT_BASE_CLASS } from './styleConstants';
+import { INPUT_COMMON_STYLE, INPUT_DEFAULT, INPUT_ERROR } from './styleConstants';
 
 interface IInputNumber {
   id: string;
@@ -10,11 +10,13 @@ interface IInputNumber {
   disabled?: boolean;
   allowDecimal?: boolean;
   suffix?: string;
+  error?: boolean;
 }
 
 /**
  * 숫자만 입력 가능한 Input 컴포넌트
- * allowDecimal을 true로 설정하지 않으면 정수만 입력 가능
+ * allowDecimal ?: 소수점허용 Boolean
+ * suffix ?: 단위 String
  */
 export default function InputNumber({
   id,
@@ -26,6 +28,7 @@ export default function InputNumber({
   disabled = false,
   allowDecimal = false,
   suffix,
+  error = false,
 }: IInputNumber) {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     let numbersOnly = e.target.value;
@@ -67,7 +70,7 @@ export default function InputNumber({
       inputMode={allowDecimal ? 'decimal' : 'numeric'}
       id={id}
       value={value + (suffix || '')}
-      className={`${INPUT_BASE_CLASS} ${className || ''}`}
+      className={`w-full ${className} ${INPUT_COMMON_STYLE} ${error ? INPUT_ERROR : INPUT_DEFAULT}`}
       placeholder={placeholder}
       onChange={handleChange}
       onKeyDown={handleKeyDown}

@@ -1,5 +1,5 @@
 import { useRef } from 'react';
-import { INPUT_BASE_CLASS } from './styleConstants';
+import { INPUT_COMMON_STYLE, INPUT_DEFAULT, INPUT_ERROR } from './styleConstants';
 
 interface IInputText {
   id: string;
@@ -9,6 +9,7 @@ interface IInputText {
   onChange?: (value: string) => void;
   maxLength?: number;
   disabled?: boolean;
+  error?: boolean;
 }
 
 export default function InputText({
@@ -19,6 +20,7 @@ export default function InputText({
   onChange,
   maxLength,
   disabled = false,
+  error = false,
 }: IInputText) {
   const isComposingRef = useRef(false);
 
@@ -58,7 +60,7 @@ export default function InputText({
       type="text"
       id={id}
       value={value}
-      className={`${INPUT_BASE_CLASS} ${className || ''}`}
+      className={`w-full ${className} ${INPUT_COMMON_STYLE} ${error ? INPUT_ERROR : INPUT_DEFAULT}`}
       placeholder={placeholder}
       onChange={handleChange}
       onCompositionStart={handleCompositionStart}

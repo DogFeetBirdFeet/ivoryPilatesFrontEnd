@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import iconLeft from '@/assets/icon/chevron_left.png';
 import iconRight from '@/assets/icon/chevron_right.png';
-import { INPUT_BASE_CLASS } from './styleConstants';
+import { INPUT_COMMON_STYLE, INPUT_DEFAULT, INPUT_ERROR } from './styleConstants';
 import { dateFormatToString, isSameDate, parseStringToDate } from '@/utils/date';
 
 interface IInputDate {
@@ -10,6 +10,7 @@ interface IInputDate {
   onChange: (value: string) => void;
   className?: string;
   sortRight?: boolean;
+  error?: boolean;
 }
 
 type CalendarCell = {
@@ -17,7 +18,7 @@ type CalendarCell = {
   inCurrentMonth: boolean;
 };
 
-export default function InputDate({ id, value, onChange, className, sortRight = false }: IInputDate) {
+export default function InputDate({ id, value, onChange, className, sortRight = false, error = false }: IInputDate) {
   const [selectedDate, setSelectedDate] = useState<Date | null>(() => parseStringToDate(value));
   const [isOpen, setIsOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
@@ -175,7 +176,7 @@ export default function InputDate({ id, value, onChange, className, sortRight = 
         id={id}
         type="text"
         inputMode="numeric"
-        className={`${INPUT_BASE_CLASS} w-full text-center`}
+        className={`${INPUT_COMMON_STYLE} ${error ? INPUT_ERROR : INPUT_DEFAULT} w-full text-center`}
         defaultValue={dateFormatToString(selectedDate)}
         maxLength={10}
         onFocus={handleFocus}
