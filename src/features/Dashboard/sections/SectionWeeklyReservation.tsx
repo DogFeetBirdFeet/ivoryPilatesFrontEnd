@@ -6,8 +6,11 @@ import { DAY_NAMES } from '@/constants/days';
 import TodayDate from '../items/TodayDate';
 import type { WeekDay } from '../types';
 import WeeklyDate from '../items/WeeklyDate';
+import useOverlay from '@/hooks/useOverlay';
+import ScheduleDetail from '@/pages/Schedule/ScheduleDetail';
 
 export default function SectionWeeklyReservation() {
+  const overlay = useOverlay();
   const today = new Date();
   const [curDate, setCurDate] = useState<number>(today.getDate());
 
@@ -96,6 +99,9 @@ export default function SectionWeeklyReservation() {
                        flex flex-col items-center justify-center
                        hover:bg-ppp/90 active:scale-95 transition-all duration-200"
             type="button"
+            onClick={() => {
+              overlay.showPopup(<ScheduleDetail />, 'sideSheet');
+            }}
           >
             <span>일정</span>
             <span>추가</span>

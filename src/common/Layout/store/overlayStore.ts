@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
 import { create } from 'zustand';
 
-export type OverlayType = 'popup';
+export type OverlayType = 'popup' | 'sideSheet';
 
 interface OverlayItem {
   id: string; // overlay id
@@ -30,6 +30,7 @@ const useOverlayStore = create<OverlayStore>((set) => ({
     const newOverlay: OverlayItem = {
       ...overlay,
       id,
+      type: overlay.type,
       options: {
         // 기본값 세팅
         closeOnDimClick: true,

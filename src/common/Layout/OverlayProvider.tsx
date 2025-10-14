@@ -64,17 +64,23 @@ export default function OverlayProvider() {
           }}
         >
           {overlays.map((overlay, index) => {
+            const isSideSheet = overlay.type === 'sideSheet';
+
             return (
               <MotionDiv
                 key={overlay.id}
-                className="h-full w-full flex items-center justify-center"
+                className={`h-full w-full flex  ${isSideSheet ? 'justify-end' : 'justify-center items-center'}`}
                 style={{
                   pointerEvents: 'none',
                   position: 'absolute',
                   zIndex: index,
                 }}
               >
-                <div style={{ pointerEvents: 'auto' }} onClick={(e) => e.stopPropagation()}>
+                <div
+                  style={{ pointerEvents: 'auto' }}
+                  className={isSideSheet ? 'w-[60%] min-w-[900px] h-full' : ''}
+                  onClick={(e) => e.stopPropagation()}
+                >
                   {overlay.component}
                 </div>
               </MotionDiv>

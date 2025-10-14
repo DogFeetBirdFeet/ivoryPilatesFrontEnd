@@ -4,9 +4,9 @@ import type { ReactNode } from 'react';
 export default function useOverlay() {
   const { overlays, open, close, closePopupId, closeAll } = useOverlayStore();
 
-  const showPopup = (component: ReactNode) => {
+  const showPopup = (component: ReactNode, popupType?: 'popup' | 'sideSheet') => {
     return open({
-      type: 'popup',
+      type: popupType || 'popup',
       component,
       options: {
         closeOnDimClick: true,

@@ -87,6 +87,18 @@ export const formatToLocal = (dateStr: string) => {
 };
 
 /**
+ * Date -> 'yyyy년 mm월 dd일'
+ * @param date
+ * @returns string
+ */
+export const dateToLocal = (date: Date) => {
+  const year = date.getFullYear();
+  const month = pad2(date.getMonth() + 1);
+  const day = pad2(date.getDate());
+  return `${year}년 ${month}월 ${day}일`;
+};
+
+/**
  * Date 2개를 비교해주는 함수
  * @param a
  * @param b
