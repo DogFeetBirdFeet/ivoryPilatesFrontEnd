@@ -6,6 +6,7 @@ import type { IInsDay } from '@/features/Schedule/type/types';
 import InputDate from '@/common/components/inputArea/InputDate.tsx';
 import FilterSelectBox from '@/common/components/inputArea/FilterSelectBox';
 import InputText from '@/common/components/inputArea/InputText.tsx';
+import { dateFormatToString, stringToDate } from '@/utils/date';
 
 interface ScheduleDetailInfoProps {
   data?: IInsDay;
@@ -104,8 +105,8 @@ export default function ScheduleDetailInfo({ data, onCancel, onSave }: ScheduleD
           <div className="flex-1 relative ">
             <InputDate
               id="date"
-              value={formData.date}
-              onChange={(value) => handleInputChange('date', value)}
+              value={stringToDate(formData.date)}
+              onChange={(value) => handleInputChange('date', dateFormatToString(value, false))}
               className="ml-20px flex-1 w-400px"
             />
           </div>

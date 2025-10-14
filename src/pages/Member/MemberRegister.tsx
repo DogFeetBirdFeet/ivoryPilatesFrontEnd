@@ -4,7 +4,6 @@ import headerIcon from '@/assets/icon/yellow/icon_mem.png';
 import InputText from '@/common/components/inputArea/InputText';
 import InputNumber from '@/common/components/inputArea/InputNumber';
 import InputDate from '@/common/components/inputArea/InputDate';
-import { dateFormatToString } from '@/utils/date';
 import Textarea from '@/common/components/inputArea/Textarea';
 
 interface IForm {
@@ -12,11 +11,11 @@ interface IForm {
   numberFirst: string;
   numberSecond: string;
   numberThird: string;
-  birth: string;
+  birth: Date | null;
   gender: 'W' | 'M';
   height: string;
   weight: string;
-  consDate: string;
+  consDate: Date | null;
   surHist: string;
   disease: string;
   memo: string;
@@ -36,11 +35,11 @@ export default function MemberRegister() {
     numberFirst: '',
     numberSecond: '',
     numberThird: '',
-    birth: dateFormatToString(new Date()),
+    birth: new Date(),
     gender: 'W',
     height: '',
     weight: '',
-    consDate: dateFormatToString(new Date()),
+    consDate: new Date(),
     surHist: '',
     disease: '',
     memo: '',
@@ -110,7 +109,7 @@ export default function MemberRegister() {
         return { ...prev, number: '필수 입력 항목입니다.' };
       });
     }
-    if (formData.birth == '') {
+    if (!formData.birth) {
       setErrorMsg((prev) => {
         return { ...prev, birth: '필수 입력 항목입니다.' };
       });
@@ -120,7 +119,7 @@ export default function MemberRegister() {
         return { ...prev, heightWeight: '필수 입력 항목입니다.' };
       });
     }
-    if (formData.consDate === '') {
+    if (!formData.consDate) {
       setErrorMsg((prev) => {
         return { ...prev, consDate: '필수 입력 항목입니다.' };
       });

@@ -1,7 +1,7 @@
 import InputDate from '@/common/components/inputArea/InputDate';
 import PopupConfirm from '../PopupConfirm';
 import { useEffect, useState } from 'react';
-import { dateFormatToString, formatToLocal, parseStringToDate, stringToDate } from '@/utils/date';
+import { formatToLocal, stringToDate } from '@/utils/date';
 import SelectBox from '@/common/components/inputArea/SelectBox';
 
 interface ISchedule {
@@ -64,8 +64,8 @@ export default function PopupScheEdit({
           </label>
           <InputDate
             id="editDate"
-            value={dateFormatToString(editDate)}
-            onChange={(value) => setEditDate(parseStringToDate(value))}
+            value={editDate}
+            onChange={(value) => setEditDate(value)}
             className="required w-[230px]"
           />
         </div>

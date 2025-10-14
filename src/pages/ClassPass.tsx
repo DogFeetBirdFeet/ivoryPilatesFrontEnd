@@ -36,10 +36,10 @@ interface IClsPassData {
 }
 
 interface ISearchForm {
-  payDateFrom: string;
-  payDateTo: string;
-  refundDateFrom: string;
-  refundDateTo: string;
+  payDateFrom: Date | null;
+  payDateTo: Date | null;
+  refundDateFrom: Date | null;
+  refundDateTo: Date | null;
   searchPayName: string;
   searchName: string;
 }
@@ -64,10 +64,10 @@ export default function ClassPass() {
   // react-hook-form 검색조건
   const { watch, setValue, handleSubmit } = useForm<ISearchForm>({
     defaultValues: {
-      payDateFrom: dateFormatToString(new Date(new Date().getFullYear(), 0, 1)),
-      payDateTo: dateFormatToString(new Date()),
-      refundDateFrom: '',
-      refundDateTo: '',
+      payDateFrom: new Date(new Date().getFullYear(), 0, 1),
+      payDateTo: new Date(),
+      refundDateFrom: null,
+      refundDateTo: null,
       searchPayName: '',
       searchName: '',
     },
@@ -123,16 +123,18 @@ export default function ClassPass() {
   const loadClsPassData = async (searchParams?: ISearchForm) => {
     setIsLoading(true);
     try {
+      if (!searchParams) return;
+
       const params = {
         searchName: searchParams?.searchName,
         searchPayName: searchParams?.searchPayName,
         payMethod: selectedPayMethod ? PAYMENT?.find((pay) => pay.codeId === selectedPayMethod)?.dtlNm : undefined,
         useYn: selectedUseYn ? YN?.find((yn) => yn.codeId === selectedUseYn)?.dtlNm : undefined,
         refundYn: selectedRefundYn ? YN?.find((yn) => yn.codeId === selectedRefundYn)?.dtlNm : undefined,
-        payDateFrom: searchParams?.payDateFrom,
-        payDateTo: searchParams?.payDateTo,
-        refundDateFrom: searchParams?.refundDateFrom,
-        refundDateTo: searchParams?.refundDateTo,
+        payDateFrom: dateFormatToString(searchParams?.payDateFrom),
+        payDateTo: dateFormatToString(searchParams?.payDateTo),
+        refundDateFrom: dateFormatToString(searchParams?.refundDateFrom),
+        refundDateTo: dateFormatToString(searchParams?.refundDateTo),
       };
 
       const response = await clsPassApi.getClsPassList(params);
@@ -150,10 +152,10 @@ export default function ClassPass() {
       await loadCommonCode(); // 공통 코드 먼저 로드
       // 초기 폼 값으로 데이터 로드
       const initialFormValues = {
-        payDateFrom: dateFormatToString(new Date(new Date().getFullYear(), 0, 1)),
-        payDateTo: dateFormatToString(new Date()),
-        refundDateFrom: '',
-        refundDateTo: '',
+        payDateFrom: new Date(new Date().getFullYear(), 0, 1),
+        payDateTo: new Date(),
+        refundDateFrom: null,
+        refundDateTo: null,
         searchPayName: '',
         searchName: '',
       };

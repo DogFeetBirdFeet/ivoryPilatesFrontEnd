@@ -14,8 +14,8 @@ interface ISearchForm {
   searchName: string;
   searchNumber: string;
   searchCnt: string;
-  searchDateFrom: string;
-  searchDateTo: string;
+  searchDateFrom: Date | null;
+  searchDateTo: Date | null;
 }
 
 interface IMemberData {
@@ -68,8 +68,8 @@ export default function Member() {
     searchName: '',
     searchNumber: '',
     searchCnt: '',
-    searchDateFrom: '',
-    searchDateTo: '',
+    searchDateFrom: null,
+    searchDateTo: null,
   });
   const [selectedInstructor, setSelectedInstructor] = useState<number>(0);
   const [selectedBlacklist, setSelectedBlacklist] = useState<number>(0);

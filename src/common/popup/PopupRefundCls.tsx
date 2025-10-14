@@ -5,34 +5,22 @@ import iconSave from '@/assets/icon/white/icon_save.png';
 import iconCancel from '@/assets/icon/purple/icon_cancel.png';
 import InputDate from '@/common/components/inputArea/InputDate.tsx';
 import PopupConfirm from '@/common/popup/PopupConfirm.tsx';
-import { useForm } from 'react-hook-form';
-import { dateFormatToString } from '@/utils/date.ts';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import InputMoney from '@/common/components/inputArea/InputMoney.tsx';
 
-interface ISearchForm {
-  refundDate: string;
-  refundAmount: string;
-}
-
 export default function PopupRefundCls() {
-  const { watch, setValue } = useForm<ISearchForm>({
-    defaultValues: {
-      refundDate: dateFormatToString(new Date()),
-      refundAmount: '',
-    },
-  });
+  const [refundDate, setRefundDate] = useState<Date | null>(new Date());
+  const [refundAmount, setRefundAmount] = useState('');
 
-  const formValues = watch();
   const overlay = useOverlay();
   const navigate = useNavigate();
 
   useEffect(() => {
     console.log('📝 Form State:', {
-      refundDate: formValues.refundDate,
-      refundAmount: formValues.refundAmount,
+      refundDate: refundDate,
+      refundAmount: refundAmount,
     });
-  }, [formValues]);
+  }, [refundDate, refundAmount]);
 
   function handleConfirm() {
     overlay.closePopup();
@@ -61,8 +49,8 @@ export default function PopupRefundCls() {
           </label>
           <InputDate
             id="refundDate"
-            value={watch('refundDate')}
-            onChange={(value) => setValue('refundDate', value)}
+            value={refundDate}
+            onChange={(value) => setRefundDate(value)}
             className="required ml-auto w-[230px]"
           />
         </div>
@@ -72,9 +60,9 @@ export default function PopupRefundCls() {
           </label>
           <InputMoney
             id="refundAmount"
-            value={watch('refundAmount')}
-            className="required ml-auto w-[230px]"
-            onChange={(value) => setValue('refundAmount', value)}
+            value={refundAmount}
+            className="required ml-auto w-[230px] text-black"
+            onChange={(value) => setRefundAmount(value)}
           />
         </div>
       </div>

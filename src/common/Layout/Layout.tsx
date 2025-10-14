@@ -20,9 +20,6 @@ import type { LayoutContextType } from '@/hooks/useLayoutContext';
 import OverlayProvider from './OverlayProvider';
 import useOverlay from '@/hooks/useOverlay';
 import PopupSearchMem from '../popup/PopupSearchMem';
-import PopupScheDltConfirm from '../popup/Schedule/PopupScheDltConfirm';
-import PopupScheEdit from '../popup/Schedule/PopupScheEdit';
-import PopupRefundCls from '../popup/PopupRefundCls';
 
 // Framer Motion ClassName 타입에러 방지용 컴포넌트
 export const MotionAside = motion('aside') as React.FC<HTMLMotionAsideProps>;

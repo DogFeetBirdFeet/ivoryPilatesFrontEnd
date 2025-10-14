@@ -2,6 +2,7 @@ import { useState } from 'react';
 import InputDate from '@/common/components/inputArea/InputDate.tsx';
 import InputNumber from '@/common/components/inputArea/InputNumber';
 import FilterSelectBox from '@/common/components/inputArea/FilterSelectBox';
+import { stringToDate } from '@/utils/date';
 
 interface IClsPassInfoData {
   clsPassId: string;
@@ -27,7 +28,9 @@ const mockDataYN = [
 ];
 
 export default function ClsPassInfo({ data, editable, authority, currentUseAge, onDataChange }: IClsPassInfoProps) {
-  const [startDate, setStartDate] = useState(data.staDtm || new Date().toISOString().split('T')[0]);
+  const [startDate, setStartDate] = useState<Date | null>(
+    data.staDtm.length === 8 ? stringToDate(data.staDtm) : new Date()
+  );
 
   const handleDataChange = (field: keyof IClsPassInfoData, value: any) => {
     onDataChange({
@@ -71,7 +74,7 @@ export default function ClsPassInfo({ data, editable, authority, currentUseAge, 
                 <InputDate
                   id="endDtm"
                   className="text-2xl ml-20px"
-                  value={data.endDtm}
+                  value={stringToDate(data.endDtm)}
                   onChange={(value) => handleDataChange('endDtm', value)}
                 />
               )}

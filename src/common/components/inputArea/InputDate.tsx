@@ -6,8 +6,8 @@ import { dateFormatToString, isSameDate, parseStringToDate } from '@/utils/date'
 
 interface IInputDate {
   id: string;
-  value: string;
-  onChange: (value: string) => void;
+  value: Date | null;
+  onChange: (value: Date | null) => void;
   className?: string;
   sortRight?: boolean;
   error?: boolean;
@@ -19,7 +19,7 @@ type CalendarCell = {
 };
 
 export default function InputDate({ id, value, onChange, className, sortRight = false, error = false }: IInputDate) {
-  const [selectedDate, setSelectedDate] = useState<Date | null>(() => parseStringToDate(value));
+  const [selectedDate, setSelectedDate] = useState<Date | null>(value);
   const [isOpen, setIsOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [viewYear, setViewYear] = useState<number>(new Date().getFullYear());
@@ -30,11 +30,10 @@ export default function InputDate({ id, value, onChange, className, sortRight = 
 
   // 부모 value와 동기화
   useEffect(() => {
-    const parsed = parseStringToDate(value);
-    setSelectedDate(parsed);
+    setSelectedDate(value);
     // 외부에서 값이 변경되면 input도 업데이트
     if (inputRef.current && !isEditing) {
-      inputRef.current.value = value;
+      inputRef.current.value = dateFormatToString(value);
     }
   }, [value, isEditing]);
 
@@ -121,8 +120,7 @@ export default function InputDate({ id, value, onChange, className, sortRight = 
     if (inputRef.current) {
       const parsed = parseStringToDate(inputRef.current.value);
       setSelectedDate(parsed);
-      const formatted = dateFormatToString(parsed);
-      onChange(formatted);
+      onChange(parsed);
     }
   };
 
@@ -166,7 +164,7 @@ export default function InputDate({ id, value, onChange, className, sortRight = 
     }
 
     // 부모에게 전달
-    onChange(formatted);
+    onChange(date);
   };
 
   return (

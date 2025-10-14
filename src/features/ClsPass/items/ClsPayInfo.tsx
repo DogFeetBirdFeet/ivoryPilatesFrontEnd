@@ -2,6 +2,7 @@ import Textarea from '@/common/components/inputArea/Textarea.tsx';
 import InputNumber from '@/common/components/inputArea/InputNumber';
 import InputDate from '@/common/components/inputArea/InputDate.tsx';
 import FilterSelectBox from '@/common/components/inputArea/FilterSelectBox';
+import { stringToDate } from '@/utils/date';
 
 interface IClsPayInfoData {
   paidAmt: number;
@@ -71,7 +72,7 @@ export default function ClsPayInfo({ data, editable, authority, currentUseAge, o
               <>
                 <InputDate
                   id="payDate"
-                  value={data.payDate}
+                  value={stringToDate(data.payDate)}
                   onChange={(value) => handleDataChange('payDate', value)}
                   className="ml-20px flex-1"
                 />
