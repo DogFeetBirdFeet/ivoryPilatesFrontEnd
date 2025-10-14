@@ -8,9 +8,7 @@ import BtnSearch from '@/common/components/buttons/BtnSearch';
 import BtnIconText from '@/common/components/buttons/BtnIconText';
 import iconPlus from '@/assets/icon/white/icon_plus.png';
 import iconDel from '@/assets/icon/purple/icon_delete.png';
-import iconEdit from '@/assets/icon/purple/icon_save.png';
-import { formatPhone } from '@/utils/number';
-import { formatBirth } from '@/utils/date';
+import GroupDetail from '@/features/Member/sections/GroupDetail';
 
 interface ISearchForm {
   searchName: string;
@@ -26,6 +24,7 @@ interface IGrpData {
   regDate: string;
   editDate: string;
 }
+
 const mockData: IGrpData[] = [
   {
     grpId: 'GRP_COS_1',
@@ -119,34 +118,10 @@ const mockData: IGrpData[] = [
   },
 ];
 
-const columns: {
-  key: keyof IGrpData | 'select';
-  title: string;
-  className?: string;
-  render?: (value: any) => React.ReactNode;
-}[] = [
-  {
-    key: 'select',
-    title: '선택',
-    className: 'w-50px',
-    render: () => <input type="checkbox" onChange={(e) => {}} />,
-  },
-  { key: 'grpId', title: '그룹 ID', className: 'w-100px' },
-  { key: 'grpType', title: '그룹 타입', className: 'w-100px' },
-  { key: 'grpMemsName', title: '회원명', className: 'w-[250px]' },
-  { key: 'grpMemsCnt', title: '인원 수', className: 'w-60px' },
-  { key: 'remainingCnt', title: '잔여 회차', className: 'w-60px' },
-  { key: 'regDate', title: '등록일자', className: 'w-100px' },
-  { key: 'editDate', title: '수정일자', className: 'w-100px' },
-];
-
 export default function MemberGroup() {
   const [searchForm, setSearchForm] = useState<ISearchForm>({ searchName: '', searchNumber: '' });
   const [curRow, setCurRow] = useState<string | null>(null);
-  const [grpDetail, setGrpDetail] = useState([
-    { name: '원예진', number: '01000000000', birth: '99999999' },
-    { name: '원예진', number: '01000000000', birth: '99999999' },
-  ]);
+  const [selectedIds, setSelectedIds] = useState<string[]>([]);
 
   // 헤더정보 세팅
   const { setHeaderTitle, setHeaderIcon } = useLayoutContext();
@@ -162,6 +137,41 @@ export default function MemberGroup() {
 
     // TODO : 검색 처리로직
   };
+
+  const handleSelectRow = (grpId: string, checked: boolean) => {
+    if (checked) {
+      // 체크된 경우 배열에 추가
+      setSelectedIds((prev) => [...prev, grpId]);
+    } else {
+      // 체크 해제된 경우 배열에서 제거
+      setSelectedIds((prev) => prev.filter((id) => id !== grpId));
+    }
+  };
+
+  useEffect(() => {
+    console.log(selectedIds);
+  }, [selectedIds]);
+
+  const columns: {
+    key: keyof IGrpData | 'select';
+    title: string;
+    className?: string;
+    render?: (value: any) => React.ReactNode;
+  }[] = [
+    {
+      key: 'select',
+      title: '선택',
+      className: 'w-50px',
+      render: (row) => <input type="checkbox" onChange={(e) => handleSelectRow(row.grpId, e.target.checked)} />,
+    },
+    { key: 'grpId', title: '그룹 ID', className: 'w-100px' },
+    { key: 'grpType', title: '그룹 타입', className: 'w-100px' },
+    { key: 'grpMemsName', title: '회원명', className: 'w-[250px]' },
+    { key: 'grpMemsCnt', title: '인원 수', className: 'w-60px' },
+    { key: 'remainingCnt', title: '잔여 회차', className: 'w-60px' },
+    { key: 'regDate', title: '등록일자', className: 'w-100px' },
+    { key: 'editDate', title: '수정일자', className: 'w-100px' },
+  ];
 
   return (
     <div className="min-w-[1310px] w-full pb-20px">
@@ -194,7 +204,7 @@ export default function MemberGroup() {
         <section>
           <div className="flex items-center justify-between mb-10px mr-15px">
             <h1 className="h-50px text-[25px] text-gray font-bold flex items-center">그룹회원 목록</h1>
-            <div className="h-30px flex gap-15px ">
+            <div className="h-30px flex gap-10px ">
               <BtnIconText type="A" icon={iconPlus} text="추가하기" onClick={() => {}} />
               <BtnIconText type="B" icon={iconDel} text="삭제하기" onClick={() => {}} />
             </div>
@@ -234,46 +244,10 @@ export default function MemberGroup() {
           </div>
         </section>
 
-        <section className="mr-20px">
-          <div className={`h-50px flex justify-between items-center mb-10px ${!curRow && 'invisible'}`}>
-            <div>
-              <span className="text-ppt font-bold text-xl mr-30px">그룹 ID</span>
-              <span className="font-medium">{curRow}</span>
-            </div>
-            <BtnIconText type="B" icon={iconEdit} text="수정하기" onClick={() => {}} />
-          </div>
-
-          <div className="flex flex-col gap-20px">
-            {Array.from({ length: 4 }).map((_, index) => {
-              const member = grpDetail?.[index]; // detailData는 선택된 그룹의 멤버 배열
-
-              return (
-                <div
-                  key={index}
-                  className="h-120px bg-white border border-grayD9 rounded-default flex items-center justify-center"
-                >
-                  {member ? (
-                    <div className="w-full grid grid-cols-[120px_auto] gap-y-5px text-xl px-20px">
-                      {/* 이름 */}
-                      <span className="text-lightGray font-bold">이름</span>
-                      <span className="text-black font-medium">{member.name}</span>
-
-                      {/* 연락처 */}
-                      <span className="text-lightGray font-bold">연락처</span>
-                      <span className="text-black font-medium">{formatPhone(member.number)}</span>
-
-                      {/* 생년월일 */}
-                      <span className="text-lightGray font-bold">생년월일</span>
-                      <span className="text-black font-medium">{formatBirth(member.birth)}</span>
-                    </div>
-                  ) : (
-                    <p className="text-lightGray text-sm">그룹회원 정보가 없습니다</p>
-                  )}
-                </div>
-              );
-            })}
-          </div>
-        </section>
+        <GroupDetail
+          groupId={curRow}
+          memberName={curRow && mockData.filter((data) => data.grpId === curRow)[0].grpMemsName}
+        />
       </div>
     </div>
   );
