@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import {useMemo} from 'react';
 import iconLeft from '@/assets/chevrons_left_one.png';
 import iconRight from '@/assets/chevrons_right_one.png';
 
@@ -8,18 +8,26 @@ interface WeeklyCalenderProps {
 }
 
 export default function WeeklyCalender({
-    currentWeek,
-    setCurrentWeek,
-}: WeeklyCalenderProps) {
+                                           currentWeek,
+                                           setCurrentWeek,
+                                       }: WeeklyCalenderProps) {
     const handleLeftClick = () => {
+        console.log('currentWeek', currentWeek);
         const newWeek = new Date(currentWeek);
-        newWeek.setDate(currentWeek.getDate() - 7);
+        // 현재 주의 첫날(월요일)을 구해서 이전 주의 첫날(월요일)로 이동
+        const currentDay = newWeek.getDay();
+        const monOffset = currentDay === 0 ? -6 : 1 - currentDay; // 월요일까지의 오프셋
+        newWeek.setDate(newWeek.getDate() + monOffset - 7); // 이전 주의 월요일
         setCurrentWeek(newWeek);
     };
 
     const handleRightClick = () => {
+        console.log('currentWeek', currentWeek);
         const newWeek = new Date(currentWeek);
-        newWeek.setDate(currentWeek.getDate() + 7);
+        // 현재 주의 마지막 날(일요일)을 구해서 다음 주의 첫날(월요일)로 이동
+        const currentDay = newWeek.getDay();
+        const sunOffset = currentDay === 0 ? 0 : 7 - currentDay; // 일요일까지의 오프셋
+        newWeek.setDate(newWeek.getDate() + sunOffset + 1); // 일요일 다음날(월요일)
         setCurrentWeek(newWeek);
     };
 
@@ -27,15 +35,15 @@ export default function WeeklyCalender({
     const weekInfo = useMemo(() => {
         const year = currentWeek.getFullYear();
         const month = currentWeek.getMonth() + 1;
-        
+
         // 해당 월의 첫 번째 날
         const firstDayOfMonth = new Date(year, currentWeek.getMonth(), 1);
         const firstDayOfWeek = firstDayOfMonth.getDay();
-        
+
         // 현재 주가 해당 월의 몇 번째 주인지 계산
         const currentDate = currentWeek.getDate();
         const weekNumber = Math.ceil((currentDate + firstDayOfWeek) / 7);
-        
+
         return {
             year,
             month,
@@ -51,7 +59,7 @@ export default function WeeklyCalender({
                     className="w-[40px] h-[40px] bg-ppp rounded-full flex items-center justify-center text-white hover:bg-ppp/80 transition-colors"
                     onClick={handleLeftClick}
                 >
-                    <img src={iconLeft} alt="이전 주" className="w-4 h-4" />
+                    <img src={iconLeft} alt="이전 주" className="w-4 h-4"/>
                 </button>
 
                 {/* 주차 정보 */}
@@ -64,7 +72,7 @@ export default function WeeklyCalender({
                     className="w-[40px] h-[40px] bg-ppp rounded-full flex items-center justify-center text-white hover:bg-ppp/80 transition-colors"
                     onClick={handleRightClick}
                 >
-                    <img src={iconRight} alt="다음 주" className="w-4 h-4" />
+                    <img src={iconRight} alt="다음 주" className="w-4 h-4"/>
                 </button>
             </div>
         </div>

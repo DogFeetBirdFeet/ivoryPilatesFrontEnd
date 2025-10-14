@@ -2,18 +2,80 @@ import {useEffect, useState} from 'react';
 import IconSchedule from '@/assets/icon/yellow/icon_sche.png';
 import {useLayoutContext} from '@/hooks/useLayoutContext';
 import WeeklyCalender from '@/features/Schedule/items/WeeklyCalender';
+import type {IInsDay} from '@/features/Schedule/type/types';
+import {scheduleApiWeek} from '@/services/api';
 
 export default function InsWeek() {
 
     const [currentWeek, setCurrentWeek] = useState<Date>(() => new Date());
+    const [data, setData] = useState<IInsDay[]>([]);
+    const [, setIsLoading] = useState<boolean>(false);
 
+    const loadScheduleData = async (param: { staDate: string, endDate: string }) => {
+        setIsLoading(true);
+        try {
+            const response = await scheduleApiWeek.getScheduleList(param);
+            setData(response?.data || []);
+
+            console.log(response?.data);
+        } catch (error) {
+            console.error('데이터 로드 실패:', error);
+        } finally {
+            setIsLoading(false);
+        }
+    }
+
+    useEffect(() => {
+        console.log(currentWeek);
+
+        // 주간의 시작일(월요일) 계산
+        const currentDay = currentWeek.getDay();
+        const monOffset = currentDay === 0 ? -6 : 1 - currentDay; // 일요일이면 -6, 아니면 월요일까지의 오프셋
+
+        const staDate = new Date(currentWeek);
+        staDate.setDate(currentWeek.getDate() + monOffset);
+
+        // 주간의 종료일(일요일) 계산
+        const endDate = new Date(staDate);
+        endDate.setDate(staDate.getDate() + 6);
+
+        // YYYYMMDD 형식으로 포맷
+        const staDateStr = staDate.getFullYear().toString() +
+            (staDate.getMonth() + 1).toString().padStart(2, '0') +
+            staDate.getDate().toString().padStart(2, '0');
+
+        const endDateStr = endDate.getFullYear().toString() +
+            (endDate.getMonth() + 1).toString().padStart(2, '0') +
+            endDate.getDate().toString().padStart(2, '0');
+
+        const initialFormValues = {staDate: staDateStr, endDate: endDateStr};
+        loadScheduleData(initialFormValues);
+
+    }, [currentWeek]);
     const {setHeaderTitle, setHeaderIcon} = useLayoutContext();
     useEffect(() => {
         setHeaderTitle('강사 주간 일정');
         setHeaderIcon(IconSchedule);
     }, [setHeaderTitle, setHeaderIcon]);
 
+
     const weekDaysKr = ['월', '화', '수', '목', '금', '토', '일'];
+
+    // 주간 날짜 계산
+    const getWeekDays = () => {
+        const days = [];
+        const currentDay = currentWeek.getDay();
+        const monOffset = currentDay === 0 ? -6 : 1 - currentDay;
+
+        for (let i = 0; i < 7; i++) {
+            const date = new Date(currentWeek);
+            date.setDate(currentWeek.getDate() + monOffset + i);
+            days.push(date);
+        }
+        return days;
+    };
+
+    const weekDays = getWeekDays();
 
     // 시간대 데이터
     const timeSlots = [
@@ -21,25 +83,24 @@ export default function InsWeek() {
         '16:00', '17:00', '18:00', '19:00', '20:00', '21:00'
     ];
 
-    // 샘플 스케줄 데이터
-    const sampleSchedule: Record<string, Record<string, string>> = {
-        '월': {
-            '09:00': '원예진', '10:00': '원예진', '11:00': '예약가능', '12:00': '원예진',
-            '13:00': '예약가능', '14:00': '예약가능', '15:00': '예약가능', '16:00': '원예진',
-            '17:00': '예약가능', '18:00': '원예진', '19:00': '원예진', '20:00': '원예진', '21:00': '원예진'
-        },
-        '화': {
-            '09:00': '원예진', '10:00': '원예진', '11:00': '예약가능', '12:00': '원예진',
-            '13:00': '예약가능', '14:00': '예약가능', '15:00': '예약가능', '16:00': '원예진',
-            '17:00': '예약가능', '18:00': '원예진', '19:00': '원예진', '20:00': '원예진', '21:00': '원예진'
-        }
+    // 셀 렌더링 헬퍼 - 실제 API 데이터 사용
+    const getCellText = (dayIdx: number, time: string) => {
+        const targetDate = weekDays[dayIdx];
+        const dateStr = targetDate.getFullYear().toString() +
+            (targetDate.getMonth() + 1).toString().padStart(2, '0') +
+            targetDate.getDate().toString().padStart(2, '0');
+
+        // 시간 형식 변환: "14:00" -> "14"
+        const timeHour = time.split(':')[0];
+
+        // 해당 날짜와 시간에 맞는 스케줄 찾기
+        const schedule = data.find(item =>
+            item.schedDate === dateStr && item.schedTime === timeHour
+        );
+
+        return schedule ? schedule.cusNm : '예약가능';
     };
 
-    // 셀 렌더링 헬퍼
-    const getCellText = (dayIdx: number, time: string) => {
-        const dayKey = weekDaysKr[dayIdx];
-        return sampleSchedule[dayKey]?.[time] ?? '';
-    };
     return (
         <div className="flex flex-col">
             <div className="flex flex-col p-6 bg-ppLight rounded-md mb-[30px]">
@@ -48,7 +109,7 @@ export default function InsWeek() {
                     setCurrentWeek={setCurrentWeek}
                 />
             </div>
-            <div className="flex flex-row p-6 bg-ppWhite">
+            <div className="flex flex-row p-6 bg-ppWhite h-[35px]">
                 {weekDaysKr.map((daysStr) => (
                     <div className="flex items-center justify-center flex-1">
                         <div className="text-2xl text-ppt">{daysStr}</div>
@@ -56,31 +117,51 @@ export default function InsWeek() {
                 ))}
             </div>
 
-            <div className="mt-4 bg-white rounded-md overflow-hidden">
-                {/* grid: 1열은 시간, 나머지 7열은 요일 */}
-                <div className="grid grid-cols-[84px_repeat(7,minmax(0,1fr))]">
-                    {/* 행 반복 */}
-                    {timeSlots.map((time) => (
-                        <div key={time} className="contents">
-                            {/* 요일별 셀 7개 */}
-                            {weekDaysKr.map((_, dayIdx) => {
-                                return (
-                                    <div className="border border-black">
-                                        <div key={time} className="text-sm text-gray-600 text-center">{time}</div>
-                                        <div
-                                            key={`${time}-${dayIdx}`}
-                                            className="px-3 py-3 min-h-[44px]"
-                                        >
-                                            <div className="text-sm text-gray-600 text-center">
-                                                {getCellText(dayIdx, time)}
+            {/* 일별 스케줄 */}
+            <div className="mt-4 flex gap-4">
+                {weekDays.map((date, dayIdx) => {
+                    const isCurrentMonth = date.getMonth() === currentWeek.getMonth();
+                    return (
+                        <div key={dayIdx} className={`flex-1 rounded-lg border p-4 ${
+                            isCurrentMonth ? 'bg-white' : 'bg-gray100'
+                        }`}>
+                            {/* 날짜 헤더 */}
+                            <div className="text-center mb-4">
+                                <div className={`text-2xl font-bold text-black ${
+                                    date.toDateString() === new Date().toDateString()
+                                        ? 'bg-yellow rounded-full w-12 h-12 flex items-center justify-center mx-auto'
+                                        : ''
+                                }`}>
+                                    {date.getDate()}
+                                </div>
+                            </div>
+
+                            {/* 시간대별 스케줄 */}
+                            {isCurrentMonth && (
+                                <div className="space-y-1">
+                                    {timeSlots.map((time) => {
+                                        const scheduleText = getCellText(dayIdx, time);
+                                        const isBooked = scheduleText !== '예약가능';
+
+                                        return (
+                                            <div key={time}
+                                                 className="flex items-center justify-between py-2 border-b-2 border-gray">
+                                                <div className="text-xl font-bold text-ppt">
+                                                    {time}
+                                                </div>
+                                                <div className="text-xl flex items-center">
+                                                <span className={isBooked ? "text-black" : "text-blueBtn"}>
+                                                    {scheduleText}
+                                                </span>
+                                                </div>
                                             </div>
-                                        </div>
-                                    </div>
-                                );
-                            })}
+                                        );
+                                    })}
+                                </div>
+                            )}
                         </div>
-                    ))}
-                </div>
+                    );
+                })}
             </div>
         </div>
     );

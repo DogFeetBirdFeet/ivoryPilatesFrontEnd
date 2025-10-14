@@ -123,3 +123,14 @@ export const scheduleApi = {
         });
     }
 }
+
+export const scheduleApiWeek = {
+    getScheduleList: (params: {
+        staDate?: string;
+        endDate?: string;
+    }) => {
+        return api.get('/test/calSchView', {
+            params: params
+        });
+    }
+}
