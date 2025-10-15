@@ -94,8 +94,8 @@ export default function InsDay() {
   }, [setHeaderTitle, setHeaderIcon, selectedRowIndex, selectedDayOfWeek]);
 
   return (
-    <>
-      <div className="flex flex-col bg-ppLight rounded-lg p-6 mb-20px">
+    <div>
+      <div className="flex flex-col bg-ppLight rounded-lg p-6 mb-20px mx-20px">
         <WeeklyDayCalender
           currentWeek={currentWeek}
           setCurrentWeek={setCurrentWeek}
@@ -108,15 +108,15 @@ export default function InsDay() {
 
       <div className="flex gap-20px mb-15px">
         {/* 일간 스케줄 */}
-        <div>
-          <div className="bg-purpleLight2 rounded-lg p-20px">
+        <div className="w-[800px]">
+          <div className="bg-purpleLight2 rounded-lg p-20px mx-20px mb-20px">
             <CenterAndAcctInfo date={new Date()} centerOffYn="N" holYn="N" acctOffYn="Y" offAcctNm="원예진" />
           </div>
-          <div className="flex-1 flex items-center justify-center bg-white py-20px">
+          <div className="flex h-[calc(100vh-420px)]">
             <SectionDailySchedule
               selectedRowIndex={selectedRowIndex}
-              data={data}
               setSelectedRowIndex={handleRowSelection}
+              data={data}
               onAddSchedule={handleAddSchedule}
             />
           </div>
@@ -168,6 +168,6 @@ export default function InsDay() {
           )}
         </div>
       </div>
-    </>
+    </div>
   );
 }

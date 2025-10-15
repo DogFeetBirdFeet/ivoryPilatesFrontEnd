@@ -113,7 +113,7 @@ export default function SectionDailySchedule() {
 
       {/* 테이블 바디 */}
       <div className="flex-1 overflow-y-auto custom-scrollbar">
-        <div className="">
+        <div>
           {timeSlots.map((slot) => (
             <div
               key={`slot_time_${slot.time}`}
