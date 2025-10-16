@@ -1,14 +1,15 @@
-// import { useNavigate } from 'react-router-dom';
-// import useOverlay from '@/hooks/useOverlay';
+import useOverlay from '@/hooks/useOverlay';
 import pilatesAcct from '@/assets/pilates_acct.png';
 import pilatesLogo from '@/assets/pilates_logo.png';
 import iconVac from '@/assets/icon/purple/icon_vac.png';
 import iconSettings from '@/assets/icon/purple/icon_setting.png';
 import BtnIconText from '@/common/components/buttons/BtnIconText';
-// import PopupConfirm from '@/common/popup/PopupConfirm';
+import PopupCenterOffDaySetting from '@/common/popup/Schedule/PopupCenterOffDaySetting';
+import Popup from '@/common/popup/Popup';
+import PopupTrainerOffDaySetting from '@/common/popup/Schedule/PopupTrainerOffDaySetting';
 
 interface IDailySchedule {
-  date: Date;
+  date: string;
   centerOffYn: 'Y' | 'N';
   holYn: 'Y' | 'N';
   acctOffYn: 'Y' | 'N';
@@ -16,118 +17,56 @@ interface IDailySchedule {
 }
 
 export default function CenterAndAcctInfo({ date, centerOffYn, holYn, acctOffYn, offAcctNm }: IDailySchedule) {
-  //   const overlay = useOverlay();
-  //   const navigate = useNavigate();
+  const overlay = useOverlay();
 
-  //   function handleCenterOffConfirm() {
-  //     let isSchExists = false;
-  //     data?.map((item) => {
-  //       if (item.schedId) {
-  //         isSchExists = true;
-  //       }
-  //     });
-  //     if (isSchExists) {
-  //       overlay.showPopup(
-  //         <PopupConfirm
-  //           onClickConfirm={() => handleConfirm('휴무일')}
-  //           onClickBack={() => ({})}
-  //           isAlert={true}
-  //           confirmText="확인"
-  //         >
-  //           <div>
-  //             <p>수업 예약이 있는 날짜는 휴가/휴무 설정을 할 수 없습니다.</p>
-  //           </div>
-  //         </PopupConfirm>
-  //       );
-  //     } else {
-  //       overlay.showPopup(
-  //         <PopupConfirm
-  //           onClickConfirm={() => handleConfirm('휴무일')}
-  //           onClickBack={handleBack}
-  //           confirmText="확인"
-  //           cancelText="취소"
-  //         >
-  //           <div>
-  //             <p>
-  //               {data?.[0].year}년 {data?.[0].month}월 {data?.[0].day}일은 센터 영업일입니다.
-  //             </p>
-  //             <p>휴무일로 변경하시겠습니까?</p>
-  //           </div>
-  //         </PopupConfirm>
-  //       );
-  //     }
-  //   }
+  // 센터 휴무 변경 버튼 클릭 이벤트
+  function handleChangeCenterOffConfirm() {
+    overlay.showPopup(
+      <PopupCenterOffDaySetting
+        centerOffYn={centerOffYn}
+        date={date}
+        confirmCallback={handleCenterOffConfirm}
+        backCallback={handleBack}
+      />
+    );
+  }
 
-  //   function handleCenterOnConfirm() {
-  //     overlay.showPopup(
-  //       <PopupConfirm
-  //         titleText="센터 휴무/영업 설정"
-  //         onClickConfirm={() => handleConfirm('영업일')}
-  //         onClickBack={handleBack}
-  //         confirmText="확인"
-  //         cancelText="취소"
-  //       >
-  //         <div>
-  //           <p>
-  //             {data?.[0].year}년 {data?.[0].month}월 {data?.[0].day}일은 센터 후무일입니다.
-  //           </p>
-  //           <p>영업일일로 변경하시겠습니까?</p>
-  //         </div>
-  //       </PopupConfirm>
-  //     );
-  //   }
+  // 센터 휴무 저장버튼 클릭 후 callback
+  function handleCenterOffConfirm() {
+    // TODO 휴무 변경 데이터 패칭
+    console.log(`센터 휴무 변경`);
+    overlay.closeLastPopup();
 
-  //   function handleChangeCenterOffConfirm() {
-  //     const holyYn = data?.[0]?.holYn;
+    // TODO : 예약이 있는 경우 변경 불가
+    if (true) {
+      overlay.showPopup(
+        <Popup isAlert={true} onClickConfirm={handleBack}>
+          <div>
+            <p>수업 예약이 있는 날짜는 휴가/휴무 설정을 할 수 없습니다.</p>
+          </div>
+        </Popup>
+      );
+    }
+  }
 
-  //     if (undefined === holyYn || holyYn === 'N') {
-  //       overlay.showPopup(
-  //         <PopupConfirm
-  //           titleText="센터 휴무/영업 설정"
-  //           onClickConfirm={handleCenterOnConfirm}
-  //           onClickBack={handleBack}
-  //           confirmText="확인"
-  //           cancelText="취소"
-  //         >
-  //           <div>
-  //             <p>
-  //               {data?.[0].year}년 {data?.[0].month}월 {data?.[0].day}일은 센터 영업일입니다.
-  //             </p>
-  //             <p>휴무일로 변경하시겠습니까?</p>
-  //           </div>
-  //         </PopupConfirm>
-  //       );
-  //     }
+  // 휴가 설정
+  function handleChangeTrainerOffDay() {
+    overlay.showPopup(
+      <PopupTrainerOffDaySetting initDate={date} onClickBack={handleBack} onClickConfirm={handleTrainerOffConfirm} />
+    );
+  }
 
-  //     if (holyYn === 'Y') {
-  //       overlay.showPopup(
-  //         <PopupConfirm
-  //           titleText="센터 휴무/영업 설정"
-  //           onClickConfirm={handleCenterOffConfirm}
-  //           onClickBack={handleBack}
-  //           confirmText="확인"
-  //           cancelText="취소"
-  //         >
-  //           <div>
-  //             <p>
-  //               {data?.[0].year}년 {data?.[0].month}월 {data?.[0].day}일은 공휴일입니다.
-  //             </p>
-  //             <p>센터 영업일로 변경하시겠습니까?</p>
-  //           </div>
-  //         </PopupConfirm>
-  //       );
-  //     }
-  //   }
+  // 휴가설정 저장버튼 클릭 후 callback
+  function handleTrainerOffConfirm(trainerId: string, offDate: string) {
+    console.log(trainerId, offDate, '휴가설정');
 
-  //   function handleConfirm(text: string) {
-  //     console.log(`센터 ${text}로 변경`);
-  //     overlay.closePopup();
-  //     navigate(-1);
-  //   }
+    overlay.closeLastPopup();
+  }
 
-  //   function handleBack() {
-  //     overlay.closePopup();
-  //   }
+  // 팝업 취소버튼 클릭 후 callback
+  function handleBack() {
+    overlay.closeLastPopup();
+  }
 
   return (
     <>
@@ -148,7 +87,7 @@ export default function CenterAndAcctInfo({ date, centerOffYn, holYn, acctOffYn,
           icon={iconSettings}
           text="휴무 변경하기"
           onClick={() => {
-            //   handleChangeCenterOffConfirm();
+            handleChangeCenterOffConfirm();
           }}
         />
       </div>
@@ -164,7 +103,7 @@ export default function CenterAndAcctInfo({ date, centerOffYn, holYn, acctOffYn,
           icon={iconVac}
           text="휴가 추가하기"
           onClick={() => {
-            console.log('강사 설정');
+            handleChangeTrainerOffDay();
           }}
         />
       </div>

@@ -5,7 +5,7 @@ interface IPopupProps {
   titleText?: string;
   isAlert?: boolean;
   onClickConfirm: () => void;
-  onClickBack: () => void;
+  onClickBack?: () => void;
   children: React.ReactNode;
 }
 
@@ -35,7 +35,7 @@ export default function Popup({ imgSrc, titleText, isAlert, onClickConfirm, onCl
         {!isAlert && (
           <button
             className={`w-110px h-30px flex gap-10px items-center justify-center rounded-[7px] text-[13px] transition-colors bg-white border border-lightGray text-gray hover:bg-gray-50`}
-            onClick={() => onClickBack()}
+            onClick={() => onClickBack && onClickBack()}
           >
             취소
           </button>

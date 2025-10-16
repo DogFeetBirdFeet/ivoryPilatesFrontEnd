@@ -87,14 +87,14 @@ export const formatToLocal = (dateStr: string) => {
 };
 
 /**
- * Date -> 'yyyy년 mm월 dd일'
- * @param date
+ * string -> 'yyyy년 mm월 dd일'
+ * @param string
  * @returns string
  */
-export const dateToLocal = (date: Date) => {
-  const year = date.getFullYear();
-  const month = pad2(date.getMonth() + 1);
-  const day = pad2(date.getDate());
+export const dateToLocal = (dateStr: string) => {
+  const year = dateStr.slice(0, 4);
+  const month = dateStr.slice(4, 6);
+  const day = dateStr.slice(6, 8);
   return `${year}년 ${month}월 ${day}일`;
 };
 

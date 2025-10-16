@@ -1,19 +1,19 @@
 import { useMemo } from 'react';
 import ScheduleItem from '@/features/Schedule/items/ScheduleItem';
-import type { IInsDay, ITimeSlot } from '@/features/Schedule/type/types';
+import type { ISchData, ITimeSlot } from '@/features/Schedule/type/types';
 
 interface SectionDailyScheduleProps {
   selectedIdx: number | null;
   setSelectedIdx: (value: number | null) => void;
-  data: IInsDay[];
-  onAddSchedule?: () => void;
+  data: ISchData[];
+  setIsAddingSch: (value: boolean) => void;
 }
 
 export default function SectionDailySchedule({
   selectedIdx,
   setSelectedIdx,
   data,
-  onAddSchedule,
+  setIsAddingSch,
 }: SectionDailyScheduleProps) {
   // 13개 타임슬롯 생성 및 데이터 매핑
   const timeSlots: ITimeSlot[] = useMemo(() => {
@@ -56,9 +56,12 @@ export default function SectionDailySchedule({
           {timeSlots.map((slot, idx) => (
             <div
               key={`slot_time_${slot.time}`}
-              className={`p-10px border-b border-[#d9d9d9] last:border-b-0
-                ${selectedIdx === idx ? 'bg-yellow' : 'bg-white'}`}
-              onDoubleClick={() => setSelectedIdx(selectedIdx === idx ? null : idx)}
+              className={`p-10px border-b border-[#d9d9d9] last:border-b-0 hover:shadow-2xl cursor-pointer
+                ${selectedIdx === idx ? 'bg-beige' : 'bg-white'}`}
+              onDoubleClick={() => {
+                setSelectedIdx(selectedIdx === idx ? null : idx);
+                setIsAddingSch(false);
+              }}
             >
               <div className="grid grid-cols-[100px_1fr] gap-20px items-center">
                 {/* 시간 */}
@@ -69,7 +72,13 @@ export default function SectionDailySchedule({
                   {slot.schedule ? (
                     slot.schedule.map((schedule) => <ScheduleItem key={schedule.schedId} schedule={schedule} />)
                   ) : (
-                    <ScheduleItem key={`slot_${slot.time}_sch`} onAddSchedule={onAddSchedule} />
+                    <ScheduleItem
+                      key={`slot_${slot.time}_sch`}
+                      onAddSchedule={() => {
+                        setSelectedIdx(idx);
+                        setIsAddingSch(true);
+                      }}
+                    />
                   )}
                 </div>
               </div>

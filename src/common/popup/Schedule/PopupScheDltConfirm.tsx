@@ -29,7 +29,7 @@ export default function PopupScheDltConfirm({
   };
 
   const formatTime = (timeStr: string) => {
-    return `${timeStr}:00 - ${timeStr}:50`;
+    return `${timeStr.padStart(2, '0')}:00 - ${timeStr.padStart(2, '0')}:50`;
   };
 
   const formatMember = (memberStr: string) => {

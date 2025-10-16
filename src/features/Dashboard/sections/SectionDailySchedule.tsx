@@ -1,6 +1,9 @@
 import { useEffect, useMemo, useState } from 'react';
 import ScheduleItem from '../items/ScheduleItem';
 import type { ITimeSlot } from '../types';
+import ScheduleDetail from '@/pages/Schedule/ScheduleDetail';
+import { dateFormatToString } from '@/utils/date';
+import useOverlay from '@/hooks/useOverlay';
 
 // 스케줄 Mock 데이터
 const mockApiData = [
@@ -47,6 +50,7 @@ const trainerBreakData = [
 export default function SectionDailySchedule() {
   // 현재 시간대만 추적 (시간이 바뀔 때만 렌더링)
   const [currentHour, setCurrentHour] = useState(new Date().getHours());
+  const overlay = useOverlay();
 
   useEffect(() => {
     // 10초마다 시간대 체크 (시간이 바뀔 때만 상태 업데이트)
@@ -117,8 +121,14 @@ export default function SectionDailySchedule() {
           {timeSlots.map((slot) => (
             <div
               key={`slot_time_${slot.time}`}
-              className={`px-10px py-10px border-b border-[#d9d9d9] last:border-b-0 
+              className={`px-10px py-10px border-b border-[#d9d9d9] last:border-b-0 cursor-pointer hover:shadow-md
                 ${currentHour === slot.time && 'bg-yellow'}`}
+              onDoubleClick={() => {
+                overlay.showPopup(
+                  <ScheduleDetail date={dateFormatToString(new Date(), false)} initTime={slot.time} />,
+                  'sideSheet'
+                );
+              }}
             >
               <div className="grid grid-cols-[120px_1fr] gap-20px items-center">
                 {/* 시간 */}

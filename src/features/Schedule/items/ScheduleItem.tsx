@@ -1,17 +1,17 @@
 import StatusBadge from '@/common/components/schedule/StatusBadge';
 import imgPlus from '@/assets/dashboard/plus.png';
 import iconPix from '@/assets/icon_pix.png';
-import type { IInsDay } from '@/features/Schedule/type/types';
+import type { ISchData } from '@/features/Schedule/type/types';
 import { SCHEDULE_STATUS } from '@/constants/schedule';
 
 interface ScheduleItemProps {
-  schedule?: IInsDay;
+  schedule?: ISchData;
   onAddSchedule?: () => void;
 }
 
 export default function ScheduleItem({ schedule, onAddSchedule }: ScheduleItemProps) {
   // 회원명 포맷팅 (2:1 수업인 경우 (2:1) 추가)
-  const formatCustomerName = (schedule: IInsDay): string => {
+  const formatCustomerName = (schedule: ISchData): string => {
     return schedule.grpType === 'D' ? `${schedule.cusNm} 회원님 (2:1)` : `${schedule.cusNm} 회원님`;
   };
 

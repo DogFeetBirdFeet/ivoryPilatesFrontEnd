@@ -4,6 +4,7 @@ import InputText from '../components/inputArea/InputText';
 import InputNumber from '../components/inputArea/InputNumber';
 import BtnSearch from '../components/buttons/BtnSearch';
 import { useState } from 'react';
+import type { SCHEDULE_TYPE } from '@/constants/schedule';
 
 interface IMemberData {
   memberId: string;
@@ -11,6 +12,7 @@ interface IMemberData {
   contact: string;
   gender: string;
   isGroup: boolean;
+  grpType: keyof typeof SCHEDULE_TYPE | null;
   groupMem: string;
 }
 
@@ -21,6 +23,7 @@ const mockMemberData: IMemberData[] = [
     contact: '010-1234-5678',
     gender: '남자',
     isGroup: false,
+    grpType: null,
     groupMem: '',
   },
   {
@@ -29,6 +32,7 @@ const mockMemberData: IMemberData[] = [
     contact: '010-2345-6789',
     gender: '여자',
     isGroup: true,
+    grpType: 'S',
     groupMem: '나은솔, 신민철, 김재우',
   },
   {
@@ -37,6 +41,7 @@ const mockMemberData: IMemberData[] = [
     contact: '010-3456-7890',
     gender: '남자',
     isGroup: false,
+    grpType: null,
     groupMem: '',
   },
   {
@@ -45,6 +50,7 @@ const mockMemberData: IMemberData[] = [
     contact: '010-4567-8901',
     gender: '여자',
     isGroup: true,
+    grpType: 'D',
     groupMem: '나은솔, 신민철',
   },
   {
@@ -53,6 +59,7 @@ const mockMemberData: IMemberData[] = [
     contact: '010-5678-9012',
     gender: '남자',
     isGroup: false,
+    grpType: null,
     groupMem: '',
   },
   {
@@ -61,6 +68,7 @@ const mockMemberData: IMemberData[] = [
     contact: '010-6789-0123',
     gender: '여자',
     isGroup: true,
+    grpType: 'S',
     groupMem: '나은솔, 신민철, 김재우',
   },
   {
@@ -69,6 +77,7 @@ const mockMemberData: IMemberData[] = [
     contact: '010-7890-1234',
     gender: '남자',
     isGroup: false,
+    grpType: null,
     groupMem: '',
   },
   {
@@ -77,6 +86,7 @@ const mockMemberData: IMemberData[] = [
     contact: '010-8901-2345',
     gender: '여자',
     isGroup: false,
+    grpType: null,
     groupMem: '',
   },
   {
@@ -85,6 +95,7 @@ const mockMemberData: IMemberData[] = [
     contact: '010-9012-3456',
     gender: '남자',
     isGroup: true,
+    grpType: 'S',
     groupMem: '나은솔, 신민철, 김재우',
   },
   {
@@ -93,6 +104,7 @@ const mockMemberData: IMemberData[] = [
     contact: '010-0123-4567',
     gender: '여자',
     isGroup: false,
+    grpType: null,
     groupMem: '',
   },
   {
@@ -101,6 +113,7 @@ const mockMemberData: IMemberData[] = [
     contact: '010-1111-2222',
     gender: '남자',
     isGroup: true,
+    grpType: 'D',
     groupMem: '나은솔, 신민철',
   },
   {
@@ -109,6 +122,7 @@ const mockMemberData: IMemberData[] = [
     contact: '010-2222-3333',
     gender: '여자',
     isGroup: false,
+    grpType: null,
     groupMem: '',
   },
   {
@@ -117,6 +131,7 @@ const mockMemberData: IMemberData[] = [
     contact: '010-3333-4444',
     gender: '남자',
     isGroup: false,
+    grpType: null,
     groupMem: '',
   },
   {
@@ -125,6 +140,7 @@ const mockMemberData: IMemberData[] = [
     contact: '010-4444-5555',
     gender: '여자',
     isGroup: true,
+    grpType: 'S',
     groupMem: '나은솔, 신민철, 김재우',
   },
   {
@@ -133,6 +149,7 @@ const mockMemberData: IMemberData[] = [
     contact: '010-5555-6666',
     gender: '남자',
     isGroup: false,
+    grpType: null,
     groupMem: '',
   },
 ];
@@ -161,8 +178,14 @@ const columns: {
  * @onDoubleClick 더블클릭 이벤트. 유저정보를 받을 수 있는 함수
  */
 
-export default function PopupSearchMem({ onDoubleClick }: { onDoubleClick: (data: IMemberData) => void }) {
-  const [searchName, setSearchName] = useState('');
+export default function PopupSearchMem({
+  onDoubleClick,
+  initNameValue,
+}: {
+  onDoubleClick: (data: IMemberData) => void;
+  initNameValue?: string;
+}) {
+  const [searchName, setSearchName] = useState(initNameValue || '');
   const [searchNumber, setSearchNumber] = useState('');
 
   return (

@@ -19,14 +19,29 @@ const textList = {
  * @param status
  * @returns 아이콘과 텍스트를 포함한 버튼 컴포넌트
  */
-export default function StatusBadge({ status }: { status: keyof typeof SCHEDULE_STATUS }) {
+export default function StatusBadge({
+  status,
+  type = 'A',
+}: {
+  status: keyof typeof SCHEDULE_STATUS;
+  type?: 'A' | 'B';
+}) {
   const color = colorList[status];
   const text = textList[status];
 
   return (
-    <div className="flex gap-10px items-center">
-      <div className={`w-20px h-20px rounded-full ${color}`}></div>
-      <div className="text-xl font-medium text-gray55">{text}</div>
-    </div>
+    <>
+      {type === 'A' && (
+        <div className="flex gap-10px items-center">
+          <div className={`w-20px h-20px rounded-full ${color}`}></div>
+          <div className="text-xl font-medium text-gray55">{text}</div>
+        </div>
+      )}
+      {type === 'B' && (
+        <div className={`w-50px flex justify-center px-10px py-[3px] rounded-[5px] ${color}`}>
+          <span className="text-base font-medium text-white">{text}</span>
+        </div>
+      )}
+    </>
   );
 }

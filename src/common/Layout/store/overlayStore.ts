@@ -20,10 +20,11 @@ interface OverlayStore {
   open: (overlay: Omit<OverlayItem, 'id'>) => string;
   close: () => void;
   closePopupId: (id: string) => void;
+  closeLast: () => void;
   closeAll: () => void;
 }
 
-const useOverlayStore = create<OverlayStore>((set) => ({
+const useOverlayStore = create<OverlayStore>((set, get) => ({
   overlays: [],
   open: (overlay) => {
     const id = `overlay_${Date.now()}`;
@@ -47,7 +48,7 @@ const useOverlayStore = create<OverlayStore>((set) => ({
   },
   close: () => {
     set((state) => ({
-      overlays: state.overlays.slice(0, state.overlays.length - 2),
+      overlays: state.overlays.slice(0, -1),
     }));
   },
   closePopupId: (id) => {
@@ -55,7 +56,15 @@ const useOverlayStore = create<OverlayStore>((set) => ({
       overlays: state.overlays.filter((overlay) => overlay.id !== id),
     }));
   },
-
+  closeLast: () => {
+    const { overlays } = get(); // 🎯 최신 상태 가져오기
+    if (overlays.length > 0) {
+      const lastOverlay = overlays[overlays.length - 1];
+      set((state) => ({
+        overlays: state.overlays.filter((overlay) => overlay.id !== lastOverlay.id),
+      }));
+    }
+  },
   closeAll: () => {
     set({ overlays: [] });
   },

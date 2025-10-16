@@ -8,6 +8,7 @@ import type { WeekDay } from '../types';
 import WeeklyDate from '../items/WeeklyDate';
 import useOverlay from '@/hooks/useOverlay';
 import ScheduleDetail from '@/pages/Schedule/ScheduleDetail';
+import { dateFormatToString } from '@/utils/date';
 
 export default function SectionWeeklyReservation() {
   const overlay = useOverlay();
@@ -100,7 +101,10 @@ export default function SectionWeeklyReservation() {
                        hover:bg-ppp/90 active:scale-95 transition-all duration-200"
             type="button"
             onClick={() => {
-              overlay.showPopup(<ScheduleDetail />, 'sideSheet');
+              overlay.showPopup(
+                <ScheduleDetail date={dateFormatToString(weekDays[selectedIndex].fullDate, false)} />,
+                'sideSheet'
+              );
             }}
           >
             <span>일정</span>

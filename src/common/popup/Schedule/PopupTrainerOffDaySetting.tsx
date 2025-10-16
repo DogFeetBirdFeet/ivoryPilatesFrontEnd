@@ -5,6 +5,7 @@ import SelectBox from '@/common/components/inputArea/SelectBox';
 import iconTitle from '@/assets/icon/yellow/icon_sche.png';
 import iconSave from '@/assets/icon/white/icon_save.png';
 import iconBack from '@/assets/icon/purple/icon_cancel.png';
+import { dateFormatToString, stringToDate } from '@/utils/date';
 
 const mockData = [
   { codeId: '0', dtlNm: '원예진 강사' },
@@ -12,22 +13,28 @@ const mockData = [
   { codeId: '2', dtlNm: '김용진 강사' },
 ];
 
-export default function PopupOffSetting({
+export default function PopupTrainerOffDaySetting({
+  initDate,
   onClickBack,
   onClickConfirm,
 }: {
+  initDate: string;
   onClickBack: () => void;
-  onClickConfirm: () => void;
+  onClickConfirm: (trainerId: string, offDate: string) => void;
 }) {
-  const [trainer, setTrainer] = useState<string | null>(mockData[0].codeId);
-  const [offDay, setOffDay] = useState<Date | null>(new Date());
+  const [trainer, setTrainer] = useState<string>(mockData[0].codeId);
+  const [offDay, setOffDay] = useState<Date | null>(stringToDate(initDate));
+
+  const handleConfirm = () => {
+    onClickConfirm(trainer, dateFormatToString(offDay, false));
+  };
 
   return (
     <PopupConfirm
       imgSrc={iconTitle}
       titleText="휴가 설정"
       onClickBack={onClickBack}
-      onClickConfirm={onClickConfirm}
+      onClickConfirm={handleConfirm}
       confirmText="저장하기"
       cancelText="취소하기"
       imgSrcConfirm={iconSave}

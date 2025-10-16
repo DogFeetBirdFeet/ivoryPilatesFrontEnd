@@ -4,93 +4,93 @@ import iconClock from '@/assets/icon_clock.png';
 import iconPlus from '@/assets/icon/white/icon_plus.png';
 import CenterAndAcctInfo from '@/features/Schedule/items/CenterAndAcctInfo';
 import SectionDailySchedule from '@/features/Schedule/sections/SectionDailySchedule';
-import { dateToLocal } from '@/utils/date';
+import { dateFormatToString, dateToLocal } from '@/utils/date';
 import { useMemo, useState } from 'react';
 import BtnIconText from '@/common/components/buttons/BtnIconText';
-
-const mockApiData = [
-  {
-    id: '1',
-    cusNm: '김혜준',
-    trainerNm: '원예진',
-    clsStatus: 'COM' as const,
-    grpType: 'S' as const,
-    fixYn: 'Y',
-    schedTime: '9',
-  },
-  {
-    id: '2',
-    cusNm: '김혜준',
-    trainerNm: '원예진',
-    clsStatus: 'COM' as const,
-    grpType: 'S' as const,
-    fixYn: 'N',
-    schedTime: '10',
-  },
-  {
-    id: '3',
-    cusNm: '최호연',
-    trainerNm: '김용진',
-    clsStatus: 'NOS' as const,
-    grpType: 'S' as const,
-    fixYn: 'N',
-    schedTime: '11',
-  },
-  {
-    id: '4',
-    cusNm: '신화원',
-    trainerNm: '원예진',
-    clsStatus: 'SCH' as const,
-    grpType: 'S' as const,
-    fixYn: 'N',
-    schedTime: '12',
-  },
-  {
-    id: '5',
-    cusNm: '나큰솔',
-    trainerNm: '원예진',
-    clsStatus: 'SCH' as const,
-    grpType: 'S' as const,
-    fixYn: 'N',
-    schedTime: '13',
-  },
-  {
-    id: '6',
-    cusNm: '신화원',
-    trainerNm: '최호연',
-    clsStatus: 'SCH' as const,
-    grpType: 'D' as const,
-    fixYn: 'Y',
-    schedTime: '16',
-  },
-  {
-    id: '7',
-    cusNm: '김용진',
-    trainerNm: '최호연',
-    clsStatus: 'SCH' as const,
-    grpType: 'D' as const,
-    fixYn: 'N',
-    schedTime: '16',
-  },
-
-  {
-    id: '8',
-    cusNm: '나큰솔',
-    trainerNm: '김혜준',
-    clsStatus: 'SCH' as const,
-    grpType: 'S' as const,
-    fixYn: 'N',
-    schedTime: '17',
-  },
-];
+import ScheduleInfo from '@/features/Schedule/items/ScheduleInfo';
+import ScheduleInfoForm from '@/features/Schedule/items/ScheduleInfoForm';
 
 const restTrainerMockData = [
   { time: '13', trainerNm: '원예진' },
   { time: '17', trainerNm: '나큰솔' },
 ];
 
-export default function ScheduleDetail() {
-  const [selectedIdx, setSelectedIdx] = useState<number | null>(null);
+export default function ScheduleDetail({ date, initTime }: { date: string; initTime?: number }) {
+  const mockApiData = [
+    {
+      schedId: 'sch_1',
+      cusId: 'cus_1',
+      cusNm: '김혜준',
+      trainerId: '1',
+      trainerNm: '원예진',
+      schedDate: date,
+      schedTime: '9',
+      fixYn: 'Y',
+      grpType: 'S' as const,
+      clsStatus: 'COM' as const,
+    },
+    {
+      schedId: 'sch_2',
+      cusId: 'cus_2',
+      cusNm: '나큰솔',
+      trainerId: '1',
+      trainerNm: '원예진',
+      schedDate: date,
+      schedTime: '10',
+      fixYn: 'N',
+      grpType: null,
+      clsStatus: 'COM' as const,
+    },
+    {
+      schedId: 'sch_3',
+      cusId: 'cus_3',
+      cusNm: '김용진',
+      trainerId: '2',
+      trainerNm: '신화원',
+      schedDate: date,
+      schedTime: '11',
+      fixYn: 'N',
+      grpType: 'D' as const,
+      clsStatus: 'NOS' as const,
+    },
+    {
+      schedId: 'sch_4',
+      cusId: 'cus_4',
+      cusNm: '최호연',
+      trainerId: '2',
+      trainerNm: '신화원',
+      schedDate: date,
+      schedTime: '11',
+      fixYn: 'N',
+      grpType: 'D' as const,
+      clsStatus: 'NOS' as const,
+    },
+    {
+      schedId: 'sch_5',
+      cusId: 'cus_5',
+      cusNm: '김혜준',
+      trainerId: '3',
+      trainerNm: '김용진',
+      schedDate: date,
+      schedTime: '12',
+      fixYn: 'Y',
+      grpType: null,
+      clsStatus: 'SCH' as const,
+    },
+    {
+      schedId: 'sch_6',
+      cusId: 'cus_2',
+      cusNm: '나큰솔',
+      trainerId: '2',
+      trainerNm: '신화원',
+      schedDate: date,
+      schedTime: '19',
+      fixYn: 'N',
+      grpType: null,
+      clsStatus: 'SCH' as const,
+    },
+  ];
+  const [selectedIdx, setSelectedIdx] = useState<number | null>(initTime ? initTime - 9 : null);
   const [isAddingSch, setIsAddingSch] = useState<boolean>(false);
 
   // 선택된 시간대 text로 바꿔주는 함수
@@ -115,8 +115,26 @@ export default function ScheduleDetail() {
     };
   }, [selectedIdx]);
 
+  // 스케줄 추가 취소버튼 클릭 callback 함수
+  function handleCancelAdd() {
+    setIsAddingSch(false);
+  }
+
+  // 스케줄 추가 저장버튼 클릭시 callback 함수
+  function handleSave() {
+    // 저장 로직 구현
+    console.log('저장하기');
+    setIsAddingSch(false);
+  }
+
+  // 필터된 스케줄 데이터 (selectedIdx가 변경될 때만 재계산)
+  const filteredSchedules = useMemo(() => {
+    if (selectedIdx === null) return [];
+    return mockApiData.filter((data) => data.schedTime === (selectedIdx + 9).toString());
+  }, [selectedIdx, mockApiData]);
+
   return (
-    <div className="h-full bg-ppbg py-30px overflow-y-auto [&::-webkit-scrollbar]:hidden">
+    <div className="h-full bg-ppbg pt-30px pb-200px overflow-y-auto [&::-webkit-scrollbar]:hidden">
       {/* 헤더 */}
       <header className="flex items-center justify-between h-40px mb-20px mx-20px">
         <div className="flex items-center">
@@ -131,10 +149,10 @@ export default function ScheduleDetail() {
       {/* 날짜 정보 */}
       <section className="grid grid-cols-[300px_auto] bg-purpleLight2 rounded-default p-20px mb-20px mx-20px">
         <div className="flex justify-center items-center text-[25px] leading-40px text-ppt font-bold">
-          {dateToLocal(new Date())}
+          {dateToLocal(date)}
         </div>
         <div className="flex flex-col justify-center">
-          <CenterAndAcctInfo date={new Date()} centerOffYn="N" holYn="N" acctOffYn="Y" offAcctNm="원예진" />
+          <CenterAndAcctInfo date={date} centerOffYn="N" holYn="N" acctOffYn="Y" offAcctNm="원예진" />
         </div>
       </section>
 
@@ -144,16 +162,17 @@ export default function ScheduleDetail() {
           selectedIdx={selectedIdx}
           setSelectedIdx={setSelectedIdx}
           data={mockApiData}
-          onAddSchedule={() => {}}
+          setIsAddingSch={setIsAddingSch}
         />
       </section>
 
       {/* 시간대 정보 */}
       {selectedIdx !== null && (
         <>
-          <section className="mx-20px">
+          {/* 시간/휴식 정보 */}
+          <section className="mx-20px mb-20px">
             <div className="flex items-center justify-between">
-              {/* 시간/휴식 정보 */}
+              {/* 시간/휴식 */}
               <div className="flex-1 flex items-center gap-10px">
                 <img src={iconClock} alt="시계" className="w-40px h-40px" />
                 <div className="flex flex-col">
@@ -179,6 +198,23 @@ export default function ScheduleDetail() {
           </section>
 
           {/* 스케줄 상세 */}
+          <section className="flex flex-col gap-20px mx-20px">
+            {isAddingSch && (
+              <ScheduleInfoForm
+                onCancel={handleCancelAdd}
+                onSave={handleSave}
+                initDate={dateFormatToString(new Date(), false)}
+                initTime="9"
+              />
+            )}
+            {filteredSchedules.length > 0 ? (
+              filteredSchedules.map((data) => <ScheduleInfo key={data.schedId} {...data} />)
+            ) : (
+              <div className="flex justify-center items-center h-200px">
+                <p className="text-sm font-bold text-gray">예약된 수업이 없습니다.</p>
+              </div>
+            )}
+          </section>
         </>
       )}
     </div>

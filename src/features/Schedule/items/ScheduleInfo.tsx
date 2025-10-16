@@ -1,118 +1,100 @@
 import BtnIconText from '@/common/components/buttons/BtnIconText';
-import {useNavigate} from 'react-router-dom';
-import iconSave from '@/assets/icon/purple/icon_save.png';
+import iconEdit from '@/assets/icon/purple/icon_save.png';
 import iconDelete from '@/assets/icon/purple/icon_delete.png';
-import type {IInsDay} from '@/features/Schedule/type/types';
-import PopupConfirm from '@/common/popup/PopupConfirm';
 import useOverlay from '@/hooks/useOverlay';
-import ScheduleDetailInfo from './ScheduleDetailInfo';
-import {useState} from 'react';
+import ScheduleInfoForm from './ScheduleInfoForm';
+import { useEffect, useState } from 'react';
+import type { ISchData } from '../type/types';
+import StatusBadge from '@/common/components/schedule/StatusBadge';
+import PopupScheDltConfirm from '@/common/popup/Schedule/PopupScheDltConfirm';
 
-export default function ScheduleInfo({data}: { data?: IInsDay }) {
+// 스케줄 조회 Item
+export default function ScheduleInfo(data: ISchData) {
+  const overlay = useOverlay();
+  const [isEditing, setIsEditing] = useState(false);
 
-    const overlay = useOverlay();
-    const navigate = useNavigate();
-    const [isEditing, setIsEditing] = useState(false);
+  // data가 변경되면 편집 모드 해제
+  useEffect(() => {
+    setIsEditing(false);
+  }, [data.schedId]); // schedId가 바뀌면 다른 스케줄
 
-    function handleConfirm() {
-        overlay.closePopup();
-        navigate(-1);
-    }
+  // 스케줄 삭제 확인시 callback 함수
+  function handleConfirm() {
+    overlay.closeLastPopup();
+  }
 
-    function handleBack() {
-        overlay.closePopup();
-    }
+  // 스케줄 삭제 취소시 callback 함수
+  function handleBack() {
+    overlay.closeLastPopup();
+  }
 
-    function handleEdit() {
-        setIsEditing(true);
-    }
+  // 수정버튼 클릭 이벤트
+  function handleEdit() {
+    setIsEditing(true);
+  }
 
-    function handleCancelEdit() {
-        setIsEditing(false);
-    }
+  // 수정 취소버튼 클릭 callback 함수
+  function handleCancelEdit() {
+    setIsEditing(false);
+  }
 
-    function handleSave() {
-        // 저장 로직 구현
-        console.log('저장하기');
-        setIsEditing(false);
-    }
+  // 수정 후 저장버튼 클릭시 callback 함수
+  function handleSave() {
+    // 저장 로직 구현
+    console.log('저장하기');
+    setIsEditing(false);
+  }
 
-    return (
-        <div className="w-full">
-            {/* 기존 스케줄 정보 */}
-            <div className="w-full bg-grayWhite rounded-lg p-6">
-                <div className="flex justify-between items-start">
-                    {/* 정보 섹션 */}
-                    <div className="flex-1">
-                        <div className="space-y-3">
-                            <div className="flex items-center gap-4">
-                                <span className="text-xl text-black font-bold w-28">회원명</span>
-                                <span className="text-xl text-gray4A">{data?.cusNm} 회원님</span>
-                            </div>
-                            <div className="flex items-center justify-between">
-                                <div className="flex items-center gap-4">
-                                    <span className="text-xl text-black font-bold w-28">담당강사</span>
-                                    <span className="text-xl text-gray4A">{data?.trainerNm} 강사</span>
-                                </div>
-                                <BtnIconText
-                                    type="B"
-                                    icon={iconSave}
-                                    text={data?.schedId ? "수정하기" : "추가하기"}
-                                    onClick={handleEdit}
-                                />
-                            </div>
-                            <div className="flex items-center justify-between">
-                                <div className="flex items-center gap-4">
-                                    <span className="text-xl text-black font-bold w-28">고정수업 여부</span>
-                                    <span className="text-xl text-gray4A">{data?.fixYn ? 'Y' : 'N'}</span>
-                                </div>
-                                {data?.schedId ? (
-                                    <BtnIconText
-                                        type="B"
-                                        icon={iconDelete}
-                                        text="삭제하기"
-                                        onClick={() => {
-                                            overlay.showPopup(<PopupConfirm onClickConfirm={handleConfirm}
-                                                                            onClickBack={handleBack} confirmText="확인"
-                                                                            cancelText="취소">
-                                                <div>
-                                                    <p>{data?.year}년 {data?.month}월 {data?.day}일({data?.korDate?.substring(0, 1)}) {data?.schedTime}:00
-                                                        - {data?.schedTime}:50</p>
-                                                    <p>{data?.cusNm} 회원님의 수업을 정말 삭제하시겠습니까?</p>
-                                                </div>
-                                            </PopupConfirm>);
-                                        }}
-                                    />
-                                ) : <></>}
-                            </div>
-                            <div className="flex items-center gap-4">
-                                <span className="text-xl text-black font-bold w-28">수업 상태</span>
-                                <span className={`inline-block px-3 py-1 rounded-md text-base font-medium text-white ${
-                                    data?.clsStatus === 'COM' ? 'bg-[#0C8CE9]' :
-                                        data?.clsStatus === 'SCH' ? 'bg-[#FF8000]' :
-                                            data?.clsStatus === 'NOS' ? 'bg-[#DA4962]' :
-                                                ''
-                                }`}>
-                                    {data?.clsStatus === 'COM' ? '완료' :
-                                        data?.clsStatus === 'SCH' ? '예정' :
-                                            data?.clsStatus === 'NOS' ? '노쇼' : data?.clsStatus}
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+  return (
+    <>
+      {!isEditing ? (
+        // 스케줄 조회
+        <div className="w-full grid grid-cols-[150px_auto_90px] gap-10px align-middle bg-grayWhite rounded-default p-20px">
+          {/* 스케줄 정보 헤더 */}
+          <div className="grid grid-rows-4 gap-10px text-xl text-black font-bold">
+            <p>회원명</p>
+            <p>담당강사</p>
+            <p>고정수업 여부</p>
+            <p>수업 상태</p>
+          </div>
+
+          {/* 스케줄 정보 내용 */}
+          <div className="min-w-[230px] max-w-[300px] grid grid-rows-4 gap-10px text-xl text-gray4A">
+            <p>
+              {data.cusNm} 회원님 {data.grpType === 'D' && '(2:1 그룹회원)'}
+            </p>
+            <p>{data.trainerNm}</p>
+            <p>{data.fixYn}</p>
+            <div>
+              <StatusBadge status={data.clsStatus} type="B" />
             </div>
+          </div>
 
-            {/* 편집 폼 (수정하기 버튼 클릭 시 표시) */}
-            {isEditing && (
-                <div className="mt-4">
-                    <ScheduleDetailInfo
-                        data={data}
-                        onCancel={handleCancelEdit}
-                        onSave={handleSave}
-                    />
-                </div>
-            )}
+          {/* 버튼 */}
+          <div className="flex flex-col justify-center gap-10px">
+            <BtnIconText type="B" icon={iconEdit} text="수정하기" onClick={handleEdit} />
+            <BtnIconText
+              type="B"
+              icon={iconDelete}
+              text="삭제하기"
+              onClick={() => {
+                overlay.showPopup(
+                  <PopupScheDltConfirm
+                    schedule={{ date: data.schedDate, member: data.cusNm, time: data.schedTime }}
+                    onClickBack={handleBack}
+                    onClickConfirm={handleConfirm}
+                  />
+                );
+              }}
+            />
+          </div>
         </div>
-    );
+      ) : (
+        // 스케줄 수정
+        <div>
+          <ScheduleInfoForm data={data} onCancel={handleCancelEdit} onSave={handleSave} />
+        </div>
+      )}
+    </>
+  );
 }

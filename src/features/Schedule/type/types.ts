@@ -3,7 +3,7 @@ import type { SCHEDULE_STATUS, SCHEDULE_TYPE } from '@/constants/schedule';
 export interface ITimeSlot {
   id: string;
   time: string;
-  schedule: IInsDay[] | null;
+  schedule: ISchData[] | null;
 }
 
 // TODO : API설계서 확인후 정확하게 수정필요
@@ -42,4 +42,17 @@ export interface IInsDay {
   korDate?: string;
   schedDate?: string;
   schedTime?: string;
+}
+
+export interface ISchData {
+  schedId: string;
+  cusId: string;
+  cusNm: string;
+  trainerId: string;
+  trainerNm: string;
+  schedDate: string;
+  schedTime: string;
+  fixYn: string;
+  grpType: keyof typeof SCHEDULE_TYPE | null; // 'S' | 'D'
+  clsStatus: keyof typeof SCHEDULE_STATUS;
 }
