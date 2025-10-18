@@ -40,6 +40,7 @@ export default {
                 grayD9: '#D9D9D9',
                 red2: '#DA4962',
                 gray100: '#F5F4F6',
+                yellowCal:'#FF8000',
             },
             fontSize: {
                 base: ['12px', {lineHeight: '18px'}],

@@ -12,7 +12,6 @@ export default function WeeklyCalender({
                                            setCurrentWeek,
                                        }: WeeklyCalenderProps) {
     const handleLeftClick = () => {
-        console.log('currentWeek', currentWeek);
         const newWeek = new Date(currentWeek);
         // 현재 주의 첫날(월요일)을 구해서 이전 주의 첫날(월요일)로 이동
         const currentDay = newWeek.getDay();
@@ -22,7 +21,6 @@ export default function WeeklyCalender({
     };
 
     const handleRightClick = () => {
-        console.log('currentWeek', currentWeek);
         const newWeek = new Date(currentWeek);
         // 현재 주의 마지막 날(일요일)을 구해서 다음 주의 첫날(월요일)로 이동
         const currentDay = newWeek.getDay();

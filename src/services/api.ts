@@ -134,3 +134,14 @@ export const scheduleApiWeek = {
         });
     }
 }
+
+export const scheduleApiMonth = {
+    getScheduleList: (params: {
+        searchUserNm?: string;
+        currentWeek?: Date;
+    }) => {
+        return api.get('/test/calSchView', {
+            params: params
+        });
+    }
+}
