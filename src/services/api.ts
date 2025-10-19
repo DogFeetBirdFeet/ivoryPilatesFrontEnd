@@ -138,7 +138,7 @@ export const scheduleApiWeek = {
 export const scheduleApiMonth = {
     getScheduleList: (params: {
         searchUserNm?: string;
-        currentWeek?: Date;
+        schMonth?: string;
     }) => {
         return api.get('/test/calSchView', {
             params: params

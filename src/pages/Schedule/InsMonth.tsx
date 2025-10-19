@@ -1,4 +1,4 @@
-import WeeklyCalender from "@/features/Schedule/items/WeeklyCalender.tsx";
+import MonthlyCalender from "@/features/Schedule/items/MonthlyCalender.tsx";
 import {useEffect, useState} from "react";
 import {useLayoutContext} from "@/hooks/useLayoutContext.ts";
 import IconSchedule from "@/assets/icon/yellow/icon_sche.png";
@@ -10,11 +10,11 @@ import type {IInsDay} from '@/features/Schedule/type/types';
 
 interface ISearchForm {
     searchUserNm: string;
-    currentWeek: Date | null;
+    schMonth: string;
 }
 
 export default function InsMonth() {
-    const [currentWeek, setCurrentWeek] = useState<Date>(() => new Date());
+    const [currentMonth, setCurrentMonth] = useState<Date>(() => new Date());
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [data, setData] = useState<IInsDay[]>([]);
 
@@ -22,14 +22,14 @@ export default function InsMonth() {
     const {watch, setValue, handleSubmit} = useForm<ISearchForm>({
         defaultValues: {
             searchUserNm: '',
-            currentWeek: new Date(),
+            schMonth: new Date().toISOString().slice(0, 7).replace('-', ''),
         },
     });
 
     const weekDaysKr = ['월', '화', '수', '목', '금', '토', '일'];
     // --- 캘린더(월 단위) 계산: 월요일 시작 기준 ---
-    const year = currentWeek.getFullYear();
-    const month = currentWeek.getMonth(); // 0~11
+    const year = currentMonth.getFullYear();
+    const month = currentMonth.getMonth(); // 0~11
     const firstOfMonth = new Date(year, month, 1);
     const daysInMonth = new Date(year, month + 1, 0).getDate();
     const prevMonthDays = new Date(year, month, 0).getDate();
@@ -68,7 +68,6 @@ export default function InsMonth() {
         const dayData = kind === 'curr' ? data.filter(x => x.day === dayStr) : [];
         return {kind, displayDay, dayStr, dayData};
     });
-    const formValues = watch();
 
     const loadSchData = async (searchParams?: ISearchForm) => {
 
@@ -77,12 +76,18 @@ export default function InsMonth() {
         try {
 
             if (!searchParams) return;
+            
+            // currentMonth를 YYYYMM 형태의 문자열로 변환
+            const schMonthString = `${currentMonth.getFullYear()}${String(currentMonth.getMonth() + 1).padStart(2, '0')}`;
+            
             const params = {
-                searchUserNm: searchParams?.searchUserNm,
-                currentWeek: currentWeek
+                searchUserNm: searchParams?.searchUserNm || undefined,
+                schMonth: schMonthString
             };
 
             const response = await scheduleApiMonth.getScheduleList(params);
+
+            console.log(response.data);
             setData(response.data);
         } catch (error) {
             console.log('데이터 로드 실패:', error);
@@ -99,19 +104,12 @@ export default function InsMonth() {
             // 초기 폼 값으로 데이터 로드
             const initialFormValues = {
                 searchUserNm: '',
-                currentWeek: new Date(),
+                schMonth: `${currentMonth.getFullYear()}${String(currentMonth.getMonth() + 1).padStart(2, '0')}`,
             };
             await loadSchData(initialFormValues);
         };
         initializeData().then(r => r);
-    }, [watch]);
-
-    // 조회 조건 변경 시 자동 데이터 조회
-    useEffect(() => {
-        // 초기 로드가 완료된 후에만 실행
-    }, [
-        formValues.searchUserNm,
-    ]);
+    }, [currentMonth]);
 
     // 헤더 정보 세팅
     const {setHeaderTitle, setHeaderIcon} = useLayoutContext();
@@ -156,17 +154,17 @@ export default function InsMonth() {
 
                     {/* 우측: 월 네비게이션 (WeeklyCalender) */}
                     <div className="ml-6 flex items-center">
-                        <WeeklyCalender
-                            currentWeek={currentWeek}
-                            setCurrentWeek={setCurrentWeek}
+                        <MonthlyCalender
+                            currentMonth={currentMonth}
+                            setCurrentMonth={setCurrentMonth}
                         />
                     </div>
                 </div>
             </form>
 
             <div className="flex flex-row p-6 bg-ppWhite h-[35px] mt-5">
-                {weekDaysKr.map((daysStr) => (
-                    <div className="flex items-center justify-center flex-1">
+                {weekDaysKr.map((daysStr, index) => (
+                    <div key={index} className="flex items-center justify-center flex-1">
                         <div className="text-2xl text-ppt">{daysStr}</div>
                     </div>
                 ))}
