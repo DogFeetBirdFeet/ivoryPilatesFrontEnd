@@ -15,6 +15,7 @@ export interface IInsDay {
   cusNm?: string;
   acctOffYn?: string;
   holYn?: string;
+  holNm?: string;
   centerOffYn?: string;
   offAcctNm?: string;
   grpYn?: string;

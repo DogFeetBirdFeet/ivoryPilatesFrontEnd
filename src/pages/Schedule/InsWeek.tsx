@@ -90,15 +90,17 @@ export default function InsWeek() {
             (targetDate.getMonth() + 1).toString().padStart(2, '0') +
             targetDate.getDate().toString().padStart(2, '0');
 
-        // 시간 형식 변환: "14:00" -> "14"
-        const timeHour = time.split(':')[0];
+        // 시간 형식 변환: "14:00" -> "14" (API는 "03"처럼 0패딩일 수 있어 padStart 적용)
+        const timeHour = time.split(':')[0].padStart(2, '0');
 
         // 해당 날짜와 시간에 맞는 스케줄 찾기
         const schedule = data.find(item =>
             item.schedDate === dateStr && item.schedTime === timeHour
         );
 
-        return schedule ? schedule.cusNm : '예약가능';
+        if (!schedule) return '예약가능';
+        const name = (schedule.cusNm ?? '').trim();
+        return name.length > 0 ? name : '예약가능';
     };
 
     return (
@@ -127,13 +129,21 @@ export default function InsWeek() {
                         }`}>
                             {/* 날짜 헤더 */}
                             <div className="text-center mb-4">
-                                <div className={`text-2xl font-bold text-black ${
-                                    date.toDateString() === new Date().toDateString()
-                                        ? 'bg-yellow rounded-full w-12 h-12 flex items-center justify-center mx-auto'
-                                        : ''
-                                }`}>
-                                    {date.getDate()}
-                                </div>
+                                {(() => {
+                                    const isToday = date.toDateString() === new Date().toDateString();
+                                    const isTodayBadge = isCurrentMonth && isToday;
+                                    return (
+                                        <span
+                                            className={[
+                                                'inline-flex items-center justify-center font-bold text-2xl mx-auto',
+                                                isTodayBadge ? 'h-[40px] w-[40px] rounded-full bg-yellow text-black' : '',
+                                                !isCurrentMonth ? 'h-[40px] w-[40px] rounded-full bg-white text-grayA1' : 'text-black'
+                                            ].join(' ')}
+                                        >
+                                            {date.getDate()}
+                                        </span>
+                                    );
+                                })()}
                             </div>
 
                             {/* 시간대별 스케줄 */}
@@ -141,6 +151,7 @@ export default function InsWeek() {
                                 <div className="space-y-1">
                                     {timeSlots.map((time) => {
                                         const scheduleText = getCellText(dayIdx, time);
+                                        console.log(scheduleText)
                                         const isBooked = scheduleText !== '예약가능';
 
                                         return (

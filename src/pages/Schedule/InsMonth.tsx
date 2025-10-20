@@ -172,10 +172,17 @@ export default function InsMonth() {
 
             <div className="px-6 pb-8 mt-5">
                 <div className="grid grid-cols-7 gap-4">
-                    {cells.map(({kind, displayDay}, i) => {
+                    {cells.map(({kind, displayDay, dayData}, i) => {
                         const isCurr = kind === 'curr';
                         const showContent = isCurr; // 현재 월만 라벨 표시
                         const isTodayBadge = isCurr && isToday(displayDay);
+
+                        // 공휴일/센터휴무 여부 계산
+                        const hasHoliday = isCurr && dayData.some((d: any) => d.holYn === 'Y');
+                        const isCenterOff = isCurr && dayData.some((d: any) => d.centerOffYn === 'Y');
+                        const holidayName = hasHoliday && !isCenterOff
+                            ? (dayData.find((d: any) => d.holYn === 'Y')?.holNm || '')
+                            : '';
 
                         return (
                             <div
@@ -189,20 +196,27 @@ export default function InsMonth() {
                                 <div className="flex items-center justify-between">
                                     {/* 날짜 숫자 (좌측) */}
                                     <div className="relative">
-                                        {/* 오늘 배지(노란 원) */}
-                                        {isTodayBadge && (
-                                            <span
-                                                className="absolute inset-0 -left-1 -top-1 inline-flex h-[40px] w-[40px] rounded-full bg-yellow"></span>
-                                        )}
                                         <span
                                             className={[
-                                                "relative z-10 text-xl font-bold ",
+                                                "inline-flex items-center justify-center font-bold text-xl",
+                                                isTodayBadge ? "h-[40px] w-[40px] rounded-full bg-yellow" : "",
+                                                !isCurr ? "h-[40px] w-[40px] rounded-full bg-white" : "",
+                                                isCurr ? (hasHoliday ? "text-red" : "text-black") : "text-grayA1"
                                             ].join(" ")}
                                         >
-                {displayDay}
-              </span>
+                                            {displayDay}
+                                        </span>
                                     </div>
+                                    {hasHoliday && !isCenterOff && (
+                                        <span className="text-red font-bold text-xl">{holidayName}</span>
+                                    )}
                                 </div>
+
+                                {isCenterOff && (
+                                    <div className="mt-4 flex justify-center">
+                                        <span className="text-red font-bold">센터 휴무일</span>
+                                    </div>
+                                )}
 
                                 {/* 본문: 현재 월만 라벨 3줄 노출 */}
                                 <div className="mt-3 grid grid-rows-3 gap-1 text-xl leading-5">
