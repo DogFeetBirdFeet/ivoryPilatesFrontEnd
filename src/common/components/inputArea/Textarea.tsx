@@ -19,12 +19,14 @@ export default function Textarea({ id, value, onChange, className = '', placehol
   };
 
   return (
-    <textarea
-      id={id}
-      value={value}
-      onChange={handleChange}
-      placeholder={placeholder}
-      className={`border border-whiteGray rounded-default p-15px text-sm resize-none focus:outline-none focus:border-yellow ${className}`}
-    />
+    <div className={`bg-white border border-whiteGray rounded-default p-15px ${className}`}>
+      <textarea
+        id={id}
+        value={value}
+        onChange={handleChange}
+        placeholder={placeholder}
+        className="w-full h-full text-sm resize-none focus:outline-none"
+      />
+    </div>
   );
 }

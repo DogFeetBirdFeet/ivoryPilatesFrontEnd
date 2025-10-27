@@ -302,7 +302,7 @@ export default function MemberRegister() {
               id="surHist"
               value={formData.surHist}
               onChange={(value: string) => setFormData((form) => ({ ...form, surHist: value }))}
-              className="flex-1 h-100px"
+              className="flex-1 h-120px"
               maxLength={4000}
             />
           </div>
@@ -317,7 +317,7 @@ export default function MemberRegister() {
               id="disease"
               value={formData.disease}
               onChange={(value: string) => setFormData((form) => ({ ...form, disease: value }))}
-              className="flex-1 h-100px"
+              className="flex-1 h-120px"
               maxLength={4000}
             />
           </div>
@@ -332,7 +332,7 @@ export default function MemberRegister() {
               id="memo"
               value={formData.memo}
               onChange={(value: string) => setFormData((form) => ({ ...form, memo: value }))}
-              className="flex-1 h-100px"
+              className="flex-1 h-120px"
               maxLength={4000}
             />
           </div>

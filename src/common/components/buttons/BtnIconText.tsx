@@ -25,7 +25,7 @@ export default function BtnIconText({
   const buttonStyle = () => {
     switch (type) {
       case 'A':
-        return 'bg-ppp text-white';
+        return 'bg-ppp border-ppp text-white';
       case 'B':
         return 'bg-white border-ppp text-ppp';
       case 'C':
