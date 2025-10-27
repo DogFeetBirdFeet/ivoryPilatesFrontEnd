@@ -43,9 +43,7 @@ export default function SearchInputCus({
     onChange?.(inputValue);
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-
+  const handleSearch = () => {
     // TODO : 회원명으로 검색 fetch -> 데이터 1개일때 자동세팅 추가 필요
 
     // 팝업 오픈 후, 팝업에서 선택한 데이터 세팅
@@ -60,8 +58,20 @@ export default function SearchInputCus({
     );
   };
 
+  const handleOnClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    handleSearch();
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      handleSearch();
+    }
+  };
+
   return (
-    <form className="relative" onSubmit={handleSubmit}>
+    <div className="relative">
       <input
         type="text"
         id={id}
@@ -69,11 +79,12 @@ export default function SearchInputCus({
         className={`w-full ${className} ${INPUT_COMMON_STYLE} ${error ? INPUT_ERROR : INPUT_DEFAULT}`}
         placeholder={placeholder ? placeholder : '회원명을 입력해주세요'}
         onChange={handleChange}
+        onKeyDown={handleKeyDown}
         disabled={disabled}
       />
-      <button className="absolute top-[5px] right-[10px]">
+      <button className="absolute top-[5px] right-[10px]" onClick={handleOnClick}>
         <img src={iconSearch} className=" w-20px h-20px" />
       </button>
-    </form>
+    </div>
   );
 }
