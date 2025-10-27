@@ -11,9 +11,9 @@ import iconIvo from '@/assets/icon/purple/icon_ivo.png';
 import ClsPassInfoItem from "@/features/ClsPass/items/ClsPassInfo";
 import ClsPkgInfo from "@/features/ClsPass/items/ClsPkgInfo";
 import ClsPayInfo from "@/features/ClsPass/items/ClsPayInfo";
-import InputText from "@/common/components/inputArea/InputText.tsx";
 import useOverlay from '@/hooks/useOverlay';
 import PopupRefundCls from '@/common/popup/PopupRefundCls';
+import SearchInputCus from "@/common/components/inputArea/SearchInputCus.tsx";
 
 interface ISearchForm {
     cusId: number;
@@ -143,12 +143,14 @@ export default function ClsPassDetailView(props: IPropsAuthority) {
                         <div className="w-24px h-24px rounded-full bg-ppDark flex items-center justify-center">
                             <img src={iconIvo} className="w-16px h-16px" alt="User Icon"/>
                         </div>
-                        <InputText
-                            id="cusName"
-                            className="w-full required ml-auto"
+                        <SearchInputCus
+                            id="searchName"
                             value={watch('cusName')}
                             onChange={(value) => setValue('cusName', value)}
-                            placeholder="회원명을 입력해주세요."
+                            onSearch={(data) => {
+                                const cusNm = `${data.memberName} 회원님 ${data.grpType === 'D' ? '(2:1 그룹회원)' : ''}`;
+                                setValue('cusName', cusNm);
+                            }}
                         />
                     </div>
                 )}
@@ -208,19 +210,19 @@ export default function ClsPassDetailView(props: IPropsAuthority) {
 
             {/* 사용자 데이터 필드들 */}
             <section className="flex flex-wrap gap-15px mb-20px">
-                <div className="flex-1 min-w-[200px] bg-purpleLight2 p-15px rounded-md">
+                <div className="flex-1 w-[200px] bg-purpleLight2 p-15px rounded-md">
                     <label className="text-xl font-bold text-ppt mb-5px">연락처</label>
                     <p className="text-2xl font-bold text-black">{mockUserData.contact}</p>
                 </div>
-                <div className="flex-1 min-w-[200px] bg-purpleLight2 p-15px rounded-md">
+                <div className="flex-1 w-[200px] bg-purpleLight2 p-15px rounded-md">
                     <label className="text-xl font-bold text-ppt mb-5px">생년월일</label>
                     <p className="text-2xl font-bold text-black">{mockUserData.birthDate}</p>
                 </div>
-                <div className="flex-1 min-w-[200px] bg-purpleLight2 p-15px rounded-md">
+                <div className="flex-1 w-[200px] bg-purpleLight2 p-15px rounded-md">
                     <label className="text-xl font-bold text-ppt mb-5px">성별</label>
                     <p className="text-2xl font-bold text-black">{mockUserData.gender}</p>
                 </div>
-                <div className="flex-1 min-w-[200px] bg-purpleLight2 p-15px rounded-md">
+                <div className="flex-1 w-[200px] bg-purpleLight2 p-15px rounded-md">
                     <label className="text-xl font-bold text-ppt mb-5px">회원구분</label>
                     <p className="text-2xl font-bold text-black">{mockUserData.userClass}</p>
                 </div>
@@ -306,30 +308,31 @@ export default function ClsPassDetailView(props: IPropsAuthority) {
                         </>
                     )}
                 </div>
-
-                {/* 오른쪽 컬럼 - 결제정보 */}
-                <ClsPayInfo
-                    data={{
-                        paidAmt: mockUserData.paidAmt,
-                        discountAmtPass: mockUserData.discountAmtPass,
-                        payDate: mockUserData.payDate,
-                        payMethod: mockUserData.payMethod,
-                        instMm: mockUserData.instMm,
-                        payUserNm: mockUserData.payUserNm,
-                        remark: mockUserData.remark,
-                        refundDtm: mockUserData.refundDtm,
-                        refundAmt: mockUserData.refundAmt
-                    }}
-                    editable={editable}
-                    authority={props.authority}
-                    currentUseAge={currentUseAge}
-                    onDataChange={(newData) => {
-                        setMockUserData({
-                            ...mockUserData,
-                            ...newData
-                        });
-                    }}
-                />
+                <div className="flex-1">
+                    {/* 오른쪽 컬럼 - 결제정보 */}
+                    <ClsPayInfo
+                        data={{
+                            paidAmt: mockUserData.paidAmt,
+                            discountAmtPass: mockUserData.discountAmtPass,
+                            payDate: mockUserData.payDate,
+                            payMethod: mockUserData.payMethod,
+                            instMm: mockUserData.instMm,
+                            payUserNm: mockUserData.payUserNm,
+                            remark: mockUserData.remark,
+                            refundDtm: mockUserData.refundDtm,
+                            refundAmt: mockUserData.refundAmt
+                        }}
+                        editable={editable}
+                        authority={props.authority}
+                        currentUseAge={currentUseAge}
+                        onDataChange={(newData) => {
+                            setMockUserData({
+                                ...mockUserData,
+                                ...newData
+                            });
+                        }}
+                    />
+                </div>
             </div>
         </div>
     )

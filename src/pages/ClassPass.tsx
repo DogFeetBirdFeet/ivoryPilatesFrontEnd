@@ -13,6 +13,7 @@ import iconFilter from '@/assets/icon/white/icon_filter.png';
 import {useForm} from 'react-hook-form';
 import {dateFormatToString} from '@/utils/date.ts';
 import SearchCondition from '@/common/components/searchBar/SearchCondition';
+import SearchInputCus from "@/common/components/inputArea/SearchInputCus.tsx";
 import {clsPassApi, commonCodeApi} from '@/services/api';
 
 interface IClsPassData {
@@ -240,80 +241,75 @@ export default function ClassPass() {
     }
 
     return (
-        <div className="w-full h-full flex flex-col">
+        <div className="min-w-[1310px] flex flex-col pb-20px">
             {/* 버튼 */}
             <section className="flex justify-end py-5px mx-20px">
                 <BtnIconText type="A" icon={iconPlus} text="신규결제 등록하기" onClick={handleRegisterClick}/>
             </section>
             {/* 서치 바 */}
-            <form onSubmit={handleSubmit(onSubmit)}>
+            <form onSubmit={handleSubmit(onSubmit)} className="flex-shrink-0 mx-20px" autoComplete="off">
                 <section
-                    className="flex p-20px gap-30px font-medium bg-ppLight rounded-md mt-10px flex-shrink-0 mx-20px">
-                    <div className="flex-1 flex justify-between">
-                        <div className="flex items-center gap-10px">
-                            <SearchCondition id="payDateFrom" labelText="결제 일자" className="text-2xl">
-                                <InputDate
-                                    id="payDateFrom"
-                                    value={watch('payDateFrom')}
-                                    onChange={(value) => setValue('payDateFrom', value)}
-                                    className="required ml-auto w-130px text-xl"
-                                />
-                                <span className="mx-5px">~</span>
-                                <InputDate
-                                    id="payDateTo"
-                                    value={watch('payDateTo')}
-                                    onChange={(value) => setValue('payDateTo', value)}
-                                    className="required ml-auto w-130px text-xl"
-                                />
-                            </SearchCondition>
-                        </div>
+                    className="grid grid-cols-[auto_30px] p-20px gap-30px font-medium text-xl text-black bg-ppLight rounded-default mt-10px">
+                    <div className="grid grid-cols-[350px_350px_300px_300px] justify-between gap-30pxn">
+                        <SearchCondition id="payDateFrom" labelText="결제 일자">
+                            <InputDate
+                                id="payDateFrom"
+                                value={watch('payDateFrom')}
+                                onChange={(value) => setValue('payDateFrom', value)}
+                                className="w-full"
+                            />
+                            <span className="mx-5px">~</span>
+                            <InputDate
+                                id="payDateTo"
+                                value={watch('payDateTo')}
+                                onChange={(value) => setValue('payDateTo', value)}
+                                className="w-full"
+                            />
+                        </SearchCondition>
 
-                        <div className="flex items-center gap-10px">
-                            <SearchCondition id="refundDateFrom" labelText="환불 일자" className="text-2xl">
-                                <InputDate
-                                    id="refundDateFrom"
-                                    value={watch('refundDateFrom')}
-                                    onChange={(value) => setValue('refundDateFrom', value)}
-                                    className="required ml-auto w-130px text-xl"
-                                />
-                                <span className="mx-5px">~</span>
-                                <InputDate
-                                    id="refundDateTo"
-                                    value={watch('refundDateTo')}
-                                    onChange={(value) => setValue('refundDateTo', value)}
-                                    className="required ml-auto w-130px"
-                                />
-                            </SearchCondition>
-                        </div>
+                        <SearchCondition id="refundDateFrom" labelText="환불 일자">
+                            <InputDate
+                                id="refundDateFrom"
+                                value={watch('refundDateFrom')}
+                                onChange={(value) => setValue('refundDateFrom', value)}
+                                className="w-full"
+                            />
+                            <span className="mx-5px">~</span>
+                            <InputDate
+                                id="refundDateTo"
+                                value={watch('refundDateTo')}
+                                onChange={(value) => setValue('refundDateTo', value)}
+                                className="w-full"
+                            />
+                        </SearchCondition>
 
-                        <div className="flex items-center gap-10px">
-                            <SearchCondition id="searchName" labelText="회원명" className="text-2xl">
-                                <InputText
-                                    id="searchName"
-                                    className="w-full required ml-auto"
-                                    value={watch('searchName')}
-                                    onChange={(value) => setValue('searchName', value)}
-                                />
-                            </SearchCondition>
-                        </div>
+                        <SearchCondition id="searchName" labelText="회원명">
+                            <SearchInputCus
+                                id="searchName"
+                                value={watch('searchName')}
+                                onChange={(value) => setValue('searchName', value)}
+                                onSearch={(data) => {
+                                    const cusNm = `${data.memberName} 회원님 ${data.grpType === 'D' ? '(2:1 그룹회원)' : ''}`;
+                                    setValue('searchName', cusNm);
+                                }}
+                            />
+                        </SearchCondition>
 
-                        <div className="flex items-center gap-10px mr-10px">
-                            <SearchCondition id="searchPayName" labelText="결제자" className="text-2xl">
-                                <InputText
-                                    id="searchPayName"
-                                    className="w-full required ml-auto"
-                                    value={watch('searchPayName')}
-                                    onChange={(value) => setValue('searchPayName', value)}
-                                />
-                            </SearchCondition>
-                        </div>
+                        <SearchCondition id="searchPayName" labelText="결제자">
+                            <InputText
+                                id="searchPayName"
+                                className="w-full"
+                                value={watch('searchPayName')}
+                                onChange={(value) => setValue('searchPayName', value)}
+                            />
+                        </SearchCondition>
                     </div>
                     <BtnSearch/>
                 </section>
             </form>
             {/* 필터 */}
             <section
-                className="flex justify-end py-10px gap-10px font-medium text-xl text-black rounded-default mt-10px flex-shrink-0 mx-20px">
+                className="flex justify-end py-10px gap-10px mx-20px">
                 <FilterSelectBox
                     id="use_yn"
                     label="상품 사용 여부"
