@@ -1,7 +1,6 @@
 import { useLayoutContext } from '@/hooks/useLayoutContext';
 import headerIcon from '@/assets/icon/yellow/icon_mem.png';
-import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useEffect } from 'react';
 import MemberDetailCos from '@/features/Member/sections/MemberDetailCos';
 import type { IMember } from '@/features/Member/types';
 import MemberDetailReg from '@/features/Member/sections/MemberDetailReg';
@@ -9,7 +8,7 @@ import MemberDetailRes from '@/features/Member/sections/MemberDetailRes';
 import MemberDetailExp from '@/features/Member/sections/MemberDetailExp';
 
 export default function MemberDetail() {
-  const { memberId } = useParams();
+  // const { memberId } = useParams();
   // TODO : MemberId로 Data 패칭
   // const { data: memberData, isLoading } = useMemberDetail(memberId!);
 
@@ -28,10 +27,8 @@ export default function MemberDetail() {
       '메모메모메모메모메모메모메모메모메모메모메모메모메모메모메모메모메모메모메모메모메모메모메모메모메모메모메모메모메모메모메모메모메모메모메모',
     memo: '',
     bodyImg: '',
-    lastClsDate: '20251021',
+    consDate: '20251021',
   };
-
-  const [memType, setMemType] = useState<'COS' | 'REG' | 'RES' | 'EXP' | null>('COS');
 
   // 헤더정보 세팅
   const { setHeaderTitle, setHeaderIcon } = useLayoutContext();

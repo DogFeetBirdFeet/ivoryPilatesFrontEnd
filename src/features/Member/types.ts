@@ -11,5 +11,6 @@ export interface IMember {
   disease: string | null;
   memo: string | null;
   bodyImg: string | null;
-  lastClsDate: string;
+  consDate?: string;
+  lastClsDate?: string;
 }

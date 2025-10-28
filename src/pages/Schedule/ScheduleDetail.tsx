@@ -9,7 +9,6 @@ import { useMemo, useState } from 'react';
 import BtnIconText from '@/common/components/buttons/BtnIconText';
 import ScheduleInfo from '@/features/Schedule/items/ScheduleInfo';
 import ScheduleInfoForm from '@/features/Schedule/items/ScheduleInfoForm';
-import { useLayoutContext } from '@/hooks/useLayoutContext';
 import useOverlayStore from '@/common/Layout/store/overlayStore';
 
 const restTrainerMockData = [
