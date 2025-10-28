@@ -8,13 +8,13 @@ import iconPlus from '@/assets/icon/white/icon_plus.png';
 import BtnIconText from '@/common/components/buttons/BtnIconText';
 import ScheduleInfo from '@/features/Schedule/items/ScheduleInfo';
 import ScheduleInfoForm from '@/features/Schedule/items/ScheduleInfoForm';
-import { scheduleApi } from '@/services/api';
 import { dateFormatToString } from '@/utils/date';
 import { useLayoutContext } from '@/hooks/useLayoutContext';
 
 const restTrainerMockData = [
-  { time: '13', trainerNm: '원예진' },
-  { time: '17', trainerNm: '나큰솔' },
+    { hour: 13, trainers: ['원예진', '나큰솔'] },
+    { hour: 15, trainers: ['김용진'] },
+    { hour: 17, trainers: ['김혜준'] },
 ];
 
 export default function InsDay() {
@@ -103,24 +103,6 @@ export default function InsDay() {
   const [selectedIdx, setSelectedIdx] = useState<number | null>(null);
   const [isAddingSch, setIsAddingSch] = useState<boolean>(false);
 
-  // 데이터 로딩
-  const [data, setData] = useState();
-  const [, setIsLoading] = useState<boolean>(false);
-
-  const loadScheduleData = async (param: { schDate: string }) => {
-    setIsLoading(true);
-    try {
-      const response = await scheduleApi.getScheduleList(param);
-      setData(response?.data || []);
-
-      console.log(response?.data);
-    } catch (error) {
-      console.error('데이터 로드 실패:', error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
   // 헤더정보 세팅
   const { setHeaderTitle, setHeaderIcon } = useLayoutContext();
 
@@ -137,8 +119,8 @@ export default function InsDay() {
 
   // 강사 휴식정보 불러오는 함수
   const getRestTrainerInfo = (idx: number): string | null => {
-    const restData = restTrainerMockData.find(({ time }) => time === (9 + idx).toString());
-    return restData ? `${restData.trainerNm} 강사` : null;
+    const restData = restTrainerMockData.find(({ hour }) => hour === (9 + idx));
+    return restData ? `${restData.trainers} 강사` : null;
   };
 
   // 선택된 시간대의 정보 계산 (selectedIdx가 변경될 때만 재계산)
@@ -199,6 +181,7 @@ export default function InsDay() {
               selectedIdx={selectedIdx}
               setSelectedIdx={setSelectedIdx}
               data={mockApiData}
+              restTrainers={restTrainerMockData}
               setIsAddingSch={setIsAddingSch}
             />
           </div>
