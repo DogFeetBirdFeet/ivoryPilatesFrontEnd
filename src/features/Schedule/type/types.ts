@@ -4,6 +4,7 @@ export interface ITimeSlot {
   id: string;
   time: string;
   schedule: ISchData[] | null;
+  trainerBreak: string[] | null;
 }
 
 // TODO : API설계서 확인후 정확하게 수정필요

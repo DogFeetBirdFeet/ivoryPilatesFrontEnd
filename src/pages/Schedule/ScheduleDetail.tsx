@@ -9,10 +9,13 @@ import { useMemo, useState } from 'react';
 import BtnIconText from '@/common/components/buttons/BtnIconText';
 import ScheduleInfo from '@/features/Schedule/items/ScheduleInfo';
 import ScheduleInfoForm from '@/features/Schedule/items/ScheduleInfoForm';
+import { useLayoutContext } from '@/hooks/useLayoutContext';
+import useOverlayStore from '@/common/Layout/store/overlayStore';
 
 const restTrainerMockData = [
-  { time: '13', trainerNm: '원예진' },
-  { time: '17', trainerNm: '나큰솔' },
+  { hour: 13, trainers: ['원예진', '나큰솔'] },
+  { hour: 15, trainers: ['김용진'] },
+  { hour: 17, trainers: ['김혜준'] },
 ];
 
 export default function ScheduleDetail({ date, initTime }: { date: string; initTime?: number }) {
@@ -92,6 +95,7 @@ export default function ScheduleDetail({ date, initTime }: { date: string; initT
   ];
   const [selectedIdx, setSelectedIdx] = useState<number | null>(initTime ? initTime - 9 : null);
   const [isAddingSch, setIsAddingSch] = useState<boolean>(false);
+  const overlay = useOverlayStore();
 
   // 선택된 시간대 text로 바꿔주는 함수
   const getSelectedTime = (idx: number): string => {
@@ -101,8 +105,8 @@ export default function ScheduleDetail({ date, initTime }: { date: string; initT
 
   // 강사 휴식정보 불러오는 함수
   const getRestTrainerInfo = (idx: number): string | null => {
-    const restData = restTrainerMockData.find(({ time }) => time === (9 + idx).toString());
-    return restData ? `${restData.trainerNm} 강사` : null;
+    const restData = restTrainerMockData.find(({ hour }) => hour === 9 + idx);
+    return restData ? `${restData.trainers.join(', ')} 강사` : null;
   };
 
   // 선택된 시간대의 정보 계산 (selectedIdx가 변경될 때만 재계산)
@@ -141,7 +145,11 @@ export default function ScheduleDetail({ date, initTime }: { date: string; initT
           <img src={iconCalendar} className="w-30px h-30px mr-10px" />
           <span className="text-[25px] leading-40px text-ppt font-bold">일간 일정 정보</span>
         </div>
-        <button>
+        <button
+          onClick={() => {
+            overlay.closeLast();
+          }}
+        >
           <img src={iconExit} className="w-35px h-35px" />
         </button>
       </header>
@@ -161,6 +169,7 @@ export default function ScheduleDetail({ date, initTime }: { date: string; initT
         <SectionDailySchedule
           selectedIdx={selectedIdx}
           setSelectedIdx={setSelectedIdx}
+          restTrainers={restTrainerMockData}
           data={mockApiData}
           setIsAddingSch={setIsAddingSch}
         />

@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useMemo, type JSX } from 'react';
 import ScheduleItem from '@/features/Schedule/items/ScheduleItem';
 import type { ISchData, ITimeSlot } from '@/features/Schedule/type/types';
 
@@ -6,12 +6,14 @@ interface SectionDailyScheduleProps {
   selectedIdx: number | null;
   setSelectedIdx: (value: number | null) => void;
   data: ISchData[];
+  restTrainers: { hour: number; trainers: string[] }[];
   setIsAddingSch: (value: boolean) => void;
 }
 
 export default function SectionDailySchedule({
   selectedIdx,
   setSelectedIdx,
+  restTrainers,
   data,
   setIsAddingSch,
 }: SectionDailyScheduleProps) {
@@ -22,11 +24,15 @@ export default function SectionDailySchedule({
     for (let hour = 9; hour <= 21; hour++) {
       // 해당 시간의 스케줄 데이터 찾기
       const timeData = data.filter((item) => item.schedTime === hour.toString()) || [];
+      // 해당 시간의 강사 휴식 찾기
+      const breakData = restTrainers.find((item) => item.hour === hour);
+      const trainerBreaks = breakData ? breakData.trainers : null;
 
       slots.push({
         id: `slot-${hour}`,
         time: hour.toString(),
         schedule: timeData.length > 0 ? timeData : null,
+        trainerBreak: trainerBreaks,
       });
     }
     return slots;
@@ -35,6 +41,16 @@ export default function SectionDailySchedule({
   const formatTime = (hour: string): string => {
     const timeString = `${hour.padStart(2, '0')}:00`;
     return timeString;
+  };
+
+  const formatTrainerBreak = (slotItem: ITimeSlot): JSX.Element | null => {
+    if (!slotItem.trainerBreak) return null;
+
+    return (
+      <>
+        {slotItem.trainerBreak.join(', ')} <span className="whitespace-nowrap">강사 휴식</span>
+      </>
+    );
   };
 
   return (
@@ -56,8 +72,8 @@ export default function SectionDailySchedule({
           {timeSlots.map((slot, idx) => (
             <div
               key={`slot_time_${slot.time}`}
-              className={`p-10px border-b border-[#d9d9d9] last:border-b-0 hover:shadow-2xl cursor-pointer
-                ${selectedIdx === idx ? 'bg-beige' : 'bg-white'}`}
+              className={`p-10px border-b border-[#d9d9d9] last:border-b-0 cursor-pointer transition-colors
+                ${selectedIdx === idx ? 'bg-beige' : 'bg-white hover:bg-grayWhite'}`}
               onDoubleClick={() => {
                 setSelectedIdx(selectedIdx === idx ? null : idx);
                 setIsAddingSch(false);
@@ -65,7 +81,10 @@ export default function SectionDailySchedule({
             >
               <div className="grid grid-cols-[100px_1fr] gap-20px items-center">
                 {/* 시간 */}
-                <div className="text-gray text-xl font-bold text-center">{formatTime(slot.time)}</div>
+                <div>
+                  <div className="text-gray text-xl font-bold text-center">{formatTime(slot.time)}</div>
+                  <div className="text-center  text-red text-base break-words">{formatTrainerBreak(slot)}</div>
+                </div>
 
                 {/* 스케줄 */}
                 <div className="flex flex-col gap-10px">

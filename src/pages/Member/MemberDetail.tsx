@@ -1,27 +1,19 @@
 import { useLayoutContext } from '@/hooks/useLayoutContext';
 import headerIcon from '@/assets/icon/yellow/icon_mem.png';
 import { useEffect, useState } from 'react';
-import MemberDetailInfo from '@/features/Member/items/MemberDetailInfo';
-import BtnIconText from '@/common/components/buttons/BtnIconText';
-import iconIvo from '@/assets/icon/purple/icon_ivo.png';
-import iconConvert from '@/assets/icon/purple/icon_convert.png';
-import iconEdit from '@/assets/icon/purple/icon_save.png';
+import { useParams } from 'react-router-dom';
+import MemberDetailCos from '@/features/Member/sections/MemberDetailCos';
 import type { IMember } from '@/features/Member/types';
+import MemberDetailReg from '@/features/Member/sections/MemberDetailReg';
+import MemberDetailRes from '@/features/Member/sections/MemberDetailRes';
+import MemberDetailExp from '@/features/Member/sections/MemberDetailExp';
 
 export default function MemberDetail() {
-  const [memType, setMemType] = useState<'COS' | 'REG' | 'RES' | 'EXP' | null>('COS');
-  const [editMode, setEditMode] = useState(false); //수정모드
-  const [activeMode, setActiveMode] = useState(false); // 등록전환모드
+  const { memberId } = useParams();
+  // TODO : MemberId로 Data 패칭
+  // const { data: memberData, isLoading } = useMemberDetail(memberId!);
 
-  // 헤더정보 세팅
-  const { setHeaderTitle, setHeaderIcon } = useLayoutContext();
-
-  useEffect(() => {
-    setHeaderTitle('회원 상세 조회');
-    setHeaderIcon(headerIcon);
-  }, [setHeaderTitle, setHeaderIcon]);
-
-  const mockData: IMember = {
+  const memberData: IMember = {
     id: 'cos_1',
     name: '원예진',
     number: '01000000000',
@@ -39,30 +31,32 @@ export default function MemberDetail() {
     lastClsDate: '20251021',
   };
 
-  return (
-    <div className="min-w-[1200px] flex justify-center">
-      <div className="flex flex-col">
-        {/* 이름 & 버튼 - 상단 영역 */}
-        <div className="flex items-center mb-20px">
-          <img src={iconIvo} className="w-60px h-60px mr-20px" alt="User Icon" />
-          <span className="text-3xl text-ppt font-bold whitespace-nowrap">원예진 회원님</span>
-          <div className="ml-auto flex gap-10px">
-            <BtnIconText type="B" icon={iconConvert} text="등록회원으로 전환하기" onClick={() => {}} />
-            <BtnIconText type="B" icon={iconEdit} text="회원정보 수정하기" onClick={() => {}} />
-          </div>
-        </div>
+  const [memType, setMemType] = useState<'COS' | 'REG' | 'RES' | 'EXP' | null>('COS');
 
-        {/* 좌우 분리 영역 */}
-        <div className="flex">
-          {/* 좌측 */}
-          <div className="flex flex-col">
-            <MemberDetailInfo editMode={editMode} data={mockData} />
-          </div>
+  // 헤더정보 세팅
+  const { setHeaderTitle, setHeaderIcon } = useLayoutContext();
 
-          {/* 우측 */}
-          <div className="">{/* 우측 콘텐츠 */}</div>
-        </div>
-      </div>
-    </div>
-  );
+  useEffect(() => {
+    setHeaderTitle('회원 상세 조회');
+    setHeaderIcon(headerIcon);
+  }, [setHeaderTitle, setHeaderIcon]);
+
+  if (!memberData) return <div>회원 정보를 찾을 수 없습니다.</div>;
+
+  const renderMemberDetail = () => {
+    switch (memberData.memType) {
+      case 'COS':
+        return <MemberDetailCos memberData={memberData} />;
+      case 'REG':
+        return <MemberDetailReg memberData={memberData} />;
+      case 'RES':
+        return <MemberDetailRes memberData={memberData} />;
+      case 'EXP':
+        return <MemberDetailExp memberData={memberData} />;
+      default:
+        return null;
+    }
+  };
+
+  return <div className="min-w-[1200px] flex justify-center">{renderMemberDetail()}</div>;
 }

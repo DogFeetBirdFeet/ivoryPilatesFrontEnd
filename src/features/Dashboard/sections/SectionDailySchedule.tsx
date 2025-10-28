@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState, type JSX } from 'react';
 import ScheduleItem from '../items/ScheduleItem';
 import type { ITimeSlot } from '../types';
 import ScheduleDetail from '@/pages/Schedule/ScheduleDetail';
@@ -42,7 +42,7 @@ const mockApiData = [
 
 // 강사 휴식 Mock 데이터
 const trainerBreakData = [
-  { hour: 13, trainers: ['원예진'] },
+  { hour: 13, trainers: ['원예진', '나큰솔'] },
   { hour: 15, trainers: ['김용진'] },
   { hour: 17, trainers: ['김혜준'] },
 ];
@@ -88,8 +88,14 @@ export default function SectionDailySchedule() {
     return slots;
   }, [currentHour]); // TODO : fetch 후 재계산 필요
 
-  const formatTrainerBreak = (slotItem: ITimeSlot): string => {
-    return slotItem.trainerBreak ? `+ ${slotItem.trainerBreak.join(', ')} 강사 휴식` : '';
+  const formatTrainerBreak = (slotItem: ITimeSlot): JSX.Element | null => {
+    if (!slotItem.trainerBreak) return null;
+
+    return (
+      <>
+        {slotItem.trainerBreak.join(', ')} <span className="whitespace-nowrap">강사 휴식</span>
+      </>
+    );
   };
 
   const formatTime = (hour: number): string => {
@@ -121,8 +127,8 @@ export default function SectionDailySchedule() {
           {timeSlots.map((slot) => (
             <div
               key={`slot_time_${slot.time}`}
-              className={`px-10px py-10px border-b border-[#d9d9d9] last:border-b-0 cursor-pointer hover:shadow-md
-                ${currentHour === slot.time && 'bg-yellow'}`}
+              className={`px-10px py-10px border-b border-[#d9d9d9] last:border-b-0 cursor-pointer transition-colors
+                ${currentHour === slot.time ? 'bg-yellow' : 'hover:bg-grayWhite'}`}
               onDoubleClick={() => {
                 overlay.showPopup(
                   <ScheduleDetail date={dateFormatToString(new Date(), false)} initTime={slot.time} />,
@@ -131,23 +137,21 @@ export default function SectionDailySchedule() {
               }}
             >
               <div className="grid grid-cols-[120px_1fr] gap-20px items-center">
-                {/* 시간 */}
-                <div className="text-gray text-xl font-bold text-center">{formatTime(slot.time)}</div>
-
+                {/* 시간/강사 휴식 */}
                 <div className="flex flex-col">
-                  {/* 스케줄 */}
-                  <div className="flex flex-col gap-10px">
-                    {slot.schedule ? (
-                      slot.schedule.map((schedule) => (
-                        <ScheduleItem key={`schedule_${schedule.id}`} schedule={schedule} />
-                      ))
-                    ) : (
-                      <ScheduleItem />
-                    )}
-                  </div>
+                  <div className="text-gray text-xl font-bold text-center">{formatTime(slot.time)}</div>
+                  <div className="text-center  text-red text-base break-words">{formatTrainerBreak(slot)}</div>
+                </div>
 
-                  {/* 강사 휴식 */}
-                  <div className="text-red text-base">{formatTrainerBreak(slot)}</div>
+                {/* 스케줄 */}
+                <div className="flex flex-col gap-10px">
+                  {slot.schedule ? (
+                    slot.schedule.map((schedule) => (
+                      <ScheduleItem key={`schedule_${schedule.id}`} schedule={schedule} />
+                    ))
+                  ) : (
+                    <ScheduleItem />
+                  )}
                 </div>
               </div>
             </div>

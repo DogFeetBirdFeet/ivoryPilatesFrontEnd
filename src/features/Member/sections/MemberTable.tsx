@@ -87,13 +87,13 @@ export default function MemberTable({ data, isLoading }: MemberTableProps) {
         {data.map((item) => (
           <div
             key={item.memberId}
-            className={`h-40px flex justify-between text-gray text-base border-b-[1px] border-grayD9 ${
-              curRow === item.memberId ? 'bg-yellow' : 'bg-white'
+            className={`h-40px flex justify-between text-gray text-base border-b-[1px] border-grayD9 last:border-b-0 cursor-pointer transition-colors ${
+              curRow === item.memberId ? 'bg-yellow' : 'bg-white hover:bg-grayWhite'
             }`}
-            onDoubleClick={() => setCurRow(item.memberId)}
+            onClick={() => setCurRow(item.memberId)}
           >
             {columns.map((col) => (
-              <div key={col.key} className={`${commonStyle} ${col.className} cursor-pointer`}>
+              <div key={col.key} className={`${commonStyle} ${col.className}`}>
                 {col.render ? col.render(item[col.key]) : item[col.key]}
               </div>
             ))}

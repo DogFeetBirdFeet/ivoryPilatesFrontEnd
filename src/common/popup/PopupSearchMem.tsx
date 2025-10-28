@@ -187,6 +187,7 @@ export default function PopupSearchMem({
 }) {
   const [searchName, setSearchName] = useState(initNameValue || '');
   const [searchNumber, setSearchNumber] = useState('');
+  const [curRow, setCurRow] = useState<string | null>(null);
 
   return (
     <div className="w-[1000px] bg-white px-10px py-30px flex flex-col gap-15px rounded-default drop-shadow-2xl">
@@ -236,8 +237,11 @@ export default function PopupSearchMem({
           {mockMemberData.map((item) => (
             <div
               key={item.memberId}
-              className={`h-40px flex justify-between text-gray text-base border-b-[1px] border-whiteGray last:border-b-0 cursor-pointer bg-white hover:bg-yellow transition-colors`}
+              className={`h-40px flex justify-between text-gray text-base border-b-[1px] border-whiteGray last:border-b-0 cursor-pointer ${
+                curRow === item.memberId ? 'bg-yellow' : 'bg-white hover:bg-grayWhite'
+              } transition-colors`}
               onDoubleClick={() => onDoubleClick(item)}
+              onClick={() => setCurRow(item.memberId)}
             >
               {columns.map((col) => (
                 <div key={col.key} className={`flex justify-center items-center ${col.className}`}>

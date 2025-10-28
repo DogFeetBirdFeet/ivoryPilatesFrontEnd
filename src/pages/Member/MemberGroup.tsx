@@ -165,7 +165,12 @@ export default function MemberGroup() {
       render: (row) => <input type="checkbox" onChange={(e) => handleSelectRow(row.grpId, e.target.checked)} />,
     },
     { key: 'grpId', title: '그룹 ID', className: 'w-100px' },
-    { key: 'grpType', title: '그룹 타입', className: 'w-100px' },
+    {
+      key: 'grpType',
+      title: '그룹 타입',
+      className: 'w-100px',
+      render: (row) => (row.grpType === '1:1' ? '수강권 공유' : row.grpType),
+    },
     { key: 'grpMemsName', title: '회원명', className: 'w-[250px]' },
     { key: 'grpMemsCnt', title: '인원 수', className: 'w-60px' },
     { key: 'remainingCnt', title: '잔여 회차', className: 'w-60px' },
@@ -228,9 +233,9 @@ export default function MemberGroup() {
                   <div
                     key={item.grpId}
                     className={`h-60px flex justify-between text-gray text-sm border-b-[1px] last:border-b-0 border-grayD9 ${
-                      curRow === item.grpId ? 'bg-yellow' : 'bg-white'
+                      curRow === item.grpId ? 'bg-yellow' : 'bg-white hover:bg-grayWhite'
                     }`}
-                    onDoubleClick={() => setCurRow(item.grpId)}
+                    onClick={() => setCurRow(item.grpId)}
                   >
                     {columns.map((col) => (
                       <div key={col.key} className={`flex justify-center items-center ${col.className} cursor-pointer`}>
