@@ -71,7 +71,7 @@ export default function SearchInputCus({
   };
 
   return (
-    <div className="relative">
+    <div className={`relative ${className}`}>
       <input
         type="text"
         id={id}
