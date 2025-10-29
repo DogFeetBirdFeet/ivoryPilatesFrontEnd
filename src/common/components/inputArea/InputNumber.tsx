@@ -9,6 +9,7 @@ interface IInputNumber {
   maxLength?: number;
   disabled?: boolean;
   allowDecimal?: boolean;
+  textSort?: 'start' | 'end' | 'center';
   suffix?: string;
   error?: boolean;
 }
@@ -26,13 +27,13 @@ export default function InputNumber({
   onChange,
   maxLength,
   disabled = false,
+  textSort = 'start',
   allowDecimal = false,
   suffix,
   error = false,
 }: IInputNumber) {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     let numbersOnly = e.target.value;
-
     if (allowDecimal) {
       // 소수점 허용: 숫자와 점(.)만 허용
       numbersOnly = numbersOnly.replace(/[^0-9.]/g, '');
@@ -64,18 +65,26 @@ export default function InputNumber({
     }
   };
 
+  const textAlignClass = {
+    start: 'text-start',
+    end: 'text-end',
+    center: 'text-center',
+  }[textSort];
+
   return (
-    <input
-      type="text"
-      inputMode={allowDecimal ? 'decimal' : 'numeric'}
-      id={id}
-      value={value + (suffix || '')}
-      className={`w-full ${className} ${INPUT_COMMON_STYLE} ${error ? INPUT_ERROR : INPUT_DEFAULT}`}
-      placeholder={placeholder}
-      onChange={handleChange}
-      onKeyDown={handleKeyDown}
-      maxLength={maxLength}
-      disabled={disabled}
-    />
+    <div className={`relative ${className}`}>
+      <input
+        id={id}
+        className={`w-full ${INPUT_COMMON_STYLE}  ${error ? INPUT_ERROR : INPUT_DEFAULT} ${textAlignClass} pr-35px`}
+        inputMode={allowDecimal ? 'decimal' : 'numeric'}
+        value={value}
+        placeholder={placeholder}
+        onChange={handleChange}
+        onKeyDown={handleKeyDown}
+        maxLength={maxLength}
+        disabled={disabled}
+      />
+      <span className="absolute right-[10px] leading-[30px] text-lightGray">{suffix}</span>
+    </div>
   );
 }

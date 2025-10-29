@@ -29,6 +29,7 @@ export default function MemberDetail() {
 
   if (!data) return <div>회원 정보를 찾을 수 없습니다.</div>;
 
+  // TODO : member Type 수정필요
   data.memType = 'COS';
 
   const renderMemberDetail = () => {
