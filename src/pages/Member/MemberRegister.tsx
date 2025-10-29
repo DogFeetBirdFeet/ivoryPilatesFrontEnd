@@ -58,7 +58,7 @@ export default function MemberRegister() {
   useEffect(() => {
     console.log(formData);
     console.log(errorMsg);
-  }, [formData]);
+  }, [formData, errorMsg]);
 
   // 헤더정보 세팅
   useEffect(() => {
@@ -221,7 +221,12 @@ export default function MemberRegister() {
                     name="gender"
                     value="W"
                     checked={formData.gender === 'W'}
-                    onChange={(e) => setFormData((form) => ({ ...form, gender: e.target.value as 'W' | 'M' }))}
+                    onChange={(e) =>
+                      setFormData((form) => ({
+                        ...form,
+                        gender: e.target.value as 'W' | 'M',
+                      }))
+                    }
                   />
                   <span className="text-sm">여자</span>
                 </label>
@@ -231,7 +236,12 @@ export default function MemberRegister() {
                     name="gender"
                     value="M"
                     checked={formData.gender === 'M'}
-                    onChange={(e) => setFormData((form) => ({ ...form, gender: e.target.value as 'W' | 'M' }))}
+                    onChange={(e) =>
+                      setFormData((form) => ({
+                        ...form,
+                        gender: e.target.value as 'W' | 'M',
+                      }))
+                    }
                   />
                   <span className="text-sm">남자</span>
                 </label>

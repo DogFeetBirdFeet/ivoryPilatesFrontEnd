@@ -1,11 +1,25 @@
 import InputNumber from '@/common/components/inputArea/InputNumber';
 import type { IMember } from '../types';
 import InputDate from '@/common/components/inputArea/InputDate';
-import { stringToDate } from '@/utils/date';
+import { dateFormatToString, formatBirth, stringToDate } from '@/utils/date';
 import { MEM_TYPE } from '@/constants/member';
 import SelectBox from '@/common/components/inputArea/SelectBox';
+import type { Dispatch, SetStateAction } from 'react';
 
-export default function MemberDetailInfo({ editMode, data }: { editMode: boolean; data: IMember }) {
+export default function MemberDetailInfo({
+  editMode,
+  data,
+  setData,
+}: {
+  editMode: boolean;
+  data: IMember;
+  setData: Dispatch<SetStateAction<IMember>>;
+}) {
+  // 공통 핸들러 함수
+  const handleChange = <K extends keyof IMember>(field: K, value: IMember[K]) => {
+    setData((prev) => ({ ...prev, [field]: value }));
+  };
+
   return (
     <section className="w-[1200px]">
       {/* 연락처/생년월일/성별/타입 */}
@@ -13,16 +27,28 @@ export default function MemberDetailInfo({ editMode, data }: { editMode: boolean
         <div className="bg-white h-full flex flex-col px-20px py-10px rounded-default">
           <p className="text-ppt text-sm font-bold">연락처</p>
           <div className="flex-1 flex items-end text-black text-[18px] font-medium">
-            {editMode ? <InputNumber id="memberNumber" value={data.number} onChange={(value) => {}} /> : data.number}
+            {editMode ? (
+              <InputNumber
+                id="memberNumber"
+                value={data.contact}
+                onChange={(newVal) => handleChange('contact', newVal)}
+              />
+            ) : (
+              data.contact
+            )}
           </div>
         </div>
         <div className="bg-white h-full flex flex-col px-20px py-10px rounded-default">
           <p className="text-ppt text-sm font-bold">생년월일</p>
           <div className="flex-1 flex items-end text-black text-[18px] font-medium">
             {editMode ? (
-              <InputDate id="memberBirth" value={stringToDate(data.birth)} onChange={(value) => {}} />
+              <InputDate
+                id="memberBirth"
+                value={stringToDate(data.birthDate)}
+                onChange={(newVal) => handleChange('birthDate', dateFormatToString(newVal, false))}
+              />
             ) : (
-              data.birth
+              formatBirth(data.birthDate)
             )}
           </div>
         </div>
@@ -37,20 +63,18 @@ export default function MemberDetailInfo({ editMode, data }: { editMode: boolean
                   { codeId: 'W', dtlNm: '여자' },
                   { codeId: 'M', dtlNm: '남자' },
                 ]}
-                value={'W'}
-                onChange={(value) => {}}
+                value={data.gender}
+                onChange={(newVal) => handleChange('gender', newVal)}
                 center={true}
               />
             ) : (
-              data.gender
+              <span>{data.gender === 'W' ? '여자' : '남자'}</span>
             )}
           </div>
         </div>
         <div className="bg-white h-full flex flex-col px-20px py-10px rounded-default">
           <p className="text-ppt text-sm font-bold">회원구분</p>
-          <div className="flex-1 flex items-end text-black text-[18px] font-medium">{`${
-            MEM_TYPE[data.memType]
-          }회원`}</div>
+          <div className="flex-1 flex items-end text-black text-[18px] font-medium">{`${MEM_TYPE[data.memType]}회원`}</div>
         </div>
       </div>
 
@@ -67,7 +91,7 @@ export default function MemberDetailInfo({ editMode, data }: { editMode: boolean
           <p className="text-ppt text-sm font-bold">지병</p>
           <div className="text-black text-sm">{data.disease}</div>
           <p className="text-ppt text-sm font-bold">메모</p>
-          <div className="text-black text-sm">{data.memo || <p className="text-lightGray">내역이 없습니다</p>}</div>
+          <div className="text-black text-sm">{data.remark || <p className="text-lightGray">내역이 없습니다</p>}</div>
         </div>
 
         {/* 바디체킹 이미지 */}

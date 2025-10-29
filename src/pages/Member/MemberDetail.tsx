@@ -6,29 +6,18 @@ import type { IMember } from '@/features/Member/types';
 import MemberDetailReg from '@/features/Member/sections/MemberDetailReg';
 import MemberDetailRes from '@/features/Member/sections/MemberDetailRes';
 import MemberDetailExp from '@/features/Member/sections/MemberDetailExp';
+import { useParams } from 'react-router-dom';
+import { useQuery } from '@tanstack/react-query';
+import { getMemberDetail } from '@/services/member';
 
 export default function MemberDetail() {
-  // const { memberId } = useParams();
+  const { memberId } = useParams() as { memberId: string };
   // TODO : MemberId로 Data 패칭
-  // const { data: memberData, isLoading } = useMemberDetail(memberId!);
-
-  const memberData: IMember = {
-    id: 'cos_1',
-    name: '원예진',
-    number: '01000000000',
-    birth: '19980228',
-    gender: 'W',
-    memType: 'COS',
-    height: 0,
-    weight: 0,
-    surHist:
-      '메모메모메모메모메모메모메모메모메모메모메모메모메모메모메모메모메모메모메모메모메모메모메모메모메모메모메모메모메모메모메모메모메모메모메모',
-    disease:
-      '메모메모메모메모메모메모메모메모메모메모메모메모메모메모메모메모메모메모메모메모메모메모메모메모메모메모메모메모메모메모메모메모메모메모메모',
-    memo: '',
-    bodyImg: '',
-    consDate: '20251021',
-  };
+  const { data } = useQuery<IMember>({
+    queryKey: ['member', memberId],
+    queryFn: () => getMemberDetail(memberId),
+    enabled: !!memberId,
+  });
 
   // 헤더정보 세팅
   const { setHeaderTitle, setHeaderIcon } = useLayoutContext();
@@ -38,18 +27,20 @@ export default function MemberDetail() {
     setHeaderIcon(headerIcon);
   }, [setHeaderTitle, setHeaderIcon]);
 
-  if (!memberData) return <div>회원 정보를 찾을 수 없습니다.</div>;
+  if (!data) return <div>회원 정보를 찾을 수 없습니다.</div>;
+
+  data.memType = 'COS';
 
   const renderMemberDetail = () => {
-    switch (memberData.memType) {
+    switch (data.memType) {
       case 'COS':
-        return <MemberDetailCos memberData={memberData} />;
+        return <MemberDetailCos memberData={data} />;
       case 'REG':
-        return <MemberDetailReg memberData={memberData} />;
+        return <MemberDetailReg memberData={data} />;
       case 'RES':
-        return <MemberDetailRes memberData={memberData} />;
+        return <MemberDetailRes memberData={data} />;
       case 'EXP':
-        return <MemberDetailExp memberData={memberData} />;
+        return <MemberDetailExp memberData={data} />;
       default:
         return null;
     }

@@ -1,4 +1,5 @@
 // import { StrictMode } from 'react';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { createRoot } from 'react-dom/client';
 import './global.css';
 import './index.css';
@@ -14,6 +15,18 @@ import InsDay from './pages/Schedule/InsDay';
 import InsWeek from './pages/Schedule/InsWeek';
 import MemberDetail from './pages/Member/MemberDetail';
 import InsMonth from './pages/Schedule/InsMonth.tsx';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: 1,
+      refetchOnWindowFocus: false,
+      staleTime: 1000 * 60 * 5, // 5분 - 충분히 긴 시간으로 설정
+      cacheTime: 1000 * 60 * 10, // 10분 (구 cacheTime)
+    },
+  },
+});
 
 const router = createBrowserRouter([
   {
@@ -70,6 +83,9 @@ const router = createBrowserRouter([
 
 createRoot(document.getElementById('root')!).render(
   // <StrictMode>
-  <RouterProvider router={router} />
+  <QueryClientProvider client={queryClient}>
+    <RouterProvider router={router} />
+    {import.meta.env.DEV && <ReactQueryDevtools initialIsOpen={true} />}
+  </QueryClientProvider>
   // </StrictMode>,
 );

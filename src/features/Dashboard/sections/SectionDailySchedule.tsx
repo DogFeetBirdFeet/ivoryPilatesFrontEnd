@@ -9,34 +9,94 @@ import useOverlay from '@/hooks/useOverlay';
 const mockApiData = [
   {
     hour: 9,
-    schedules: [{ id: '1', cusNm: '김혜준', trainerNm: '원예진', status: 'COM' as const, type: 'S' as const }],
+    schedules: [
+      {
+        id: '1',
+        cusNm: '김혜준',
+        trainerNm: '원예진',
+        status: 'COM' as const,
+        type: 'S' as const,
+      },
+    ],
   },
   {
     hour: 10,
-    schedules: [{ id: '2', cusNm: '김혜준', trainerNm: '원예진', status: 'COM' as const, type: 'S' as const }],
+    schedules: [
+      {
+        id: '2',
+        cusNm: '김혜준',
+        trainerNm: '원예진',
+        status: 'COM' as const,
+        type: 'S' as const,
+      },
+    ],
   },
   {
     hour: 11,
-    schedules: [{ id: '3', cusNm: '최호연', trainerNm: '김용진', status: 'NOS' as const, type: 'S' as const }],
+    schedules: [
+      {
+        id: '3',
+        cusNm: '최호연',
+        trainerNm: '김용진',
+        status: 'NOS' as const,
+        type: 'S' as const,
+      },
+    ],
   },
   {
     hour: 12,
-    schedules: [{ id: '4', cusNm: '신화원', trainerNm: '원예진', status: 'SCH' as const, type: 'S' as const }],
+    schedules: [
+      {
+        id: '4',
+        cusNm: '신화원',
+        trainerNm: '원예진',
+        status: 'SCH' as const,
+        type: 'S' as const,
+      },
+    ],
   },
   {
     hour: 13,
-    schedules: [{ id: '5', cusNm: '나큰솔', trainerNm: '원예진', status: 'SCH' as const, type: 'S' as const }],
+    schedules: [
+      {
+        id: '5',
+        cusNm: '나큰솔',
+        trainerNm: '원예진',
+        status: 'SCH' as const,
+        type: 'S' as const,
+      },
+    ],
   },
   {
     hour: 16,
     schedules: [
-      { id: '6', cusNm: '신화원', trainerNm: '최호연', status: 'SCH' as const, type: 'D' as const },
-      { id: '7', cusNm: '김용진', trainerNm: '최호연', status: 'SCH' as const, type: 'D' as const },
+      {
+        id: '6',
+        cusNm: '신화원',
+        trainerNm: '최호연',
+        status: 'SCH' as const,
+        type: 'D' as const,
+      },
+      {
+        id: '7',
+        cusNm: '김용진',
+        trainerNm: '최호연',
+        status: 'SCH' as const,
+        type: 'D' as const,
+      },
     ],
   },
   {
     hour: 17,
-    schedules: [{ id: '8', cusNm: '나큰솔', trainerNm: '김혜준', status: 'SCH' as const, type: 'S' as const }],
+    schedules: [
+      {
+        id: '8',
+        cusNm: '나큰솔',
+        trainerNm: '김혜준',
+        status: 'SCH' as const,
+        type: 'S' as const,
+      },
+    ],
   },
 ];
 

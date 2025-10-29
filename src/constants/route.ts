@@ -28,7 +28,12 @@ interface RouteItem {
 }
 
 export const menuRoute: RouteItem[] = [
-  { route: '/dashboard', name: '홈 바로가기', iconDefault: iconDashboard, iconCur: iconDashboardCur },
+  {
+    route: '/dashboard',
+    name: '홈 바로가기',
+    iconDefault: iconDashboard,
+    iconCur: iconDashboardCur,
+  },
   {
     route: '/member',
     name: '회원 관리',
@@ -52,9 +57,24 @@ export const menuRoute: RouteItem[] = [
       { route: '/ins-day', name: '강사 일간 일정', iconDefault: iconScheSm },
     ],
   },
-  { route: '/class-log', name: '수업일지 관리', iconDefault: iconClsLog, iconCur: iconClsLogCur },
-  { route: '/class-pass', name: '결제 수강권 관리', iconDefault: iconClsPass, iconCur: iconClsPassCur },
-  { route: '/class-package', name: '회차별 상품 관리', iconDefault: iconClsPkg, iconCur: iconClsPkgCur },
+  {
+    route: '/class-log',
+    name: '수업일지 관리',
+    iconDefault: iconClsLog,
+    iconCur: iconClsLogCur,
+  },
+  {
+    route: '/class-pass',
+    name: '결제 수강권 관리',
+    iconDefault: iconClsPass,
+    iconCur: iconClsPassCur,
+  },
+  {
+    route: '/class-package',
+    name: '회차별 상품 관리',
+    iconDefault: iconClsPkg,
+    iconCur: iconClsPkgCur,
+  },
   {
     route: '/instructor',
     name: '강사 관리',

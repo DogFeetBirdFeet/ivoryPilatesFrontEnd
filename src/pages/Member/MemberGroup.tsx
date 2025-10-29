@@ -119,7 +119,10 @@ const mockData: IGrpData[] = [
 ];
 
 export default function MemberGroup() {
-  const [searchForm, setSearchForm] = useState<ISearchForm>({ searchName: '', searchNumber: '' });
+  const [searchForm, setSearchForm] = useState<ISearchForm>({
+    searchName: '',
+    searchNumber: '',
+  });
   const [curRow, setCurRow] = useState<string | null>(null);
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
 

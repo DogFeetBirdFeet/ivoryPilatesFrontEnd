@@ -80,7 +80,11 @@ export default function ScheduleInfo(data: ISchData) {
               onClick={() => {
                 overlay.showPopup(
                   <PopupScheDltConfirm
-                    schedule={{ date: data.schedDate, member: data.cusNm, time: data.schedTime }}
+                    schedule={{
+                      date: data.schedDate,
+                      member: data.cusNm,
+                      time: data.schedTime,
+                    }}
                     onClickBack={handleBack}
                     onClickConfirm={handleConfirm}
                   />

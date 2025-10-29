@@ -185,9 +185,7 @@ export default function InputDate({ id, value, onChange, className, sortRight = 
 
       {isOpen && (
         <div
-          className={`absolute top-[35px] z-50 w-[280px] px-20px py-20px rounded-default border border-[#D9D9D9] bg-white shadow-2xl font-bold ${
-            sortRight ? 'right-0' : ''
-          }`}
+          className={`absolute top-[35px] z-50 w-[280px] px-20px py-20px rounded-default border border-[#D9D9D9] bg-white shadow-2xl font-bold ${sortRight ? 'right-0' : ''}`}
         >
           {/* Header */}
           <div className="flex items-center justify-between text-xl mb-10px">
@@ -220,10 +218,10 @@ export default function InputDate({ id, value, onChange, className, sortRight = 
                   const textColor = isSelected
                     ? 'text-white'
                     : !cell.inCurrentMonth
-                    ? 'text-calGray'
-                    : isWeekend
-                    ? 'text-red'
-                    : 'text-[#444444]';
+                      ? 'text-calGray'
+                      : isWeekend
+                        ? 'text-red'
+                        : 'text-[#444444]';
 
                   const bgColor = isSelected ? 'bg-ppp' : 'hover:bg-ppp hover:text-white';
 

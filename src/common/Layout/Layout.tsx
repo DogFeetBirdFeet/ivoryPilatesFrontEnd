@@ -91,17 +91,13 @@ export default function Layout() {
       </LayoutGroup>
 
       <MotionDiv
-        className={`h-full grid grid-rows-[auto_1fr] px-30px pb-20px min-w-0 ${
-          isSchedulePage ? 'bg-white' : 'bg-ppbg '
-        }`}
+        className={`h-full grid grid-rows-[auto_1fr] px-30px pb-20px min-w-0 ${isSchedulePage ? 'bg-white' : 'bg-ppbg '}`}
         animate={{ marginLeft: menuFold ? 80 : 250 }}
         transition={{ duration: 0.3, ease: 'easeInOut' }}
       >
         {/* 헤더 */}
         <div
-          className={`sticky top-0 z-10 w-full py-[10px] flex justify-between ${
-            isSchedulePage ? 'bg-white' : 'bg-ppbg '
-          }`}
+          className={`sticky top-0 z-10 w-full py-[10px] flex justify-between ${isSchedulePage ? 'bg-white' : 'bg-ppbg '}`}
         >
           {/* 화면명 */}
           <div className="flex items-center">

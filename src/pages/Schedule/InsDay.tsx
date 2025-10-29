@@ -12,9 +12,9 @@ import { dateFormatToString } from '@/utils/date';
 import { useLayoutContext } from '@/hooks/useLayoutContext';
 
 const restTrainerMockData = [
-    { hour: 13, trainers: ['원예진', '나큰솔'] },
-    { hour: 15, trainers: ['김용진'] },
-    { hour: 17, trainers: ['김혜준'] },
+  { hour: 13, trainers: ['원예진', '나큰솔'] },
+  { hour: 15, trainers: ['김용진'] },
+  { hour: 17, trainers: ['김혜준'] },
 ];
 
 export default function InsDay() {
@@ -119,7 +119,7 @@ export default function InsDay() {
 
   // 강사 휴식정보 불러오는 함수
   const getRestTrainerInfo = (idx: number): string | null => {
-    const restData = restTrainerMockData.find(({ hour }) => hour === (9 + idx));
+    const restData = restTrainerMockData.find(({ hour }) => hour === 9 + idx);
     return restData ? `${restData.trainers} 강사` : null;
   };
 

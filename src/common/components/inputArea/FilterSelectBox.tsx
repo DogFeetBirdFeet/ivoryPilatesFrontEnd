@@ -107,9 +107,7 @@ export default function FilterSelectBox({
                 <button
                   key={index}
                   type="button"
-                  className={`w-full h-30px px-5px text-left text-sm text-black rounded-[5px] hover:bg-ppbg transition-colors ${
-                    value === optionItem.codeId && 'bg-ppWhite'
-                  }`}
+                  className={`w-full h-30px px-5px text-left text-sm text-black rounded-[5px] hover:bg-ppbg transition-colors ${value === optionItem.codeId && 'bg-ppWhite'}`}
                   onClick={() => handleSelect(optionItem)}
                 >
                   {optionItem.dtlNm}

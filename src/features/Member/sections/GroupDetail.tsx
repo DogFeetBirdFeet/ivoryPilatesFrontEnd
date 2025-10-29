@@ -22,7 +22,11 @@ export default function GroupDetail({ groupId, memberName }: { groupId: string |
   useEffect(() => {
     const nameList = memberName?.split(', ');
     if (nameList) {
-      const newDetail = nameList.map((newName) => ({ name: newName, number: '01000000000', birth: '99999999' }));
+      const newDetail = nameList.map((newName) => ({
+        name: newName,
+        number: '01000000000',
+        birth: '99999999',
+      }));
       setGrpDetail(() => newDetail);
     }
   }, [memberName]);

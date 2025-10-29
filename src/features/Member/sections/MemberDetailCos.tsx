@@ -7,17 +7,31 @@ import iconBack from '@/assets/icon/purple/icon_cancel.png';
 import iconSave from '@/assets/icon/white/icon_save.png';
 import { useState } from 'react';
 import type { IMember } from '../types';
+import InputText from '@/common/components/inputArea/InputText';
 
 export default function MemberDetailCos({ memberData }: { memberData: IMember }) {
   const [editMode, setEditMode] = useState(false);
   const [regMode, setRegMode] = useState(false);
+  const [data, setData] = useState<IMember>(memberData);
 
   return (
     <div className="flex flex-col">
       {/* 헤더 이름 & 버튼 - 상단 영역 */}
       <div className="flex items-center mb-20px">
         <img src={iconIvo} className="w-60px h-60px mr-20px" alt="User Icon" />
-        <span className="text-3xl text-ppt font-bold whitespace-nowrap">원예진 회원님</span>
+        <div className="flex items-center whitespace-nowrap">
+          {editMode ? (
+            <InputText
+              id="memberName"
+              value={data.name}
+              onChange={(newVal) => setData((prev) => ({ ...prev, name: newVal }))}
+              className="h-full mr-10px"
+            />
+          ) : (
+            <span className="text-3xl text-ppt font-bold mr-10px">{data.name}</span>
+          )}
+          <span className="text-3xl text-ppt font-bold">회원님</span>
+        </div>
         <div className="ml-auto flex gap-10px">
           {editMode || regMode ? (
             <>
@@ -68,7 +82,7 @@ export default function MemberDetailCos({ memberData }: { memberData: IMember })
         {/* 좌측 */}
         <div className="flex flex-col">
           {/* 기본정보 */}
-          <MemberDetailInfo editMode={editMode} data={memberData} />
+          <MemberDetailInfo editMode={editMode} data={data} setData={setData} />
 
           {/* 수업정보 */}
           <div></div>

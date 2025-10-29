@@ -9,6 +9,8 @@ import InputNumber from '@/common/components/inputArea/InputNumber';
 import FilterSelectBox from '@/common/components/inputArea/FilterSelectBox';
 import iconFilter from '@/assets/icon/white/icon_filter.png';
 import MemberTable from '@/features/Member/sections/MemberTable';
+// import { useQuery } from '@tanstack/react-query';
+// import { getMemberList } from '@/services/member';
 
 interface ISearchForm {
   searchName: string;
@@ -73,6 +75,9 @@ export default function Member() {
   });
   const [selectedInstructor, setSelectedInstructor] = useState<number>(0);
   const [selectedBlacklist, setSelectedBlacklist] = useState<number>(0);
+
+  // const { isLoading, data: memberData } = useQuery<IMemberData[]>(['members'], getMemberList);
+
   const [memberData, setMemberData] = useState<IMemberData[]>(generateMockData(50));
 
   const tabList = [
@@ -99,6 +104,25 @@ export default function Member() {
 
     return true;
   });
+
+  // 클라이언트 필터링 (강사, 블랙리스트)
+  // const filteredData = memberData
+  //   ? memberData.filter((item) => {
+  //       // 강사 필터
+  //       if (selectedInstructor !== 0) {
+  //         const instructorName = MockDataIns.find((ins) => ins.codeId === selectedInstructor)?.dtlNm;
+  //         if (item.instructor !== instructorName) return false;
+  //       }
+
+  //       // 블랙리스트 필터
+  //       if (selectedBlacklist !== 0) {
+  //         const isBlackYN = mockDataYN.find((yn) => yn.codeId === selectedBlacklist)?.dtlNm === 'Y';
+  //         if (item.isBlacklisted !== isBlackYN) return false;
+  //       }
+
+  //       return true;
+  //     })
+  //   : [];
 
   // 헤더정보 세팅
   const { setHeaderTitle, setHeaderIcon } = useLayoutContext();
@@ -127,7 +151,7 @@ export default function Member() {
   return (
     <div className="min-w-[1310px] flex flex-col pb-20px">
       <h1 className="h-50px text-[25px] text-gray font-bold mx-20px">
-        {tabList[curTab].text} ({filteredData.length})
+        {tabList[curTab].text} ({filteredData?.length})
       </h1>
 
       {/* 탭 */}

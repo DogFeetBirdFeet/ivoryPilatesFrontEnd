@@ -20,7 +20,8 @@ export default function PopupCenterOffDaySetting({ centerOffYn, date, confirmCal
       <div>
         <p>
           <span className="text-ppt">{dateToLocal(date)}</span>은{' '}
-          <span className="text-ppt">{centerOffYn === 'Y' ? '휴무일' : '센터 영업일'}</span>입니다.
+          <span className="text-ppt">{centerOffYn === 'Y' ? '휴무일' : '센터 영업일'}</span>
+          입니다.
         </p>
         <p>
           <span className="text-ppt">{centerOffYn === 'Y' ? '센터 영업일' : '휴무일'}</span>로 변경하시겠습니까?
