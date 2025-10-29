@@ -42,6 +42,7 @@ export default {
                 gray100: '#F5F4F6',
                 yellowCal:'#FF8000',
                 grayA1: '#A1A1A1',
+                grayCE: '#CECECE',
             },
             fontSize: {
                 base: ['12px', {lineHeight: '18px'}],
