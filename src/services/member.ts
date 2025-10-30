@@ -1,4 +1,4 @@
-import { api } from './api';
+import { api } from '@/services/Common/api';
 
 export async function getMemberList() {
   const { data } = await api.get('/test/cusMst');

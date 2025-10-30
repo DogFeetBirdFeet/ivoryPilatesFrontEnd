@@ -14,36 +14,10 @@ import { useForm } from 'react-hook-form';
 import { dateFormatToString } from '@/utils/date.ts';
 import SearchCondition from '@/common/components/searchBar/SearchCondition';
 import SearchInputCus from '@/common/components/inputArea/SearchInputCus.tsx';
-import { clsPassApi, commonCodeApi } from '@/services/api';
-
-interface IClsPassData {
-  clsPkgId: number;
-  clsPassId: number; // 결제 수강권 ID
-  userId: number; // 회원 ID
-  userNm: string; // 회원명
-  clsPkgNm: string; // 상품명
-  clsType: string; // 상품타입
-  price: number; // 기본금액
-  paidAmt: number; // 결제 금액
-  discountAmt: number; // 기본할인금액
-  discountAmt2: number; // 추가할인금액
-  totalCnt: number; // 총 회차
-  remainCnt: number; // 잔여 회차
-  expRate: string; // 유효 기간
-  payMethod: string; // 결제 수단
-  payDate: string; // 결제 일자
-  refundYn: string; // 환불 여부
-  useYn: string; // 사용 여부
-}
-
-interface ISearchForm {
-  payDateFrom: Date | null;
-  payDateTo: Date | null;
-  refundDateFrom: Date | null;
-  refundDateTo: Date | null;
-  searchPayName: string;
-  searchName: string;
-}
+import { clsPassApi } from '@/services/Class/api';
+import { commonCodeApi } from '@/services/Common/api';
+import type { IClsPassData } from '@/features/ClsPass/clsPassType';
+import type { IClsPassSearchForm } from '@/features/ClsPass/clsPassType';
 
 // 공통 코드 데이터 타입
 interface ICommonCode {
@@ -63,7 +37,7 @@ export default function ClassPass() {
   const [selectedItem, setSelectedItem] = useState<IClsPassData | null>(null);
 
   // react-hook-form 검색조건
-  const { watch, setValue, handleSubmit } = useForm<ISearchForm>({
+  const { watch, setValue, handleSubmit } = useForm<IClsPassSearchForm>({
     defaultValues: {
       payDateFrom: new Date(new Date().getFullYear(), 0, 1),
       payDateTo: new Date(),
@@ -121,7 +95,7 @@ export default function ClassPass() {
   };
 
   // 데이터 로드 함수
-  const loadClsPassData = async (searchParams?: ISearchForm) => {
+  const loadClsPassData = async (searchParams?: IClsPassSearchForm) => {
     setIsLoading(true);
     try {
       if (!searchParams) return;
@@ -189,7 +163,7 @@ export default function ClassPass() {
   }, [setHeaderTitle, setHeaderIcon]);
 
   // 검색 실행
-  const onSubmit = (data: ISearchForm) => {
+  const onSubmit = (data: IClsPassSearchForm) => {
     loadClsPassData(data).then((r) => r);
   };
 

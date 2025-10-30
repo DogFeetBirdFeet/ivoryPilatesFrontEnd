@@ -14,51 +14,17 @@ import ClsPayInfo from '@/features/ClsPass/items/ClsPayInfo';
 import useOverlay from '@/hooks/useOverlay';
 import PopupRefundCls from '@/common/popup/PopupRefundCls';
 import SearchInputCus from '@/common/components/inputArea/SearchInputCus.tsx';
+import type { IPropsAuthority } from '@/features/ClsPass/clsPassType';
+import type { IClsAndUserData } from '@/features/ClsPass/clsPassType';
+import { clsPassApi } from '@/services/Class/api';
 
 interface ISearchForm {
   cusId: number;
   cusName: string;
 }
 
-interface IPropsAuthority {
-  title: string;
-  userId: number;
-  userNm: string;
-  clsPassId: number;
-  useAge: number; // 1 : 조회 - 사용중, 2 :  조회 - 만료/환불, 3 : 수정 - 사용중, 4 : 수정 - 만료/환불, 5 : 등록
-  authority: number; // 1 : 강사, 2 : 관리자
-  onCancel?: () => void; // 취소 버튼 클릭 시 호출될 함수
-}
-
-interface IClsAndUserData {
-  contact: string; // 연락처
-  birthDate: string; // 생년월일
-  gender: string; // 성별
-  userClass: string; // 회원구분
-  staDtm: string; // 게시일자
-  endDtm: string; // 종료예정일자
-  totalCnt: number; // 총 회차
-  remainCnt: number; // 잔여 회차
-  useYn: boolean; // 만료 여부
-  clsPkgNm: string; // 상품명
-  clsPassId: string; // 결제수강권 ID
-  price: number; // 기본금액
-  discountAmtPkg: number; // 기본할인금액
-  clsPkgCnt: number; // 기본회차
-  expRate: string; // 최대 사용기간(일)
-  paidAmt: number; // 결제 금액
-  discountAmtPass: number; // 추가할인금액
-  payDate: string; // 결제 일자
-  payMethod: string; // 결제 수단
-  instMm: number; // 할부 개월수
-  payUserNm: string; // 결제자
-  remark: string; // 메모
-  refundDtm: string; // 환불 일자
-  refundAmt: number; // 환불 금액
-  refundYn: boolean; // 환불 여부
-}
-
 export default function ClsPassDetailView(props: IPropsAuthority) {
+  const [data, setData] = useState<Partial<IClsAndUserData> | null>(null);
   // react-hook-form 검색조건
   const { watch, setValue } = useForm<ISearchForm>({
     defaultValues: {
@@ -81,40 +47,26 @@ export default function ClsPassDetailView(props: IPropsAuthority) {
   const [editable, setEditable] = useState(false);
   const [currentUseAge, setCurrentUseAge] = useState(props.useAge);
 
+  const loadClsPassData = async (clsPassId: number) => {
+    try {
+      const response = await clsPassApi.getClsPassData(clsPassId);
+      setData(response.data[0]);
+      console.log(response);
+    } catch (error) {
+      console.error('데이터 로드 실패:', error);
+    }
+  };
   useEffect(() => {
     setHeaderTitle(props.title);
     setHeaderIcon(headerIcon);
-  }, [setHeaderTitle, setHeaderIcon, props.title, editable]);
+
+    const initializeData = async () => {
+      await loadClsPassData(props.clsPassId);
+    };
+    initializeData().then((r) => r);
+  }, [setHeaderTitle, setHeaderIcon, props.title, editable, props.clsPassId]);
 
   // Mock 데이터 (실제로는 props에서 받아와야 함)
-  const [mockUserData, setMockUserData] = useState<IClsAndUserData>({
-    contact: '010-0000-0000',
-    birthDate: '9999-99-99',
-    gender: '여자',
-    userClass: '등록회원',
-    staDtm: '2024-01-01',
-    endDtm: '2024-12-31',
-    totalCnt: 10,
-    remainCnt: 5,
-    useYn: true,
-    clsPkgNm: '1:1 10회 기본',
-    clsPassId: 'TEST_001',
-    price: 500000,
-    discountAmtPkg: 50000,
-    clsPkgCnt: 10,
-    expRate: '365',
-    paidAmt: 450000,
-    discountAmtPass: 0,
-    payDate: '2024-01-01',
-    payMethod: 'CARD',
-    instMm: 0,
-    payUserNm: '원예진',
-    remark: '',
-    refundDtm: '2025-10-03',
-    refundAmt: 222220,
-    refundYn: true,
-  });
-
   const handleEdit = () => {
     console.log('🔍 currentUseAge:', currentUseAge);
     setCurrentUseAge(currentUseAge === 1 ? 3 : 4);
@@ -192,19 +144,19 @@ export default function ClsPassDetailView(props: IPropsAuthority) {
         <section className="grid grid-cols-4 gap-50px h-[80px]">
           <div className="flex flex-col justify-between bg-purpleLight2 px-20px py-10px rounded-default">
             <label className="text-sm font-bold text-ppt">연락처</label>
-            <p className="text-[18px] font-bold text-black">{mockUserData.contact}</p>
+            <p className="text-[18px] font-bold text-black">{data?.contact}</p>
           </div>
           <div className="flex flex-col justify-between bg-purpleLight2 px-20px py-10px rounded-default">
             <label className="text-sm font-bold text-ppt">생년월일</label>
-            <p className="text-[18px]  font-bold text-black">{mockUserData.birthDate}</p>
+            <p className="text-[18px]  font-bold text-black">{data?.birthDate}</p>
           </div>
           <div className="flex flex-col justify-between bg-purpleLight2 px-20px py-10px rounded-default">
             <label className="text-sm font-bold text-ppt">성별</label>
-            <p className="text-[18px]  font-bold text-black">{mockUserData.gender}</p>
+            <p className="text-[18px]  font-bold text-black">{data?.gender}</p>
           </div>
           <div className="flex flex-col justify-between bg-purpleLight2 px-20px py-10px rounded-default">
             <label className="text-sm font-bold text-ppt">회원구분</label>
-            <p className="text-[18px]  font-bold text-black">{mockUserData.userClass}</p>
+            <p className="text-[18px]  font-bold text-black">{data?.cusType}</p>
           </div>
         </section>
 
@@ -215,35 +167,17 @@ export default function ClsPassDetailView(props: IPropsAuthority) {
             {currentUseAge === 5 && (
               <>
                 {/* 상품정보 섹션 */}
-                <ClsPkgInfo
-                  data={{
-                    clsPkgNm: mockUserData.clsPkgNm,
-                    clsPassId: mockUserData.clsPassId,
-                    price: mockUserData.price,
-                    discountAmtPkg: mockUserData.discountAmtPkg,
-                    clsPkgCnt: mockUserData.clsPkgCnt,
-                    expRate: mockUserData.expRate,
-                  }}
-                  currentUseAge={currentUseAge}
-                />
+                <ClsPkgInfo data={data as IClsAndUserData} currentUseAge={currentUseAge} />
                 {/* 수강권 정보 섹션 */}
                 <ClsPassInfoItem
-                  data={{
-                    clsPassId: mockUserData.clsPassId,
-                    staDtm: mockUserData.staDtm,
-                    endDtm: mockUserData.endDtm,
-                    totalCnt: mockUserData.totalCnt,
-                    remainCnt: mockUserData.remainCnt,
-                    useYn: mockUserData.useYn,
-                    refundYn: mockUserData.refundYn,
-                  }}
+                  data={data as IClsAndUserData}
                   editable={editable}
                   authority={props.authority}
                   currentUseAge={currentUseAge}
                   onDataChange={(newData) => {
-                    setMockUserData({
-                      ...mockUserData,
-                      ...newData,
+                    setData({
+                      ...(data || null),
+                      ...(newData || null),
                     });
                   }}
                 />
@@ -253,62 +187,34 @@ export default function ClsPassDetailView(props: IPropsAuthority) {
               <>
                 {/* 수강권 정보 섹션 */}
                 <ClsPassInfoItem
-                  data={{
-                    clsPassId: mockUserData.clsPassId,
-                    staDtm: mockUserData.staDtm,
-                    endDtm: mockUserData.endDtm,
-                    totalCnt: mockUserData.totalCnt,
-                    remainCnt: mockUserData.remainCnt,
-                    useYn: mockUserData.useYn,
-                    refundYn: mockUserData.refundYn,
-                  }}
+                  data={data as IClsAndUserData}
                   editable={editable}
                   authority={props.authority}
                   currentUseAge={currentUseAge}
                   onDataChange={(newData) => {
-                    setMockUserData({
-                      ...mockUserData,
-                      ...newData,
+                    setData({
+                      ...(data || null),
+                      ...(newData || null),
                     });
                   }}
                 />
 
                 {/* 상품정보 섹션 */}
-                <ClsPkgInfo
-                  data={{
-                    clsPkgNm: mockUserData.clsPkgNm,
-                    clsPassId: mockUserData.clsPassId,
-                    price: mockUserData.price,
-                    discountAmtPkg: mockUserData.discountAmtPkg,
-                    clsPkgCnt: mockUserData.clsPkgCnt,
-                    expRate: mockUserData.expRate,
-                  }}
-                  currentUseAge={currentUseAge}
-                />
+                <ClsPkgInfo data={data as IClsAndUserData} currentUseAge={currentUseAge} />
               </>
             )}
           </div>
           <div className="flex-1">
             {/* 오른쪽 컬럼 - 결제정보 */}
             <ClsPayInfo
-              data={{
-                paidAmt: mockUserData.paidAmt,
-                discountAmtPass: mockUserData.discountAmtPass,
-                payDate: mockUserData.payDate,
-                payMethod: mockUserData.payMethod,
-                instMm: mockUserData.instMm,
-                payUserNm: mockUserData.payUserNm,
-                remark: mockUserData.remark,
-                refundDtm: mockUserData.refundDtm,
-                refundAmt: mockUserData.refundAmt,
-              }}
+              data={data as IClsAndUserData}
               editable={editable}
               authority={props.authority}
               currentUseAge={currentUseAge}
               onDataChange={(newData) => {
-                setMockUserData({
-                  ...mockUserData,
-                  ...newData,
+                setData({
+                  ...(data || null),
+                  ...(newData || null),
                 });
               }}
             />

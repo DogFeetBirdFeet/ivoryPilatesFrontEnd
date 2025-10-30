@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { useLayoutContext } from '@/hooks/useLayoutContext.ts';
 import IconSchedule from '@/assets/icon/yellow/icon_sche.png';
 import { useForm } from 'react-hook-form';
-import { scheduleApiMonth } from '@/services/api.ts';
+import { scheduleApiMonth } from '@/services/Schedule/api';
 import type { IInsDay } from '@/features/Schedule/type/types';
 import SearchInputCus from '@/common/components/inputArea/SearchInputCus.tsx';
 import SearchCondition from '@/common/components/searchBar/SearchCondition.tsx';

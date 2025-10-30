@@ -3,23 +3,14 @@ import InputDate from '@/common/components/inputArea/InputDate.tsx';
 import InputNumber from '@/common/components/inputArea/InputNumber';
 import FilterSelectBox from '@/common/components/inputArea/FilterSelectBox';
 import { stringToDate } from '@/utils/date';
-
-interface IClsPassInfoData {
-  clsPassId: string;
-  staDtm: string;
-  endDtm: string;
-  totalCnt: number;
-  remainCnt: number;
-  useYn: boolean;
-  refundYn: boolean;
-}
+import type { IClsAndUserData } from '@/features/ClsPass/clsPassType';
 
 interface IClsPassInfoProps {
-  data: IClsPassInfoData;
+  data: IClsAndUserData;
   editable: boolean;
   authority: number;
   currentUseAge: number;
-  onDataChange: (data: IClsPassInfoData) => void;
+  onDataChange: (data: IClsAndUserData) => void;
 }
 
 const mockDataYN = [
@@ -29,10 +20,10 @@ const mockDataYN = [
 
 export default function ClsPassInfo({ data, editable, authority, currentUseAge, onDataChange }: IClsPassInfoProps) {
   const [startDate, setStartDate] = useState<Date | null>(
-    data.staDtm.length === 8 ? stringToDate(data.staDtm) : new Date()
+    data?.staDtm?.length === 8 ? stringToDate(data?.staDtm) : new Date()
   );
 
-  const handleDataChange = (field: keyof IClsPassInfoData, value: any) => {
+  const handleDataChange = (field: keyof IClsAndUserData, value: any) => {
     onDataChange({
       ...data,
       [field]: value,
@@ -43,10 +34,10 @@ export default function ClsPassInfo({ data, editable, authority, currentUseAge, 
     <section>
       <div className="h-70px flex items-center gap-[10px]">
         <h3 className="text-[26px] leading-[26px] font-bold text-ppm">수강권 정보</h3>
-        {currentUseAge !== 5 && data.clsPassId && data.remainCnt > 0 && !data.refundYn && (
+        {currentUseAge !== 5 && data?.clsPassId && data?.remainCnt > 0 && !data?.refundYn && (
           <span className="bg-blueBtn text-white text-center rounded-md h-[25px] w-[50px]">사용중</span>
         )}
-        {currentUseAge !== 5 && data.clsPassId && (data.remainCnt <= 0 || data.refundYn) && (
+        {currentUseAge !== 5 && data?.clsPassId && (data?.remainCnt <= 0 || data?.refundYn) && (
           <span className="bg-red text-white text-center rounded-md h-[25px] w-[50px]">만료</span>
         )}
       </div>
@@ -65,22 +56,22 @@ export default function ClsPassInfo({ data, editable, authority, currentUseAge, 
               }}
             />
           )}
-          {currentUseAge !== 5 && <span className="text-xl ml-[20px]">{data.staDtm}</span>}
+          {currentUseAge !== 5 && <span className="text-xl ml-[20px]">{data?.staDtm}</span>}
         </div>
         {currentUseAge !== 5 && (
           <div className="flex items-center">
             <span className="text-xl font-bold text-ppm w-[200px]">종료 예정 일자</span>
-            {editable && authority === 2 && !data.refundYn && (
+            {editable && authority === 2 && !data?.refundYn && (
               <InputDate
                 id="endDtm"
                 className="text-xl ml-[20px]"
-                value={stringToDate(data.endDtm)}
+                value={stringToDate(data?.endDtm)}
                 onChange={(value) => handleDataChange('endDtm', value)}
               />
             )}
-            {editable && authority === 2 && data.refundYn && <span className="text-xl ml-[20px]">{data.endDtm}</span>}
+            {editable && authority === 2 && data?.refundYn && <span className="text-xl ml-[20px]">{data?.endDtm}</span>}
             {editable && authority === 1 && <span className="text-xl ml-[20px]">{data.endDtm}</span>}
-            {!editable && <span className="text-xl ml-[20px]">{data.endDtm}</span>}
+            {!editable && <span className="text-xl ml-[20px]">{data?.endDtm}</span>}
           </div>
         )}
 
@@ -91,7 +82,7 @@ export default function ClsPassInfo({ data, editable, authority, currentUseAge, 
               {editable && authority === 2 && !data.refundYn && (
                 <InputNumber
                   id="totalCnt"
-                  value={data.totalCnt}
+                  value={data?.totalCnt}
                   onChange={(value) => handleDataChange('totalCnt', Number(value))}
                   suffix="회"
                   textSort="end"
@@ -99,17 +90,17 @@ export default function ClsPassInfo({ data, editable, authority, currentUseAge, 
                 />
               )}
               {editable && authority === 2 && data.refundYn && (
-                <span className="text-xl ml-[20px]">{data.totalCnt} 회</span>
+                <span className="text-xl ml-[20px]">{data?.totalCnt} 회</span>
               )}
-              {editable && authority === 1 && <span className="text-xl ml-[20px]">{data.totalCnt} 회</span>}
-              {!editable && <span className="text-xl ml-[20px]">{data.totalCnt} 회</span>}
+              {editable && authority === 1 && <span className="text-xl ml-[20px]">{data?.totalCnt} 회</span>}
+              {!editable && <span className="text-xl ml-[20px]">{data?.totalCnt} 회</span>}
             </>
           )}
           {currentUseAge === 5 && (
             <>
               <InputNumber
                 id="totalCnt"
-                value={data.totalCnt}
+                value={data?.totalCnt}
                 onChange={(value) => handleDataChange('totalCnt', Number(value))}
                 className="text-xl ml-[20px] flex-1"
                 suffix="회"
@@ -122,18 +113,18 @@ export default function ClsPassInfo({ data, editable, authority, currentUseAge, 
         {currentUseAge !== 5 && (
           <div className="flex items-center">
             <span className="text-xl font-bold text-ppm w-[200px]">잔여 회차</span>
-            <span className="text-xl ml-[20px]">{data.remainCnt} 회</span>
+            <span className="text-xl ml-[20px]">{data?.remainCnt} 회</span>
           </div>
         )}
 
-        {editable && authority === 2 && !data.refundYn && currentUseAge !== 5 && (
+        {editable && authority === 2 && !data?.refundYn && currentUseAge !== 5 && (
           <div className="flex items-center">
             <span className="text-xl font-bold text-ppm w-[200px]">만료 여부</span>
             <FilterSelectBox
               id="useYn"
               label=""
               options={mockDataYN}
-              value={data.useYn ? 12 : 13}
+              value={data?.useYn ? 12 : 13}
               className="text-xl ml-[20px]"
               onChange={(value) => handleDataChange('useYn', value === 12)}
             />

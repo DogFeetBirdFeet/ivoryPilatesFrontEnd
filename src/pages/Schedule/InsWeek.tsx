@@ -3,7 +3,7 @@ import IconSchedule from '@/assets/icon/yellow/icon_sche.png';
 import { useLayoutContext } from '@/hooks/useLayoutContext';
 import WeeklyCalender from '@/features/Schedule/items/WeeklyCalender';
 import type { IInsDay } from '@/features/Schedule/type/types';
-import { scheduleApiWeek } from '@/services/api';
+import { scheduleApiWeek } from '@/services/Schedule/api';
 
 export default function InsWeek() {
   const [currentWeek, setCurrentWeek] = useState<Date>(() => new Date());

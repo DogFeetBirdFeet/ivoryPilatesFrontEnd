@@ -3,25 +3,14 @@ import InputNumber from '@/common/components/inputArea/InputNumber';
 import InputDate from '@/common/components/inputArea/InputDate.tsx';
 import SelectBox from '@/common/components/inputArea/SelectBox';
 import { dateFormatToString, stringToDate } from '@/utils/date';
-
-interface IClsPayInfoData {
-  paidAmt: number;
-  discountAmtPass: number;
-  payDate: string;
-  payMethod: string;
-  instMm: number;
-  payUserNm: string;
-  remark: string;
-  refundDtm: string;
-  refundAmt: number;
-}
+import type { IClsAndUserData } from '@/features/ClsPass/clsPassType';
 
 interface IClsPayInfoProps {
-  data: IClsPayInfoData;
+  data: IClsAndUserData;
   editable: boolean;
   authority: number;
   currentUseAge: number;
-  onDataChange: (data: Partial<IClsPayInfoData>) => void;
+  onDataChange: (data: Partial<IClsAndUserData>) => void;
 }
 
 const mockDataPAYMET = [
@@ -45,7 +34,7 @@ const mockDataINSTMM = [
 ];
 
 export default function ClsPayInfo({ data, editable, authority, currentUseAge, onDataChange }: IClsPayInfoProps) {
-  const handleDataChange = (field: keyof IClsPayInfoData, value: any) => {
+  const handleDataChange = (field: keyof IClsAndUserData, value: any) => {
     onDataChange({
       ...data,
       [field]: value,
@@ -62,7 +51,7 @@ export default function ClsPayInfo({ data, editable, authority, currentUseAge, o
         <div className="flex flex-col gap-20px p-[20px] bg-ppLight rounded-default">
           <div className="grid grid-cols-[200px_auto]">
             <span className="text-xl font-bold text-ppm">결제 금액</span>
-            <div className="text-xl">{data.paidAmt.toLocaleString()}</div>
+            <div className="text-xl">{data?.paidAmt}</div>
           </div>
 
           {currentUseAge === 5 && authority === 2 && (
@@ -70,7 +59,7 @@ export default function ClsPayInfo({ data, editable, authority, currentUseAge, o
               <span className="text-xl font-bold text-ppm">추가 할인 금액</span>
               <InputNumber
                 id="discountAmtPass"
-                value={data.discountAmtPass}
+                value={data?.discountAmtPass}
                 onChange={(value) => handleDataChange('discountAmtPass', Number(value))}
                 //   className="w-full"
                 suffix="원"
@@ -80,7 +69,7 @@ export default function ClsPayInfo({ data, editable, authority, currentUseAge, o
           {currentUseAge !== 5 && (
             <div className="grid grid-cols-[200px_auto]">
               <span className="text-xl font-bold text-ppm">추가 할인 금액</span>
-              <span className="text-xl">{data.discountAmtPass.toLocaleString()}</span>
+              <span className="text-xl">{data?.discountAmtPass}</span>
             </div>
           )}
 
@@ -91,14 +80,14 @@ export default function ClsPayInfo({ data, editable, authority, currentUseAge, o
                 <InputDate
                   id="payDate"
                   value={stringToDate(
-                    data.payDate?.length === 8 ? data.payDate : dateFormatToString(new Date(), false)
+                    data?.payDate?.length === 8 ? data?.payDate : dateFormatToString(new Date(), false)
                   )}
                   onChange={(value) => handleDataChange('payDate', value)}
                   className="w-full"
                 />
               </>
             )}
-            {currentUseAge !== 5 && <span className="text-xl">{data.payDate}</span>}
+            {currentUseAge !== 5 && <span className="text-xl">{data?.payDate}</span>}
           </div>
           <div className="grid grid-cols-[200px_auto]">
             <span className="text-xl font-bold text-ppm">결제 수단</span>
@@ -107,7 +96,7 @@ export default function ClsPayInfo({ data, editable, authority, currentUseAge, o
                 <SelectBox
                   id="payMethod"
                   options={mockDataPAYMET}
-                  value={mockDataPAYMET.find((option) => option.dtlNm === data.payMethod)?.codeId || '0'}
+                  value={mockDataPAYMET.find((option) => option.dtlNm === data?.payMethod)?.codeId || '0'}
                   onChange={(value) =>
                     handleDataChange(
                       'payMethod',
@@ -119,7 +108,7 @@ export default function ClsPayInfo({ data, editable, authority, currentUseAge, o
                 />
               </>
             )}
-            {currentUseAge !== 5 && <span className="text-xl">{data.payMethod}</span>}
+            {currentUseAge !== 5 && <span className="text-xl">{data?.payMethod}</span>}
           </div>
           <div className="grid grid-cols-[200px_auto]">
             <span className="text-xl font-bold text-ppm">할부개월수</span>
@@ -128,20 +117,20 @@ export default function ClsPayInfo({ data, editable, authority, currentUseAge, o
                 <SelectBox
                   id="instMm"
                   options={mockDataINSTMM}
-                  value={mockDataINSTMM.find((option) => option.codeId === data.instMm.toString())?.codeId || '0'}
+                  value={mockDataINSTMM.find((option) => option.codeId === data?.instMm.toString())?.codeId || '0'}
                   onChange={(value) => handleDataChange('instMm', Number(value))}
                   center={true}
                   className="w-full"
                 />
               </>
             )}
-            {currentUseAge !== 5 && <span className="text-xl">{data.instMm}개월</span>}
+            {currentUseAge !== 5 && <span className="text-xl">{data?.instMm}개월</span>}
           </div>
 
           {currentUseAge !== 5 && (
             <div className="grid grid-cols-[200px_auto]">
               <span className="text-xl font-bold text-ppm">결제자</span>
-              <span className="text-xl">{data.payUserNm}</span>
+              <span className="text-xl">{data?.payUserNm}</span>
             </div>
           )}
 
@@ -150,7 +139,7 @@ export default function ClsPayInfo({ data, editable, authority, currentUseAge, o
             {currentUseAge === 5 && (
               <Textarea
                 id="remark"
-                value={data.remark}
+                value={data?.remark}
                 onChange={(value) => onDataChange({ remark: value })}
                 className="w-full h-[200px]"
               />
@@ -158,13 +147,13 @@ export default function ClsPayInfo({ data, editable, authority, currentUseAge, o
             {editable && (
               <Textarea
                 id="remark"
-                value={data.remark}
+                value={data?.remark}
                 onChange={(value) => onDataChange({ remark: value })}
                 className="w-full h-[200px]"
               />
             )}
             {currentUseAge !== 5 && !editable && (
-              <span className="text-xl">{data.remark !== '' ? data.remark : '내용이 없습니다'}</span>
+              <span className="text-xl">{data?.remark !== '' ? data?.remark : '내용이 없습니다'}</span>
             )}
           </div>
         </div>
@@ -176,9 +165,9 @@ export default function ClsPayInfo({ data, editable, authority, currentUseAge, o
           <div className="p-[20px] bg-red2 rounded-md mb-[10px] py-[5px] my-[50px]">
             <div className="flex items-center py-[5px] my-5px">
               <span className="text-xl font-bold text-white w-[200px]">환불 일자</span>
-              <span className="text-xl text-white">{data.refundDtm}</span>
+              <span className="text-xl text-white">{data?.refundDtm}</span>
               <span className="text-xl font-bold text-white w-[200px]">환불 금액</span>
-              <span className="text-xl text-white">{data.refundAmt.toLocaleString()}</span>
+              <span className="text-xl text-white">{data?.refundAmt}</span>
             </div>
           </div>
         </section>
