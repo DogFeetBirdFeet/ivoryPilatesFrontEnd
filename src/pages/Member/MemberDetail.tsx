@@ -2,7 +2,7 @@ import { useLayoutContext } from '@/hooks/useLayoutContext';
 import headerIcon from '@/assets/icon/yellow/icon_mem.png';
 import { useEffect } from 'react';
 import MemberDetailCos from '@/features/Member/sections/MemberDetailCos';
-import type { IMember } from '@/features/Member/types';
+import type { IMemberCos, IMemberReg, IMemberRes } from '@/features/Member/types';
 import MemberDetailReg from '@/features/Member/sections/MemberDetailReg';
 import MemberDetailRes from '@/features/Member/sections/MemberDetailRes';
 import MemberDetailExp from '@/features/Member/sections/MemberDetailExp';
@@ -13,7 +13,7 @@ import { getMemberDetail } from '@/services/member';
 export default function MemberDetail() {
   const { memberId } = useParams() as { memberId: string };
   // TODO : MemberId로 Data 패칭
-  const { data } = useQuery<IMember>({
+  const { data } = useQuery<IMemberCos | IMemberReg | IMemberRes>({
     queryKey: ['member', memberId],
     queryFn: () => getMemberDetail(memberId),
     enabled: !!memberId,
@@ -35,7 +35,7 @@ export default function MemberDetail() {
   const renderMemberDetail = () => {
     switch (data.memType) {
       case 'COS':
-        return <MemberDetailCos memberData={data} />;
+        return <MemberDetailCos memberData={data as IMemberCos} />;
       case 'REG':
         return <MemberDetailReg memberData={data} />;
       case 'RES':
