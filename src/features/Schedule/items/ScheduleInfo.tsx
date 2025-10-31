@@ -4,12 +4,13 @@ import iconDelete from '@/assets/icon/purple/icon_delete.png';
 import useOverlay from '@/hooks/useOverlay';
 import ScheduleInfoForm from './ScheduleInfoForm';
 import { useEffect, useState } from 'react';
-import type { ISchData } from '../type/types';
+import type { IInsDay } from '../type/types';
 import StatusBadge from '@/common/components/schedule/StatusBadge';
 import PopupScheDltConfirm from '@/common/popup/Schedule/PopupScheDltConfirm';
+import type { SCHEDULE_STATUS } from '@/constants/schedule';
 
 // 스케줄 조회 Item
-export default function ScheduleInfo(data: ISchData) {
+export default function ScheduleInfo(data: IInsDay) {
   const overlay = useOverlay();
   const [isEditing, setIsEditing] = useState(false);
 
@@ -66,7 +67,7 @@ export default function ScheduleInfo(data: ISchData) {
             <p>{data.trainerNm}</p>
             <p>{data.fixYn}</p>
             <div>
-              <StatusBadge status={data.clsStatus} type="B" />
+              <StatusBadge status={data.clsStatus as unknown as keyof typeof SCHEDULE_STATUS} type="B" />
             </div>
           </div>
 
@@ -81,9 +82,9 @@ export default function ScheduleInfo(data: ISchData) {
                 overlay.showPopup(
                   <PopupScheDltConfirm
                     schedule={{
-                      date: data.schedDate,
-                      member: data.cusNm,
-                      time: data.schedTime,
+                      date: data.schedDate ?? '',
+                      member: data.cusNm as string,
+                      time: data.schedTime ?? '',
                     }}
                     onClickBack={handleBack}
                     onClickConfirm={handleConfirm}

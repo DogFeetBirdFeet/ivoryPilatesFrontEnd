@@ -10,6 +10,8 @@ import ScheduleInfo from '@/features/Schedule/items/ScheduleInfo';
 import ScheduleInfoForm from '@/features/Schedule/items/ScheduleInfoForm';
 import { dateFormatToString } from '@/utils/date';
 import { useLayoutContext } from '@/hooks/useLayoutContext';
+import type { IInsDay } from '@/features/Schedule/type/types';
+import { scheduleApi } from '@/services/Schedule/api';
 
 const restTrainerMockData = [
   { hour: 13, trainers: ['원예진', '나큰솔'] },
@@ -18,83 +20,10 @@ const restTrainerMockData = [
 ];
 
 export default function InsDay() {
-  // TODO : mockData -> 실데이터로 변경
-  const mockApiData = [
-    {
-      schedId: 'sch_1',
-      cusId: 'cus_1',
-      cusNm: '김혜준',
-      trainerId: '1',
-      trainerNm: '원예진',
-      schedDate: '20251016',
-      schedTime: '9',
-      fixYn: 'Y',
-      grpType: 'S' as const,
-      clsStatus: 'COM' as const,
-    },
-    {
-      schedId: 'sch_2',
-      cusId: 'cus_2',
-      cusNm: '나큰솔',
-      trainerId: '1',
-      trainerNm: '원예진',
-      schedDate: '20251016',
-      schedTime: '10',
-      fixYn: 'N',
-      grpType: null,
-      clsStatus: 'COM' as const,
-    },
-    {
-      schedId: 'sch_3',
-      cusId: 'cus_3',
-      cusNm: '김용진',
-      trainerId: '2',
-      trainerNm: '신화원',
-      schedDate: '20251016',
-      schedTime: '11',
-      fixYn: 'N',
-      grpType: 'D' as const,
-      clsStatus: 'NOS' as const,
-    },
-    {
-      schedId: 'sch_4',
-      cusId: 'cus_4',
-      cusNm: '최호연',
-      trainerId: '2',
-      trainerNm: '신화원',
-      schedDate: '20251016',
-      schedTime: '11',
-      fixYn: 'N',
-      grpType: 'D' as const,
-      clsStatus: 'NOS' as const,
-    },
-    {
-      schedId: 'sch_5',
-      cusId: 'cus_5',
-      cusNm: '김혜준',
-      trainerId: '3',
-      trainerNm: '김용진',
-      schedDate: '20251016',
-      schedTime: '12',
-      fixYn: 'Y',
-      grpType: null,
-      clsStatus: 'SCH' as const,
-    },
-    {
-      schedId: 'sch_6',
-      cusId: 'cus_2',
-      cusNm: '나큰솔',
-      trainerId: '2',
-      trainerNm: '신화원',
-      schedDate: '20251016',
-      schedTime: '19',
-      fixYn: 'N',
-      grpType: null,
-      clsStatus: 'SCH' as const,
-    },
-  ];
+
   // 주간 날짜 / 선택일자
   const [today] = useState(() => new Date());
+  const [data, setData] = useState<Partial<IInsDay>[]>([]);
   const [currentWeek, setCurrentWeek] = useState<Date>(() => new Date());
   const [curDate, setCurDate] = useState<number>(today.getDate());
   const [selectedDayOfWeek, setSelectedDayOfWeek] = useState<number>(today.getDay());
@@ -106,10 +35,36 @@ export default function InsDay() {
   // 헤더정보 세팅
   const { setHeaderTitle, setHeaderIcon } = useLayoutContext();
 
+  const loadScheduleData = async (param: { schDate: string; }) => {
+    try {
+      const response = await scheduleApi.getScheduleList(param);
+      setData(response.data);
+
+      console.log(response.data);
+    } catch (error) {
+      console.error('데이터 로드 실패:', error);
+    }
+  };
+
+  // 선택된 날짜를 YYYYMMDD 형식으로 변환하는 함수
+  const getSelectedDateString = (): string => {
+    const currentDay = currentWeek.getDay();
+    const monOffset = currentDay === 0 ? -6 : 1 - currentDay;
+    const selectedDate = new Date(currentWeek);
+    const scheduleIndex = selectedDayOfWeek === 0 ? 6 : selectedDayOfWeek - 1;
+    selectedDate.setDate(currentWeek.getDate() + monOffset + scheduleIndex);
+    return dateFormatToString(selectedDate, false);
+  };
+
   useEffect(() => {
     setHeaderTitle('강사 일간 일정');
     setHeaderIcon(IconSchedule);
   }, [setHeaderTitle, setHeaderIcon]);
+
+  useEffect(() => {
+    const schDate = getSelectedDateString();
+    loadScheduleData({ schDate });
+  }, [currentWeek, selectedDayOfWeek]);
 
   // 선택된 시간대 text로 바꿔주는 함수
   const getSelectedTime = (idx: number): string => {
@@ -119,8 +74,8 @@ export default function InsDay() {
 
   // 강사 휴식정보 불러오는 함수
   const getRestTrainerInfo = (idx: number): string | null => {
-    const restData = restTrainerMockData.find(({ hour }) => hour === 9 + idx);
-    return restData ? `${restData.trainers} 강사` : null;
+    const restData = data?.find((x: IInsDay) => x.schedTime === (9 + idx).toString());
+    return restData ? `${restData.trainerNm} 강사` : null;
   };
 
   // 선택된 시간대의 정보 계산 (selectedIdx가 변경될 때만 재계산)
@@ -148,8 +103,8 @@ export default function InsDay() {
   // 필터된 스케줄 데이터 (selectedIdx가 변경될 때만 재계산)
   const filteredSchedules = useMemo(() => {
     if (selectedIdx === null) return [];
-    return mockApiData.filter((data) => data.schedTime === (selectedIdx + 9).toString());
-  }, [selectedIdx, mockApiData]);
+    return data.filter((x: IInsDay) => x.schedTime === (selectedIdx + 9).toString());
+  }, [selectedIdx, data]);
 
   return (
     <div className="min-w-[1300px]">
@@ -180,7 +135,7 @@ export default function InsDay() {
             <SectionDailySchedule
               selectedIdx={selectedIdx}
               setSelectedIdx={setSelectedIdx}
-              data={mockApiData}
+              data={data as IInsDay[]}
               restTrainers={restTrainerMockData}
               setIsAddingSch={setIsAddingSch}
             />

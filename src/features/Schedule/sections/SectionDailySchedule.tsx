@@ -1,11 +1,11 @@
 import { useMemo, type JSX } from 'react';
 import ScheduleItem from '@/features/Schedule/items/ScheduleItem';
-import type { ISchData, ITimeSlot } from '@/features/Schedule/type/types';
+import type { IInsDay, ITimeSlot } from '@/features/Schedule/type/types';
 
 interface SectionDailyScheduleProps {
   selectedIdx: number | null;
   setSelectedIdx: (value: number | null) => void;
-  data: ISchData[];
+  data: IInsDay[];
   restTrainers: { hour: number; trainers: string[] }[];
   setIsAddingSch: (value: boolean) => void;
 }
