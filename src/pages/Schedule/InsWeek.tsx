@@ -142,6 +142,7 @@ export default function InsWeek() {
                         'inline-flex items-center justify-center font-bold text-2xl mx-auto',
                         isTodayBadge ? 'h-[40px] w-[40px] rounded-full bg-yellow text-black' : '',
                         !isCurrentMonth ? 'h-[40px] w-[40px] rounded-full bg-white text-grayA1' : 'text-black',
+                        !isTodayBadge && isCurrentMonth ? 'h-[40px] w-[40px] rounded-full bg-grayWhite' : '',
                       ].join(' ')}
                     >
                       {date.getDate()}
@@ -155,11 +156,16 @@ export default function InsWeek() {
                 <div className="space-y-1">
                   {timeSlots.map((time) => {
                     const scheduleText = getCellText(dayIdx, time);
-                    console.log(scheduleText);
                     const isBooked = scheduleText !== '예약가능';
 
                     return (
-                      <div key={time} className="flex items-center justify-between py-2 border-b-2 border-gray">
+                      <div
+                        key={time}
+                        className={[
+                          'flex items-center justify-between py-[10px] border-lightGray',
+                          time !== '21:00' ? 'border-b-2' : '',
+                        ].join(' ')}
+                      >
                         <div className="text-xl font-bold text-ppt">{time}</div>
                         <div className="text-xl flex items-center">
                           <span className={isBooked ? 'text-black' : 'text-blueBtn'}>{scheduleText}</span>

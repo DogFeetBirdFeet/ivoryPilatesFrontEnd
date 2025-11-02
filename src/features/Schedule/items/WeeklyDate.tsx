@@ -5,7 +5,7 @@ export default function WeeklyDate({ day, onClick }: { day: WeekDay; onClick: ()
     <button
       key={`${day.fullDate.toISOString()}`}
       className={`
-              w-[100px] h-[100px] rounded-lg flex flex-col items-center justify-center rounded-full shadow-[0_0_5px_0_#2B265C]
+              w-[100px] h-[100px] rounded-lg flex flex-col items-center justify-center shadow-[0_0_5px_0_#2B265C]
               ${day.isCurDate ? 'bg-ppp text-white' : 'bg-white text-ppt border border-white hover:border-gray-300'}
             `}
       onClick={() => onClick()}

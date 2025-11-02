@@ -130,7 +130,7 @@ export default function InsMonth() {
     <div className="flex flex-col">
       <form onSubmit={handleSubmit(onSubmit)}>
         {/* 상단 검색/달 네비 바 */}
-        <div className="flex items-center justify-between bg-ppLight rounded-xl px-6 py-4">
+        <div className="flex items-center justify-between bg-ppLight rounded-xl px-[60px] py-[20px]">
           {/* 좌측: 회원 + 검색 인풋 */}
           <SearchCondition id="searchName" labelText="회원명">
             <SearchInputCus
@@ -152,7 +152,7 @@ export default function InsMonth() {
         </div>
       </form>
 
-      <div className="flex flex-row p-6 bg-ppWhite h-[35px] mt-5">
+      <div className="flex justify-between flex-row p-6 bg-ppWhite h-[35px] mt-5">
         {weekDaysKr.map((daysStr, index) => (
           <div key={index} className="flex items-center justify-center flex-1">
             <div className="text-2xl text-ppt font-medium">{daysStr}</div>
@@ -179,7 +179,7 @@ export default function InsMonth() {
               <div
                 key={i}
                 className={[
-                  'h-[130px] rounded-xl border px-3 py-2 flex flex-col',
+                  'h-[130px] rounded-xl border px-[3px] py-[2px] flex flex-col',
                   isCurr ? 'bg-white border-ppGridHeader' : 'bg-gray100 border-ppGridHeader',
                 ].join(' ')}
               >
@@ -189,7 +189,7 @@ export default function InsMonth() {
                   <div className="relative">
                     <span
                       className={[
-                        'inline-flex items-center justify-center font-bold text-xl',
+                        'inline-flex items-center justify-center font-bold text-xl px-[10px] py-[10px]',
                         isTodayBadge ? 'h-[30px] w-[30px] rounded-full bg-yellow' : '',
                         !isCurr ? 'h-[30px] w-[30px] rounded-full bg-white' : '',
                         isCurr ? (hasHoliday ? 'text-red' : 'text-black') : 'text-grayA1',

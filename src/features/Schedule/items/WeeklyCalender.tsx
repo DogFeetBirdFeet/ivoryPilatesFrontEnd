@@ -48,10 +48,10 @@ export default function WeeklyCalender({ currentWeek, setCurrentWeek }: WeeklyCa
 
   return (
     <div className="w-full">
-      <div className="flex items-center justify-center gap-4 h-12">
+      <div className="flex items-center justify-center gap-[50px] h-[12px]">
         {/* 왼쪽 화살표 */}
         <button
-          className="w-[40px] h-[40px] bg-ppp rounded-full flex items-center justify-center text-white hover:bg-ppp/80 transition-colors"
+          className="w-[40px] h-[40px] bg-ppp rounded-full flex items-center justify-center text-white hover:bg-ppp transition-colors"
           onClick={handleLeftClick}
         >
           <img src={iconLeft} alt="이전 주" className="w-[10px] h-[15px]" />
@@ -64,7 +64,7 @@ export default function WeeklyCalender({ currentWeek, setCurrentWeek }: WeeklyCa
 
         {/* 오른쪽 화살표 */}
         <button
-          className="w-[40px] h-[40px] bg-ppp rounded-full flex items-center justify-center text-white hover:bg-ppp/80 transition-colors"
+          className="w-[40px] h-[40px] bg-ppp rounded-full flex items-center justify-center text-white hover:bg-ppp transition-colors"
           onClick={handleRightClick}
         >
           <img src={iconRight} alt="다음 주" className="w-[10px] h-[15px]" />

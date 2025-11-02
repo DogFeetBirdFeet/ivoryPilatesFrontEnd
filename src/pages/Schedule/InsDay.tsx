@@ -20,7 +20,6 @@ const restTrainerMockData = [
 ];
 
 export default function InsDay() {
-
   // 주간 날짜 / 선택일자
   const [today] = useState(() => new Date());
   const [data, setData] = useState<Partial<IInsDay>[]>([]);
