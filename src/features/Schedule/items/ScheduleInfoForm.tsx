@@ -2,15 +2,16 @@ import { useEffect, useState } from 'react';
 import BtnIconText from '@/common/components/buttons/BtnIconText';
 import iconCancel from '@/assets/icon/purple/icon_cancel.png';
 import iconSave from '@/assets/icon/white/icon_save.png';
-import type { ISchData } from '@/features/Schedule/type/types';
+import type { IInsDay } from '@/features/Schedule/type/types';
 import InputDate from '@/common/components/inputArea/InputDate.tsx';
 import { dateFormatToString, stringToDate } from '@/utils/date';
 import type { SCHEDULE_STATUS, SCHEDULE_TYPE } from '@/constants/schedule';
 import SelectBox from '@/common/components/inputArea/SelectBox';
 import SearchInputCus from '@/common/components/inputArea/SearchInputCus';
+import { acctAllApi } from '@/services/Common/api';
 
 interface IScheduleFormProps {
-  data?: ISchData;
+  data?: IInsDay;
   onCancel: () => void;
   onSave: () => void;
   initDate?: string;
@@ -18,25 +19,18 @@ interface IScheduleFormProps {
 }
 
 interface IFormData {
-  schedId?: string;
-  cusId: string;
-  cusNm: string;
-  trainerId: string;
-  trainerNm: string;
-  schedDate: string;
-  schedTime: string;
+  schedId?: number;
+  cusId?: number;
+  cusNm?: string;
+  trainerId?: number;
+  schedDate?: string;
+  schedTime?: string;
   fixYn?: string;
   grpType?: keyof typeof SCHEDULE_TYPE | null;
   clsStatus?: keyof typeof SCHEDULE_STATUS;
 }
 
-const mockDataAcctNm = [
-  { codeId: '1', dtlNm: '원예진 강사' },
-  { codeId: '2', dtlNm: '신화원 강사' },
-  { codeId: '3', dtlNm: '김용진 강사' },
-];
-
-const mockDataTime = [
+const dataime = [
   { codeId: '9', dtlNm: '09:00 ~ 09:50' },
   { codeId: '10', dtlNm: '10:00 ~ 10:50' },
   { codeId: '11', dtlNm: '11:00 ~ 11:50' },
@@ -52,32 +46,51 @@ const mockDataTime = [
   { codeId: '21', dtlNm: '21:00 ~ 21:50' },
 ];
 
+interface OptionItem {
+  codeId: string;
+  dtlNm: string;
+}
+
 export default function ScheduleInfoForm({ data, onCancel, onSave, initDate, initTime }: IScheduleFormProps) {
   const isEdit = !!data;
-  const [formData, setFormData] = useState<IFormData>(
-    data || {
-      cusId: '',
-      cusNm: '',
-      trainerId: '',
-      trainerNm: '',
-      schedDate: initDate as string,
-      schedTime: initTime as string,
+  const [formData, setFormData] = useState<IFormData>();
+  const [ACCT, setACCT] = useState<OptionItem[]>();
+
+  const loadAcctAll = async () => {
+    try {
+      const response = await acctAllApi.getAcctList();
+      setACCT(response.data);
+    } catch (error) {
+      console.error('강사 정보 로드 실패:', error);
     }
-  );
+  };
 
   useEffect(() => {
     if (data) {
-      setFormData({ ...data, cusNm: data.cusNm + ' 회원님' });
+      setFormData({
+        cusId: data?.mstId,
+        cusNm: data?.cusNm,
+        trainerId: data.acctId,
+        schedDate: data.schedDate,
+        schedTime: data.schedTime,
+        fixYn: data.fixYn,
+        grpType: data.grpType,
+        clsStatus: data.clsStatus,
+      });
     } else {
       setFormData({
-        cusId: '',
+        cusId: 0,
         cusNm: '',
-        trainerId: mockDataAcctNm[0].codeId,
-        trainerNm: mockDataAcctNm[0].dtlNm,
+        trainerId: 0,
         schedDate: initDate as string,
         schedTime: initTime as string,
       });
     }
+
+    const initializeAcct = async () => {
+      await loadAcctAll();
+    };
+    initializeAcct().then((r) => r);
   }, [data, initDate, initTime]);
 
   const handleInputChange = (field: string, value: string) => {
@@ -109,39 +122,42 @@ export default function ScheduleInfoForm({ data, onCancel, onSave, initDate, ini
           {/* 회원명 */}
           <SearchInputCus
             id="cusNm"
-            value={formData.cusNm}
+            value={data?.cusNm}
             onChange={(value) => {
               handleInputChange('cusNm', value);
             }}
             onSearch={(data) => {
-              const cusNm = `${data.memberName} 회원님 ${data.grpType === 'D' ? '(2:1 그룹회원)' : ''}`;
+              const memberId = (data as any).memberId ?? (data as any).cusId ?? (data as any).member_id ?? '';
+              const memberName = (data as any).memberName ?? (data as any).cusNm ?? (data as any).name ?? '';
+              const grpType = (data as any).grpType ?? (data as any).grp_type ?? null;
+              const cusNm = `${memberName} 회원님 ${grpType === 'D' ? '(2:1 그룹회원)' : ''}`;
               handleInputChange('cusNm', cusNm);
-              handleInputChange('cusId', data.memberId);
+              handleInputChange('cusId', memberId);
             }}
           />
 
           {/* 강사 */}
           <SelectBox
             id="trainerNm"
-            options={mockDataAcctNm}
-            value={formData.trainerId}
+            options={ACCT ?? []}
+            value={data?.acctId ? data.acctId.toString() : null}
             center={true}
             onChange={(value) => {
-              handleInputChange('trainerNm', mockDataAcctNm.find((option) => option.codeId === value)?.dtlNm || '');
+              handleInputChange('trainerNm', ACCT?.find((option) => option.codeId.toString() === value)?.dtlNm || '');
               handleInputChange('trainerId', value);
             }}
           />
           {/* 날짜 */}
           <InputDate
             id="schedDate"
-            value={stringToDate(formData.schedDate)}
+            value={data?.schedDate ? stringToDate(data.schedDate) : null}
             onChange={(value) => handleInputChange('schedDate', dateFormatToString(value, false))}
           />
           {/* 시간 */}
           <SelectBox
             id="schedTime"
-            options={mockDataTime}
-            value={formData.schedTime || mockDataTime[0].codeId}
+            options={dataime}
+            value={data?.schedTime || dataime[0].codeId}
             center={true}
             onChange={(value) => {
               handleInputChange('schedTime', value);
@@ -158,7 +174,7 @@ export default function ScheduleInfoForm({ data, onCancel, onSave, initDate, ini
                       type="radio"
                       id="fixYn_Y"
                       value="Y"
-                      checked={formData.fixYn === 'Y'}
+                      checked={data.fixYn === 'Y'}
                       onChange={() => handleInputChange('fixYn', 'Y')}
                     />
                     <label htmlFor="fixYn_Y" className="text-sm cursor-pointer">
@@ -170,7 +186,7 @@ export default function ScheduleInfoForm({ data, onCancel, onSave, initDate, ini
                       type="radio"
                       id="fixYn_N"
                       value="N"
-                      checked={formData.fixYn === 'N'}
+                      checked={data.fixYn === 'Y'}
                       onChange={() => handleInputChange('fixYn', 'N')}
                     />
                     <label htmlFor="fixYn_N" className="text-sm cursor-pointer">
@@ -187,7 +203,7 @@ export default function ScheduleInfoForm({ data, onCancel, onSave, initDate, ini
                     type="radio"
                     id="clsStatus_SCH"
                     value="SCH"
-                    checked={formData.clsStatus === 'SCH'}
+                    checked={data.clsStatus === 'SCH'}
                     onChange={() => handleInputChange('clsStatus', 'SCH')}
                   />
                   <label htmlFor="clsStatus_SCH" className="text-sm cursor-pointer">
@@ -199,7 +215,7 @@ export default function ScheduleInfoForm({ data, onCancel, onSave, initDate, ini
                     type="radio"
                     id="clsStatus_COM"
                     value="COM"
-                    checked={formData.clsStatus === 'COM'}
+                    checked={data.clsStatus === 'COM'}
                     onChange={() => handleInputChange('clsStatus', 'COM')}
                   />
                   <label htmlFor="clsStatus_COM" className="text-sm cursor-pointer">
@@ -211,7 +227,7 @@ export default function ScheduleInfoForm({ data, onCancel, onSave, initDate, ini
                     type="radio"
                     id="clsStatus_NOS"
                     value="NOS"
-                    checked={formData.clsStatus === 'NOS'}
+                    checked={data.clsStatus === 'NOS'}
                     onChange={() => handleInputChange('clsStatus', 'NOS')}
                   />
                   <label htmlFor="clsStatus_NOS" className="text-sm cursor-pointer">

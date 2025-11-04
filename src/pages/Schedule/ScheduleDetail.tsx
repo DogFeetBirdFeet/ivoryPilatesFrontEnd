@@ -213,6 +213,7 @@ export default function ScheduleDetail({ date, initTime }: { date: string; initT
                 onSave={handleSave}
                 initDate={dateFormatToString(new Date(), false)}
                 initTime="9"
+                data={data}
               />
             )}
             {filteredSchedules.length > 0 ? (

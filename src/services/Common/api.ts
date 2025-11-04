@@ -93,3 +93,9 @@ export const commonCodeApi = {
     return api.get(`/commoncode/${codeMstId}`);
   },
 };
+
+export const acctAllApi = {
+  getAcctList: () => {
+    return api.get('/test/acct', {});
+  },
+};

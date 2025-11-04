@@ -23,6 +23,7 @@ export default function InsDay() {
   // 주간 날짜 / 선택일자
   const [today] = useState(() => new Date());
   const [data, setData] = useState<Partial<IInsDay>[]>([]);
+  const [tarData, setTarData] = useState<Partial<IInsDay> | null>(null);
   const [currentWeek, setCurrentWeek] = useState<Date>(() => new Date());
   const [curDate, setCurDate] = useState<number>(today.getDate());
   const [selectedDayOfWeek, setSelectedDayOfWeek] = useState<number>(today.getDay());
@@ -34,7 +35,7 @@ export default function InsDay() {
   // 헤더정보 세팅
   const { setHeaderTitle, setHeaderIcon } = useLayoutContext();
 
-  const loadScheduleData = async (param: { schDate: string; }) => {
+  const loadScheduleData = async (param: { schDate: string }) => {
     try {
       const response = await scheduleApi.getScheduleList(param);
       setData(response.data);
@@ -124,10 +125,10 @@ export default function InsDay() {
           <div className="bg-purpleLight2 rounded-lg p-20px mx-20px mb-20px">
             <CenterAndAcctInfo
               date={dateFormatToString(new Date(), false)}
-              centerOffYn="N"
-              holYn="N"
-              acctOffYn="Y"
-              offAcctNm="원예진"
+              centerOffYn={data[0]?.centerOffYn === 'Y' ? 'Y' : 'N'}
+              holYn={data[0]?.holYn === 'Y' ? 'Y' : 'N'}
+              acctOffYn={data[0]?.acctOffYn === 'Y' ? 'Y' : 'N'}
+              offAcctNm={data[0]?.offAcctNm || ''}
             />
           </div>
           <div className="flex h-[calc(100vh-420px)]">
@@ -155,8 +156,8 @@ export default function InsDay() {
                       <div className="text-[25px] font-bold text-ppt">{selectedTimeInfo.time}</div>
                       <div className="font-medium">
                         <span className="text-red mr-5px">강사 휴식 |</span>
-                        <span className={selectedTimeInfo.restTrainer ? 'text-ppt' : 'text-gray'}>
-                          {selectedTimeInfo.restTrainer || '휴식 강사 없음'}
+                        <span className={data[0].offAcctNm ? 'text-ppt' : 'text-gray'}>
+                          {data[0].offAcctNm || '휴식 강사 없음'}
                         </span>
                       </div>
                     </div>
