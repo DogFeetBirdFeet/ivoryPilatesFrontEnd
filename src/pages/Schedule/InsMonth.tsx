@@ -96,8 +96,6 @@ export default function InsMonth() {
       console.log('데이터 로드 실패:', error);
     } finally {
       setIsLoading(false);
-      // TODO 제거
-      console.log(isLoading);
     }
   };
 
@@ -126,7 +124,11 @@ export default function InsMonth() {
     loadSchData(data).then((r) => r);
   };
 
-  return (
+  return isLoading ? (
+    <div className="flex justify-center items-center h-full">
+      <div className="animate-spin rounded-full h-[120px] w-[120px] border-t-2 border-b-2 border-yellow"></div>
+    </div>
+  ) : (
     <div className="flex flex-col">
       <form onSubmit={handleSubmit(onSubmit)}>
         {/* 상단 검색/달 네비 바 */}
@@ -170,10 +172,10 @@ export default function InsMonth() {
             const isTodayBadge = isCurr && isToday(displayDay);
 
             // 공휴일/센터휴무 여부 계산
-            const hasHoliday = isCurr && dayData.some((d: any) => d.holYn === 'Y');
-            const isCenterOff = isCurr && dayData.some((d: any) => d.centerOffYn === 'Y');
+            const hasHoliday = isCurr && dayData.some((d: IInsDay) => d.holYn === 'Y');
+            const isCenterOff = isCurr && dayData.some((d: IInsDay) => d.centerOffYn === 'Y');
             const holidayName =
-              hasHoliday && !isCenterOff ? dayData.find((d: any) => d.holYn === 'Y')?.holNm || '' : '';
+              hasHoliday && !isCenterOff ? dayData.find((d: IInsDay) => d.holYn === 'Y')?.holNm || '' : '';
 
             return (
               <div
@@ -184,7 +186,7 @@ export default function InsMonth() {
                 ].join(' ')}
               >
                 {/* 날짜 헤더 */}
-                <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
                   {/* 날짜 숫자 (좌측) */}
                   <div className="relative">
                     <span
@@ -192,7 +194,7 @@ export default function InsMonth() {
                         'inline-flex items-center justify-center font-bold text-xl px-[10px] py-[10px]',
                         isTodayBadge ? 'h-[30px] w-[30px] rounded-full bg-yellow' : '',
                         !isCurr ? 'h-[30px] w-[30px] rounded-full bg-white' : '',
-                        isCurr ? (hasHoliday ? 'text-red' : 'text-black') : 'text-grayA1',
+                        isCurr ? (hasHoliday ? 'text-red' : isCenterOff ? 'text-red' : 'text-black') : 'text-grayA1',
                       ].join(' ')}
                     >
                       {displayDay}
@@ -206,22 +208,27 @@ export default function InsMonth() {
                     <span className="text-red font-bold">센터 휴무일</span>
                   </div>
                 )}
-
-                {/* 본문: 현재 월만 라벨 3줄 노출 */}
-                <div className="mt-3 grid grid-rows-3 gap-1 text-xl leading-5 font-medium">
-                  <div className={showContent ? 'flex items-center justify-between' : 'opacity-0'}>
-                    <span className="text-black">수업 완료</span>
-                    <span className="text-ppt">{schDaysInfo.schEnd}</span>
+                {hasHoliday && (
+                  <div className="mt-4 flex justify-center">
+                    <span className="text-red font-bold">공휴일</span>
                   </div>
-                  <div className={showContent ? 'flex items-center justify-between' : 'opacity-0'}>
-                    <span className="text-black">수업 예정</span>
-                    <span className="text-yellowCal">{schDaysInfo.schSch}</span>
-                  </div>
-                  <div className={showContent ? 'flex items-center justify-between' : 'opacity-0'}>
-                    <span className="text-black">예약 가능</span>
-                    <span className="text-blueBtn">{schDaysInfo.schRest}</span>
-                  </div>
-                </div>
+                )}
+                {!isCenterOff && !hasHoliday && (
+                  <>
+                    <div className={showContent ? 'flex items-center justify-between px-[10px]' : 'opacity-0'}>
+                      <span className="text-black">수업 완료</span>
+                      <span className="text-ppt">{schDaysInfo.schEnd}</span>
+                    </div>
+                    <div className={showContent ? 'flex items-center justify-between px-[10px]' : 'opacity-0'}>
+                      <span className="text-black">수업 예정</span>
+                      <span className="text-yellowCal">{schDaysInfo.schSch}</span>
+                    </div>
+                    <div className={showContent ? 'flex items-center justify-between px-[10px]' : 'opacity-0'}>
+                      <span className="text-black">예약 가능</span>
+                      <span className="text-blueBtn">{schDaysInfo.schRest}</span>
+                    </div>
+                  </>
+                )}
               </div>
             );
           })}

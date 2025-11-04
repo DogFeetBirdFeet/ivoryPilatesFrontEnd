@@ -8,7 +8,7 @@ import { scheduleApiWeek } from '@/services/Schedule/api';
 export default function InsWeek() {
   const [currentWeek, setCurrentWeek] = useState<Date>(() => new Date());
   const [data, setData] = useState<IInsDay[]>([]);
-  const [, setIsLoading] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const loadScheduleData = async (param: { staDate: string; endDate: string }) => {
     setIsLoading(true);
@@ -112,7 +112,11 @@ export default function InsWeek() {
     return name.length > 0 ? name : '예약가능';
   };
 
-  return (
+  return isLoading ? (
+    <div className="flex justify-center items-center h-full">
+      <div className="animate-spin rounded-full h-[120px] w-[120px] border-t-2 border-b-2 border-yellow"></div>
+    </div>
+  ) : (
     <div className="flex flex-col">
       <div className="flex flex-col p-6 bg-ppLight rounded-md mb-[30px]">
         <WeeklyCalender currentWeek={currentWeek} setCurrentWeek={setCurrentWeek} />
@@ -130,51 +134,84 @@ export default function InsWeek() {
         {weekDays.map((date, dayIdx) => {
           const isCurrentMonth = date.getMonth() === currentWeek.getMonth();
           return (
-            <div key={dayIdx} className={`flex-1 rounded-lg border p-4 ${isCurrentMonth ? 'bg-white' : 'bg-gray100'}`}>
+            <div
+              key={dayIdx}
+              className={`flex flex-col flex-1 rounded-lg border p-4 ${isCurrentMonth ? 'bg-white' : 'bg-gray100'}`}
+            >
               {/* 날짜 헤더 */}
               <div className="text-center mb-4">
                 {(() => {
                   const isToday = date.toDateString() === new Date().toDateString();
                   const isTodayBadge = isCurrentMonth && isToday;
+                  const dateStr =
+                    date.getFullYear().toString() +
+                    (date.getMonth() + 1).toString().padStart(2, '0') +
+                    date.getDate().toString().padStart(2, '0');
+                  // 공휴일/센터휴무 여부 계산 (날짜별로 한 번만)
+                  const tarDate = data.filter((d: IInsDay) => d.schedDate === dateStr);
+                  const hasHoliday = tarDate.some((d: IInsDay) => d.holYn === 'Y');
+                  const holidayName = hasHoliday ? tarDate.find((d: IInsDay) => d.holYn === 'Y')?.holNm || '' : '';
+                  const acctOffYn = tarDate.some((d: IInsDay) => d.acctOffYn === 'Y');
+                  const acctOffName = acctOffYn
+                    ? tarDate.find((d: IInsDay) => d.acctOffYn === 'Y')?.offAcctNm || ''
+                    : '';
                   return (
-                    <span
-                      className={[
-                        'inline-flex items-center justify-center font-bold text-2xl mx-auto',
-                        isTodayBadge ? 'h-[40px] w-[40px] rounded-full bg-yellow text-black' : '',
-                        !isCurrentMonth ? 'h-[40px] w-[40px] rounded-full bg-white text-grayA1' : 'text-black',
-                        !isTodayBadge && isCurrentMonth ? 'h-[40px] w-[40px] rounded-full bg-grayWhite' : '',
-                      ].join(' ')}
-                    >
-                      {date.getDate()}
-                    </span>
+                    <div className="flex flex-col items-center justify-center gap-2">
+                      <span
+                        className={[
+                          'inline-flex items-center justify-center font-bold text-2xl',
+                          isTodayBadge ? 'h-[40px] w-[40px] rounded-full bg-yellow text-black' : '',
+                          !isCurrentMonth ? 'h-[40px] w-[40px] rounded-full bg-white text-grayA1' : 'text-black',
+                          !isTodayBadge && isCurrentMonth ? 'h-[40px] w-[40px] rounded-full bg-grayWhite' : '',
+                        ].join(' ')}
+                      >
+                        {date.getDate()}
+                      </span>
+                      <div className="h-[60px] flex flex-col items-center justify-center gap-1">
+                        {hasHoliday && <span className="text-red font-bold text-xl">{holidayName}</span>}
+                        {acctOffYn && <span className="text-ppp text-xl">{acctOffName} 강사 휴일</span>}
+                      </div>
+                    </div>
                   );
                 })()}
               </div>
 
               {/* 시간대별 스케줄 */}
-              {isCurrentMonth && (
-                <div className="space-y-1">
-                  {timeSlots.map((time) => {
-                    const scheduleText = getCellText(dayIdx, time);
-                    const isBooked = scheduleText !== '예약가능';
-
-                    return (
-                      <div
-                        key={time}
-                        className={[
-                          'flex items-center justify-between py-[10px] border-lightGray',
-                          time !== '21:00' ? 'border-b-2' : '',
-                        ].join(' ')}
-                      >
-                        <div className="text-xl font-bold text-ppt">{time}</div>
-                        <div className="text-xl flex items-center">
-                          <span className={isBooked ? 'text-black' : 'text-blueBtn'}>{scheduleText}</span>
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-              )}
+              {isCurrentMonth &&
+                (() => {
+                  const dateStr =
+                    date.getFullYear().toString() +
+                    (date.getMonth() + 1).toString().padStart(2, '0') +
+                    date.getDate().toString().padStart(2, '0');
+                  const tarDate = data.filter((d: IInsDay) => d.schedDate === dateStr);
+                  const isCenterOff = tarDate.some((d: IInsDay) => d.centerOffYn === 'Y');
+                  return isCenterOff ? (
+                    <div className="flex-1 flex items-center justify-center">
+                      <span className={'text-gray text-xl'}>센터 휴무일</span>
+                    </div>
+                  ) : (
+                    <div className="space-y-1">
+                      {timeSlots.map((time) => {
+                        const scheduleText = getCellText(dayIdx, time);
+                        const isBooked = scheduleText !== '예약가능';
+                        return (
+                          <div
+                            key={time}
+                            className={[
+                              'flex items-center justify-between py-[10px] border-[#d9d9d9] hover:bg-grayWhite',
+                              time !== '21:00' ? 'border-b-2' : '',
+                            ].join(' ')}
+                          >
+                            <div className="text-xl font-bold text-ppt">{time}</div>
+                            <div className="text-xl flex items-center">
+                              <span className={isBooked ? 'text-black' : 'text-blueBtn'}>{scheduleText}</span>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  );
+                })()}
             </div>
           );
         })}

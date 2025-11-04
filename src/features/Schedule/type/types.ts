@@ -15,10 +15,12 @@ export interface IInsDay {
   trainerNm?: string;
   cusNm?: string;
   acctOffYn?: string;
+  acctResYn?: string;
   holYn?: string;
   holNm?: string;
   centerOffYn?: string;
   offAcctNm?: string;
+  resAcctNm?: string;
   grpYn?: string;
   grpIds?: string;
   grpNms?: string;
