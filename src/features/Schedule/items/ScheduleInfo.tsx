@@ -16,9 +16,8 @@ export default function ScheduleInfo(data: IInsDay) {
 
   // data가 변경되면 편집 모드 해제
   useEffect(() => {
-    console.log(data);
     setIsEditing(false);
-  }, [data.schedId]); // schedId가 바뀌면 다른 스케줄
+  }, [data]); // schedId가 바뀌면 다른 스케줄
 
   // 스케줄 삭제 확인시 callback 함수
   function handleConfirm() {
@@ -64,19 +63,16 @@ export default function ScheduleInfo(data: IInsDay) {
           <div className="min-w-[230px] max-w-[300px] grid grid-rows-4 gap-10px text-xl text-gray4A">
             {data.cusNm ? (
               <p>
-                {data.cusNm} 회원님 {data.grpType === 'D' && '(2:1 그룹회원)'}
+                {data.cusNm} 회원님 {data.grpYn === 'Y' && '(2:1 그룹회원)'}
               </p>
             ) : (
               ''
             )}
             {data.trainerNm ? <p>{data.trainerNm} 강사</p> : ''}
-            {data.fixYn ? (
-              <div>
-                <StatusBadge status={data.clsStatus as unknown as keyof typeof SCHEDULE_STATUS} type="B" />
-              </div>
-            ) : (
-              ''
-            )}
+            {data.fixYn ? 'Y' : 'N'}
+            <div>
+              <StatusBadge type="B" status={data.clsStatus as keyof typeof SCHEDULE_STATUS} />
+            </div>
           </div>
 
           {/* 버튼 */}

@@ -10,22 +10,14 @@ interface ScheduleItemProps {
 }
 
 export default function ScheduleItem({ schedule, onAddSchedule }: ScheduleItemProps) {
-  // 회원명 포맷팅 (2:1 수업인 경우 (2:1) 추가)
-  const formatCustomerName = (schedule: IInsDay): string => {
-    return schedule.grpType === 'D' ? `${schedule.cusNm} 회원님 (2:1)` : `${schedule.cusNm} 회원님`;
-  };
-
   return (
     <>
-      {schedule?.calId ? (
-        <div
-          key={schedule?.calId}
-          className="h-35px grid grid-cols-[40px_auto_130px_120px] gap-20px items-center place-items-center"
-        >
+      {schedule?.mstId ? (
+        <div className="w-full grid grid-cols-[40px_auto_130px_120px] gap-20px items-center place-items-center">
           <div className="flex items-center gap-5px justify-center">
             {schedule.fixYn === 'Y' ? <img src={iconPix} className="w-15px h-15px" alt={'pix'} /> : ''}
           </div>
-          <div className="text-black text-xl font-medium justify-self-start">{formatCustomerName(schedule)}</div>
+          <div className="text-black text-xl font-medium">{schedule.cusNm}</div>
           <div className="text-gray text-xl font-medium">{schedule.trainerNm} 강사</div>
           <div>
             <StatusBadge status={schedule.clsStatus as keyof typeof SCHEDULE_STATUS} />
@@ -38,7 +30,7 @@ export default function ScheduleItem({ schedule, onAddSchedule }: ScheduleItemPr
             className="flex items-center gap-5px bg-[#D6D4EE] text-base text-gray px-10px py-5px rounded-full"
             onClick={onAddSchedule}
           >
-            <img src={imgPlus} className="w-15px h-15px" />
+            <img alt="스케쥴 추가" src={imgPlus} className="w-15px h-15px" />
             스케줄 추가
           </button>
         </div>

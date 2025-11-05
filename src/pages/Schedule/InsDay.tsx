@@ -13,17 +13,10 @@ import { useLayoutContext } from '@/hooks/useLayoutContext';
 import type { IInsDay } from '@/features/Schedule/type/types';
 import { scheduleApi } from '@/services/Schedule/api';
 
-const restTrainerMockData = [
-  { hour: 13, trainers: ['원예진', '나큰솔'] },
-  { hour: 15, trainers: ['김용진'] },
-  { hour: 17, trainers: ['김혜준'] },
-];
-
 export default function InsDay() {
   // 주간 날짜 / 선택일자
   const [today] = useState(() => new Date());
   const [data, setData] = useState<Partial<IInsDay>[]>([]);
-  const [tarData, setTarData] = useState<Partial<IInsDay> | null>(null);
   const [currentWeek, setCurrentWeek] = useState<Date>(() => new Date());
   const [curDate, setCurDate] = useState<number>(today.getDate());
   const [selectedDayOfWeek, setSelectedDayOfWeek] = useState<number>(today.getDay());
@@ -39,21 +32,9 @@ export default function InsDay() {
     try {
       const response = await scheduleApi.getScheduleList(param);
       setData(response.data);
-
-      console.log(response.data);
     } catch (error) {
       console.error('데이터 로드 실패:', error);
     }
-  };
-
-  // 선택된 날짜를 YYYYMMDD 형식으로 변환하는 함수
-  const getSelectedDateString = (): string => {
-    const currentDay = currentWeek.getDay();
-    const monOffset = currentDay === 0 ? -6 : 1 - currentDay;
-    const selectedDate = new Date(currentWeek);
-    const scheduleIndex = selectedDayOfWeek === 0 ? 6 : selectedDayOfWeek - 1;
-    selectedDate.setDate(currentWeek.getDate() + monOffset + scheduleIndex);
-    return dateFormatToString(selectedDate, false);
   };
 
   useEffect(() => {
@@ -62,8 +43,13 @@ export default function InsDay() {
   }, [setHeaderTitle, setHeaderIcon]);
 
   useEffect(() => {
-    const schDate = getSelectedDateString();
-    loadScheduleData({ schDate });
+    const currentDay = currentWeek.getDay();
+    const monOffset = currentDay === 0 ? -6 : 1 - currentDay;
+    const selectedDate = new Date(currentWeek);
+    const scheduleIndex = selectedDayOfWeek === 0 ? 6 : selectedDayOfWeek - 1;
+    selectedDate.setDate(currentWeek.getDate() + monOffset + scheduleIndex);
+    const schDate = dateFormatToString(selectedDate, false);
+    loadScheduleData({ schDate }).then((r) => r);
   }, [currentWeek, selectedDayOfWeek]);
 
   // 선택된 시간대 text로 바꿔주는 함수
@@ -72,19 +58,12 @@ export default function InsDay() {
     return `${hour}:00 ~ ${hour}:50`;
   };
 
-  // 강사 휴식정보 불러오는 함수
-  const getRestTrainerInfo = (idx: number): string | null => {
-    const restData = data?.find((x: IInsDay) => x.schedTime === (9 + idx).toString());
-    return restData ? `${restData.trainerNm} 강사` : null;
-  };
-
   // 선택된 시간대의 정보 계산 (selectedIdx가 변경될 때만 재계산)
   const selectedTimeInfo = useMemo(() => {
     if (selectedIdx === null) return { time: '', restTrainer: '' };
 
     return {
       time: getSelectedTime(selectedIdx),
-      restTrainer: getRestTrainerInfo(selectedIdx),
     };
   }, [selectedIdx]);
 
@@ -136,7 +115,6 @@ export default function InsDay() {
               selectedIdx={selectedIdx}
               setSelectedIdx={setSelectedIdx}
               data={data as IInsDay[]}
-              restTrainers={restTrainerMockData}
               setIsAddingSch={setIsAddingSch}
             />
           </div>
@@ -156,8 +134,8 @@ export default function InsDay() {
                       <div className="text-[25px] font-bold text-ppt">{selectedTimeInfo.time}</div>
                       <div className="font-medium">
                         <span className="text-red mr-5px">강사 휴식 |</span>
-                        <span className={data[0].offAcctNm ? 'text-ppt' : 'text-gray'}>
-                          {data[0].offAcctNm || '휴식 강사 없음'}
+                        <span className={data[selectedIdx].resAcctNm ? 'text-ppt' : 'text-lightGray'}>
+                          {data[selectedIdx].resAcctNm || '휴식 강사 없음'}
                         </span>
                       </div>
                     </div>
@@ -184,8 +162,10 @@ export default function InsDay() {
                     initTime="9"
                   />
                 )}
-                {filteredSchedules.length > 0 ? (
-                  filteredSchedules.map((data) => <ScheduleInfo key={data.schedId} {...data} />)
+                {filteredSchedules.filter((data) => data.mstId != null).length > 0 ? (
+                  filteredSchedules
+                    .filter((data) => data.mstId != null)
+                    .map((data) => <ScheduleInfo key={data.schedId} {...data} />)
                 ) : (
                   <div className="flex justify-center items-center h-200px">
                     <p className="text-sm font-bold text-gray">예약된 수업이 없습니다.</p>

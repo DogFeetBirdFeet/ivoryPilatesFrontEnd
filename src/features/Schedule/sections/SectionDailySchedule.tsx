@@ -1,4 +1,4 @@
-import { useMemo, type JSX } from 'react';
+import { useMemo } from 'react';
 import ScheduleItem from '@/features/Schedule/items/ScheduleItem';
 import type { IInsDay, ITimeSlot } from '@/features/Schedule/type/types';
 
@@ -6,14 +6,12 @@ interface SectionDailyScheduleProps {
   selectedIdx: number | null;
   setSelectedIdx: (value: number | null) => void;
   data: IInsDay[];
-  restTrainers: { hour: number; trainers: string[] }[];
   setIsAddingSch: (value: boolean) => void;
 }
 
 export default function SectionDailySchedule({
   selectedIdx,
   setSelectedIdx,
-  restTrainers,
   data,
   setIsAddingSch,
 }: SectionDailyScheduleProps) {
@@ -23,34 +21,18 @@ export default function SectionDailySchedule({
 
     for (let hour = 9; hour <= 21; hour++) {
       // 해당 시간의 스케줄 데이터 찾기
-      const timeData = data.filter((item) => item.schedTime === hour.toString()) || [];
-      // 해당 시간의 강사 휴식 찾기
-      const breakData = restTrainers.find((item) => item.hour === hour);
-      const trainerBreaks = breakData ? breakData.trainers : null;
-
+      const timeData = data.filter((item: IInsDay) => item.schedTime === hour.toString().padStart(2, '0')) || [];
       slots.push({
         id: `slot-${hour}`,
-        time: hour.toString(),
-        schedule: timeData.length > 0 ? timeData : null,
-        trainerBreak: trainerBreaks,
+        time: hour.toString().padStart(2, '0'),
+        schedule: timeData.length > 0 ? (timeData as IInsDay[]) : null,
       });
     }
     return slots;
   }, [data]);
 
   const formatTime = (hour: string): string => {
-    const timeString = `${hour.padStart(2, '0')}:00`;
-    return timeString;
-  };
-
-  const formatTrainerBreak = (slotItem: ITimeSlot): JSX.Element | null => {
-    if (!slotItem.trainerBreak) return null;
-
-    return (
-      <>
-        {slotItem.trainerBreak.join(', ')} <span className="whitespace-nowrap">강사 휴식</span>
-      </>
-    );
+    return `${hour.padStart(2, '0')}:00`;
   };
 
   return (
@@ -83,22 +65,36 @@ export default function SectionDailySchedule({
                 {/* 시간 */}
                 <div>
                   <div className="text-gray text-xl font-bold text-center">{formatTime(slot.time)}</div>
-                  <div className="text-center  text-red text-base break-words">{formatTrainerBreak(slot)}</div>
+                  <div className="text-center  text-red text-base break-words">
+                    {slot.schedule?.[0]?.resAcctNm || ''}
+                    {slot.schedule?.[0]?.acctResYn === 'Y' ? ' 강사 휴식' : ''}
+                  </div>
                 </div>
 
                 {/* 스케줄 */}
                 <div className="flex flex-col gap-10px">
-                  {slot.schedule ? (
-                    slot.schedule.map((schedule) => <ScheduleItem key={schedule.schedId} schedule={schedule} />)
-                  ) : (
-                    <ScheduleItem
-                      key={`slot_${slot.time}_sch`}
-                      onAddSchedule={() => {
-                        setSelectedIdx(idx);
-                        setIsAddingSch(true);
-                      }}
-                    />
-                  )}
+                  {(() => {
+                    const filteredSchedules = slot.schedule?.filter((schedule) => schedule.mstId != null) || [];
+                    return (
+                      <>
+                        {filteredSchedules.map((schedule, scheduleIdx) => (
+                          <ScheduleItem
+                            key={schedule.schedId || `slot_${slot.time}_schedule_${scheduleIdx}`}
+                            schedule={schedule}
+                          />
+                        ))}
+                        {filteredSchedules.length === 0 && (
+                          <ScheduleItem
+                            key={`slot_${slot.time}_empty`}
+                            onAddSchedule={() => {
+                              setSelectedIdx(idx);
+                              setIsAddingSch(true);
+                            }}
+                          />
+                        )}
+                      </>
+                    );
+                  })()}
                 </div>
               </div>
             </div>

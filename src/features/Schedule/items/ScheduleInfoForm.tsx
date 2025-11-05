@@ -52,14 +52,20 @@ interface OptionItem {
 }
 
 export default function ScheduleInfoForm({ data, onCancel, onSave, initDate, initTime }: IScheduleFormProps) {
+  console.log('data', data);
   const isEdit = !!data;
-  const [formData, setFormData] = useState<IFormData>();
+  const [, setFormData] = useState<IFormData>();
   const [ACCT, setACCT] = useState<OptionItem[]>();
 
   const loadAcctAll = async () => {
     try {
       const response = await acctAllApi.getAcctList();
-      setACCT(response.data);
+      //TODO: type 정의 필요
+      const transformedData = response.data.map((item: any) => ({
+        codeId: item.acctId.toString(),
+        dtlNm: item.name,
+      }));
+      setACCT(transformedData);
     } catch (error) {
       console.error('강사 정보 로드 실패:', error);
     }
@@ -127,10 +133,10 @@ export default function ScheduleInfoForm({ data, onCancel, onSave, initDate, ini
               handleInputChange('cusNm', value);
             }}
             onSearch={(data) => {
-              const memberId = (data as any).memberId ?? (data as any).cusId ?? (data as any).member_id ?? '';
-              const memberName = (data as any).memberName ?? (data as any).cusNm ?? (data as any).name ?? '';
-              const grpType = (data as any).grpType ?? (data as any).grp_type ?? null;
-              const cusNm = `${memberName} 회원님 ${grpType === 'D' ? '(2:1 그룹회원)' : ''}`;
+              const memberId = (data as IInsDay).mstId?.toString() ?? '';
+              const memberName = (data as IInsDay).cusNm ?? '';
+              const grpType = (data as IInsDay).grpYn ?? null;
+              const cusNm = `${memberName} 회원님 ${grpType === 'Y' ? '(2:1 그룹회원)' : ''}`;
               handleInputChange('cusNm', cusNm);
               handleInputChange('cusId', memberId);
             }}
