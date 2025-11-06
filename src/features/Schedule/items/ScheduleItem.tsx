@@ -15,7 +15,7 @@ export default function ScheduleItem({ schedule, onAddSchedule }: ScheduleItemPr
       {schedule?.mstId ? (
         <div className="w-full grid grid-cols-[40px_auto_130px_120px] gap-20px items-center place-items-center">
           <div className="flex items-center gap-5px justify-center">
-            {schedule.fixYn === 'Y' ? <img src={iconPix} className="w-15px h-15px" alt={'pix'} /> : ''}
+            {schedule.fxYn === 'Y' ? <img src={iconPix} className="w-15px h-15px" alt={'pix'} /> : ''}
           </div>
           <div className="text-black text-xl font-medium">{schedule.cusNm}</div>
           <div className="text-gray text-xl font-medium">{schedule.trainerNm} 강사</div>

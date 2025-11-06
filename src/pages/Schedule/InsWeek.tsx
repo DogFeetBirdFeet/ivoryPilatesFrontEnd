@@ -4,6 +4,7 @@ import { useLayoutContext } from '@/hooks/useLayoutContext';
 import WeeklyCalender from '@/features/Schedule/items/WeeklyCalender';
 import type { IInsDay } from '@/features/Schedule/type/types';
 import { scheduleApiWeek } from '@/services/Schedule/api';
+import iconPix from '@/assets/icon_pix.png';
 
 export default function InsWeek() {
   const [currentWeek, setCurrentWeek] = useState<Date>(() => new Date());
@@ -15,8 +16,7 @@ export default function InsWeek() {
     try {
       const response = await scheduleApiWeek.getScheduleList(param);
       setData(response?.data || []);
-
-      console.log(response?.data);
+      console.log('response', response.data);
     } catch (error) {
       console.error('데이터 로드 실패:', error);
     } finally {
@@ -25,8 +25,6 @@ export default function InsWeek() {
   };
 
   useEffect(() => {
-    console.log(currentWeek);
-
     // 주간의 시작일(월요일) 계산
     const currentDay = currentWeek.getDay();
     const monOffset = currentDay === 0 ? -6 : 1 - currentDay; // 일요일이면 -6, 아니면 월요일까지의 오프셋
@@ -105,11 +103,14 @@ export default function InsWeek() {
     const timeHour = time.split(':')[0].padStart(2, '0');
 
     // 해당 날짜와 시간에 맞는 스케줄 찾기
-    const schedule = data.find((item) => item.schedDate === dateStr && item.schedTime === timeHour);
-
-    if (!schedule) return '예약가능';
-    const name = (schedule.cusNm ?? '').trim();
-    return name.length > 0 ? name : '예약가능';
+    const schedule = data.filter(
+      (item) => item.schedDate === dateStr && item.schedTime === timeHour && item.mstId !== undefined
+    );
+    if (schedule.length > 1) {
+      return schedule.map((item) => item.cusNm).join('\n');
+    } else {
+      return schedule.find((item) => item.schedDate === dateStr && item.schedTime === timeHour)?.cusNm ?? '예약가능';
+    }
   };
 
   return isLoading ? (
@@ -202,8 +203,16 @@ export default function InsWeek() {
                               time !== '21:00' ? 'border-b-2' : '',
                             ].join(' ')}
                           >
-                            <div className="text-xl font-bold text-ppt">{time}</div>
-                            <div className="text-xl flex items-center">
+                            <div className="text-xl font-bold text-ppt flex items-center gap-5px">
+                              {time}
+                              {tarDate.filter((d: IInsDay) => d.schedTime === time.substring(0, 2) && d.fxYn === 'Y')
+                                .length > 0 ? (
+                                <img src={iconPix} className="w-15px h-15px" alt={'pix'} />
+                              ) : (
+                                ''
+                              )}
+                            </div>
+                            <div className="text-xl flex items-center whitespace-break-spaces">
                               <span className={isBooked ? 'text-black' : 'text-blueBtn'}>{scheduleText}</span>
                             </div>
                           </div>

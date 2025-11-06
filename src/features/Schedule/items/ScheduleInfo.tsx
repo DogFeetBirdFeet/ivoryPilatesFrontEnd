@@ -69,7 +69,7 @@ export default function ScheduleInfo(data: IInsDay) {
               ''
             )}
             {data.trainerNm ? <p>{data.trainerNm} 강사</p> : ''}
-            {data.fixYn ? 'Y' : 'N'}
+            {data.fxYn ? 'Y' : 'N'}
             <div>
               <StatusBadge type="B" status={data.clsStatus as keyof typeof SCHEDULE_STATUS} />
             </div>

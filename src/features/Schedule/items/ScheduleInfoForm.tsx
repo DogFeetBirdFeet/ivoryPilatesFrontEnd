@@ -79,7 +79,7 @@ export default function ScheduleInfoForm({ data, onCancel, onSave, initDate, ini
         trainerId: data.acctId,
         schedDate: data.schedDate,
         schedTime: data.schedTime,
-        fixYn: data.fixYn,
+        fixYn: data.fxYn,
         grpType: data.grpType,
         clsStatus: data.clsStatus,
       });
@@ -117,7 +117,7 @@ export default function ScheduleInfoForm({ data, onCancel, onSave, initDate, ini
           <p>시간</p>
           {isEdit && (
             <>
-              {data.fixYn === 'Y' && <p>고정수업 여부</p>}
+              {data.fxYn === 'Y' && <p>고정수업 여부</p>}
               <p>수업 상태</p>
             </>
           )}
@@ -173,14 +173,14 @@ export default function ScheduleInfoForm({ data, onCancel, onSave, initDate, ini
           {isEdit && (
             <>
               {/* 고정수업 여부 */}
-              {data.fixYn === 'Y' && (
+              {data.fxYn === 'Y' && (
                 <div className="h-30px flex items-center gap-20px">
                   <div className="flex items-center gap-5px">
                     <input
                       type="radio"
                       id="fixYn_Y"
                       value="Y"
-                      checked={data.fixYn === 'Y'}
+                      checked={data.fxYn === 'Y'}
                       onChange={() => handleInputChange('fixYn', 'Y')}
                     />
                     <label htmlFor="fixYn_Y" className="text-sm cursor-pointer">
@@ -192,7 +192,7 @@ export default function ScheduleInfoForm({ data, onCancel, onSave, initDate, ini
                       type="radio"
                       id="fixYn_N"
                       value="N"
-                      checked={data.fixYn === 'Y'}
+                      checked={data.fxYn === 'Y'}
                       onChange={() => handleInputChange('fixYn', 'N')}
                     />
                     <label htmlFor="fixYn_N" className="text-sm cursor-pointer">

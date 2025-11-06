@@ -30,7 +30,7 @@ export interface IInsDay {
   homework?: string;
   videoRecYn?: string;
   restYn?: string;
-  fixYn?: string;
+  fxYn?: string;
   clsNote?: string;
   clsNoteYn?: string;
   regDtm?: string;
