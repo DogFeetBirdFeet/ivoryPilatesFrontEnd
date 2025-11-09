@@ -9,6 +9,7 @@ import SearchInputCus from '@/common/components/inputArea/SearchInputCus.tsx';
 import SearchCondition from '@/common/components/searchBar/SearchCondition.tsx';
 
 interface ISearchForm {
+  mstId: string;
   searchUserNm: string;
   schMonth: string;
 }
@@ -21,7 +22,7 @@ export default function InsMonth() {
   // react-hook-form 검색조건
   const { watch, setValue, handleSubmit } = useForm<ISearchForm>({
     defaultValues: {
-      searchUserNm: '',
+      mstId: '',
       schMonth: new Date().toISOString().slice(0, 7).replace('-', ''),
     },
   });
@@ -73,7 +74,10 @@ export default function InsMonth() {
     const schEnd = dayData?.filter((x) => x?.clsStatus === 'COM').length;
     const schSch = dayData.filter((x) => x?.clsStatus === 'SCH').length;
     const schRest = schTotal - schEnd - schSch;
-    return { schEnd, schSch, schRest };
+    const isTime = dayData?.filter((x) => x?.mstId !== undefined && x?.schedTime !== undefined).length > 0;
+    const timeData =
+      dayData?.filter((x) => x?.mstId !== undefined && x?.schedTime !== undefined)[0]?.schedTime || '수업 정보 없음';
+    return { schEnd, schSch, schRest, isTime, timeData };
   };
 
   const loadSchData = async (searchParams?: ISearchForm) => {
@@ -86,7 +90,7 @@ export default function InsMonth() {
       const schMonthString = `${currentMonth.getFullYear()}${String(currentMonth.getMonth() + 1).padStart(2, '0')}`;
 
       const params = {
-        searchUserNm: searchParams?.searchUserNm || undefined,
+        mstId: searchParams?.mstId || undefined,
         schMonth: schMonthString,
       };
 
@@ -104,6 +108,7 @@ export default function InsMonth() {
     const initializeData = async () => {
       // 초기 폼 값으로 데이터 로드
       const initialFormValues = {
+        mstId: '',
         searchUserNm: '',
         schMonth: `${currentMonth.getFullYear()}${String(currentMonth.getMonth() + 1).padStart(2, '0')}`,
       };
@@ -136,12 +141,13 @@ export default function InsMonth() {
           {/* 좌측: 회원 + 검색 인풋 */}
           <SearchCondition id="searchName" labelText="회원명">
             <SearchInputCus
-              id="searchName"
+              id="mstId"
               value={watch('searchUserNm')}
-              onChange={(value) => setValue('searchUserNm', value)}
+              onChange={(value) => setValue('mstId', value)}
               onSearch={(data) => {
-                const cusNm = `${data.memberName} 회원님 ${data.grpType === 'D' ? '(2:1 그룹회원)' : ''}`;
-                setValue('searchUserNm', cusNm);
+                setValue('mstId', data.memberId);
+                setValue('searchUserNm', data.memberName);
+                handleSubmit(onSubmit)();
               }}
               className="w-full"
             />
@@ -166,17 +172,21 @@ export default function InsMonth() {
         <div className="grid grid-cols-7 gap-4">
           {cells.map(({ kind, displayDay, dayData }, i) => {
             const schDaysInfo = getDateInfo(dayData);
-
             const isCurr = kind === 'curr';
             const showContent = isCurr; // 현재 월만 라벨 표시
             const isTodayBadge = isCurr && isToday(displayDay);
-
+            const isBeforeToday =
+              displayDay < today.getDate() && displayDay < today.getMonth() && displayDay < today.getFullYear();
             // 공휴일/센터휴무 여부 계산
             const hasHoliday = isCurr && dayData.some((d: IInsDay) => d.holYn === 'Y');
             const isCenterOff = isCurr && dayData.some((d: IInsDay) => d.centerOffYn === 'Y');
             const holidayName =
               hasHoliday && !isCenterOff ? dayData.find((d: IInsDay) => d.holYn === 'Y')?.holNm || '' : '';
-
+            const isUserInit = watch('mstId') !== '' && watch('searchUserNm') !== '';
+            console.log('timeData', schDaysInfo.timeData);
+            console.log('isTime', schDaysInfo.isTime);
+            console.log('isUserInit', isUserInit);
+            console.log('isBeforeToday', isBeforeToday);
             return (
               <div
                 key={i}
@@ -186,21 +196,35 @@ export default function InsMonth() {
                 ].join(' ')}
               >
                 {/* 날짜 헤더 */}
-                <div className="flex items-center gap-2">
-                  {/* 날짜 숫자 (좌측) */}
-                  <div className="relative">
-                    <span
-                      className={[
-                        'inline-flex items-center justify-center font-bold text-xl px-[10px] py-[10px]',
-                        isTodayBadge ? 'h-[30px] w-[30px] rounded-full bg-yellow' : '',
-                        !isCurr ? 'h-[30px] w-[30px] rounded-full bg-white' : '',
-                        isCurr ? (hasHoliday ? 'text-red' : isCenterOff ? 'text-red' : 'text-black') : 'text-grayA1',
-                      ].join(' ')}
-                    >
-                      {displayDay}
-                    </span>
+                <div className="flex flex-col">
+                  <div className="flex items-center gap-2">
+                    {/* 날짜 숫자 (좌측) */}
+                    <div className="relative">
+                      <span
+                        className={[
+                          'inline-flex items-center justify-center font-bold text-xl px-[10px] py-[10px]',
+                          isTodayBadge ? 'h-[30px] w-[30px] rounded-full bg-yellow' : '',
+                          !isCurr ? 'h-[30px] w-[30px] rounded-full bg-white' : '',
+                          isCurr ? (hasHoliday ? 'text-red' : isCenterOff ? 'text-red' : 'text-black') : 'text-grayA1',
+                        ].join(' ')}
+                      >
+                        {displayDay}
+                      </span>
+                    </div>
+                    {hasHoliday && !isCenterOff && <span className="text-red font-bold text-xl">{holidayName}</span>}
                   </div>
-                  {hasHoliday && !isCenterOff && <span className="text-red font-bold text-xl">{holidayName}</span>}
+                  {isUserInit && isBeforeToday && !isCenterOff && !hasHoliday && (
+                    <>
+                      {schDaysInfo.isTime ? (
+                        <div className="bg-ppp rounded-md mt-2 flex items-top justify-between">
+                          <div className="text-white text-xl px-[10px]">{schDaysInfo.timeData}:00</div>
+                          <div className="text-white text-xl px-[10px]">{watch('searchUserNm')}님</div>
+                        </div>
+                      ) : (
+                        <div className="mt-2 flex justify-center">수업 정보 없음</div>
+                      )}
+                    </>
+                  )}
                 </div>
 
                 {isCenterOff && (
@@ -213,7 +237,23 @@ export default function InsMonth() {
                     <span className="text-red font-bold">공휴일</span>
                   </div>
                 )}
-                {!isCenterOff && !hasHoliday && (
+                {!isUserInit && !isCenterOff && !hasHoliday && (
+                  <>
+                    <div className={showContent ? 'flex items-center justify-between px-[10px]' : 'opacity-0'}>
+                      <span className="text-black">수업 완료</span>
+                      <span className="text-ppt">{schDaysInfo.schEnd}</span>
+                    </div>
+                    <div className={showContent ? 'flex items-center justify-between px-[10px]' : 'opacity-0'}>
+                      <span className="text-black">수업 예정</span>
+                      <span className="text-yellowCal">{schDaysInfo.schSch}</span>
+                    </div>
+                    <div className={showContent ? 'flex items-center justify-between px-[10px]' : 'opacity-0'}>
+                      <span className="text-black">예약 가능</span>
+                      <span className="text-blueBtn">{schDaysInfo.schRest}</span>
+                    </div>
+                  </>
+                )}
+                {isUserInit && !isBeforeToday && (
                   <>
                     <div className={showContent ? 'flex items-center justify-between px-[10px]' : 'opacity-0'}>
                       <span className="text-black">수업 완료</span>
