@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useMemo, useRef } from 'react';
 import iconLeft from '@/assets/chevrons_left_one.png';
 import iconRight from '@/assets/chevrons_right_one.png';
 
@@ -8,6 +8,8 @@ interface WeeklyCalenderProps {
 }
 
 export default function WeeklyCalender({ currentWeek, setCurrentWeek }: WeeklyCalenderProps) {
+  const flagRef = useRef<boolean>(false);
+
   function getMonday(date: Date) {
     const d = new Date(date);
     // normalize time to local midnight to avoid TZ/daylight issues
@@ -20,30 +22,37 @@ export default function WeeklyCalender({ currentWeek, setCurrentWeek }: WeeklyCa
   const handleLeftClick = () => {
     const thisMonday = getMonday(currentWeek);
 
-    // 이번 주의 7일을 만든다 (Mon ~ Sun)
-    const weekDays = Array.from({ length: 7 }).map((_, i) => {
-      const d = new Date(thisMonday);
-      d.setDate(thisMonday.getDate() + i);
-      d.setHours(0, 0, 0, 0);
-      return d;
-    });
-
-    // 이 주에 '말일(last day of month)'이 포함되어 있는지 확인
-    const lastOfMonthInWeek = weekDays.find(() => {
-      const daysInMonth = new Date(currentWeek.getFullYear(), currentWeek.getMonth() + 1, 0).getDate();
-      return currentWeek.getDate() === daysInMonth;
-    });
-
-    if (lastOfMonthInWeek) {
-      // 말일이 있으면 그 말일을 currentWeek로 설정 -> same week 유지, "현재달"을 이전달로 바꿈
-      setCurrentWeek(lastOfMonthInWeek);
-      return;
-    }
-
-    // 아니면 기존 동작: 이전 주 월요일로 이동
     const prevMonday = new Date(thisMonday);
     prevMonday.setDate(thisMonday.getDate() - 7);
-    setCurrentWeek(prevMonday);
+    // 월 경계를 넘어가는 경우
+    if (prevMonday.getMonth() !== currentWeek.getMonth()) {
+      if (!flagRef.current) {
+        flagRef.current = true;
+        if (currentWeek.getDate() != 1) {
+          prevMonday.setMonth(prevMonday.getMonth() + 1);
+          prevMonday.setDate(1);
+          setCurrentWeek(prevMonday);
+          return;
+        } else {
+          setCurrentWeek(new Date(currentWeek.setDate(currentWeek.getDate() - 1)));
+          return;
+        }
+      } else if (currentWeek.getDate() != 1) {
+        // 이미 특별 처리를 했으면 flag 리셋하고 일반 처리
+        flagRef.current = false;
+        prevMonday.setDate(currentWeek.getDate() - 1);
+        setCurrentWeek(prevMonday);
+        return;
+      } else {
+        setCurrentWeek(new Date(currentWeek.setDate(currentWeek.getDate() - 1)));
+        flagRef.current = false;
+        return;
+      }
+    } else {
+      // 같은 달 내 이동: flag 리셋
+      flagRef.current = false;
+      setCurrentWeek(prevMonday);
+    }
   };
   const handleRightClick = () => {
     const thisMonday = getMonday(currentWeek);
