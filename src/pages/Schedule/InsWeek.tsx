@@ -5,7 +5,8 @@ import WeeklyCalender from '@/features/Schedule/items/WeeklyCalender';
 import type { IInsDay } from '@/features/Schedule/type/types';
 import { scheduleApiWeek } from '@/services/Schedule/api';
 import iconPix from '@/assets/icon_pix.png';
-
+import iconUnderPosition from '@/assets/icon/purple/icon_underPosition.png';
+import iconUpperPosition from '@/assets/icon/purple/icon_upperPosition.png';
 export default function InsWeek() {
   const [currentWeek, setCurrentWeek] = useState<Date>(() => new Date());
   const [data, setData] = useState<IInsDay[]>([]);
@@ -368,18 +369,10 @@ export default function InsWeek() {
                             onClick={() => {
                               setScrollDown((prev) => prev.map((val, idx) => (idx === dayIdx ? false : val)));
                             }}
-                            className="flex items-center justify-center w-8 h-8 rounded-full bg-ppp hover:bg-ppp/80 transition-colors"
+                            className="flex items-center justify-center w-[10px] h-[12px]"
                             aria-label="위로 보기"
                           >
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              className="w-5 h-5 text-white"
-                              fill="none"
-                              viewBox="0 0 24 24"
-                              stroke="currentColor"
-                            >
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
-                            </svg>
+                            <img src={iconUpperPosition} className="w-[10px] h-[12px]" alt={'위로 보기'} />
                           </button>
                         </div>
                       )}
@@ -425,18 +418,10 @@ export default function InsWeek() {
                             onClick={() => {
                               setScrollDown((prev) => prev.map((val, idx) => (idx === dayIdx ? true : val)));
                             }}
-                            className="flex items-center justify-center w-8 h-8 rounded-full bg-ppp hover:bg-ppp/80 transition-colors"
+                            className="flex items-center justify-center w-[10px] h-[12px]"
                             aria-label="더 보기"
                           >
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              className="w-5 h-5 text-white"
-                              fill="none"
-                              viewBox="0 0 24 24"
-                              stroke="currentColor"
-                            >
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                            </svg>
+                            <img src={iconUnderPosition} className="w-[10px] h-[12px]" alt={'아래로 보기'} />
                           </button>
                         </div>
                       )}
